@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="korea.wrk.login.service.LoginService">
+
+    <select id="selectLogin_S01" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
+        /* korea.wrk.login.service.LoginService.selectLogin_S01 */
+		SELECT 
+		        nw101tl.user_no AS userNo
+		      , nw101tl.login_id AS loginId
+		      , NVL(nw101tl.pwd_fail_tms,0) AS pwdFailTms
+		      , CASE WHEN TO_CHAR(SYSDATE-90, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.pwd_chng_dttm THEN 'N' ELSE 'Y' END AS pwdChgYn
+		      , CASE WHEN TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.optr_expy_dttm THEN 'Y' ELSE 'N' END AS optrExpireYn
+		      , nw101tl.optr_auth_cd AS optrAuthCd
+		      , nw100tl.user_nm AS userNm
+		      , TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') AS loginTime
+		    FROM 
+		        NWRK101TL nw101tl
+		      , NWRK100TL nw100tl
+		   WHERE nw101tl.login_id = #{loginId}
+		     AND nw101tl.mbr_dc = 'G'
+		     AND nw101tl.optr_auth_cd = '01'
+		     AND nw101tl.scde_yn = 'N'
+		     AND nw101tl.login_pwd = CRYPTMD5(#{loginPwd})
+		     AND nw101tl.user_no = nw100tl.user_no  
+    </select>
+    
+    <select id="selectLogin_S02" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
+        /* korea.wrk.login.service.LoginService.selectLogin_S02 */
+		SELECT 
+		        nw101tl.user_no AS userNo
+		      , nw101tl.login_id AS loginId
+		      , nw101tl.pwd_fail_tms AS pwdFailTms
+		      , CASE WHEN TO_CHAR(SYSDATE-90, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.pwd_chng_dttm THEN 'N' ELSE 'Y' END AS pwdChgYn
+		      , CASE WHEN TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.optr_expy_dttm THEN 'Y' ELSE 'N' END AS optrExpireYn
+		      , nw101tl.optr_auth_cd AS optrAuthCd
+		      , wrk002.WRK002_KOR_NM AS userNm
+		      , TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') AS loginTime
+		    FROM 
+		        NWRK101TL nw101tl
+		      , NWRK100TL nw100tl
+		      , WRK002VW wrk002
+		   WHERE nw101tl.login_id = #{loginId}
+		     AND nw101tl.mbr_dc = 'K'
+		     <if test='optrAuthCd != null and optrAuthCd != ""'>
+		        AND nw101tl.optr_auth_cd = '01'
+		     </if>
+		     AND wrk002.wrk002_join_dept = 'Y'
+		     AND nw101tl.login_id = wrk002.wrk002_one_id
+		     AND nw101tl.user_no = nw100tl.user_no  
+		     AND nw101tl.scde_yn = 'N'
+		     AND wrk002.wrk002_encode_pw = CRYPTMD5(#{loginPwd})
+    </select>
+
+    <select id="selectLogin_S03" parameterType="string" resultType="korea.wrk.login.service.RoleVO">
+        /* korea.wrk.login.service.LoginService.selectLogin_S03 */
+		SELECT 
+		        B.OPTR_AUTH_NO AS optrAuthNo
+		      , B.OPTR_AUTH_NM AS optrAuthNm
+		      , B.USER_AUTH_CD AS userAuthCd
+		  FROM NWRK254TL A, NWRK251TL B, NWRK101TL C
+		 WHERE A.USER_NO = C.USER_NO
+		   AND A.OPTR_AUTH_NO = B.OPTR_AUTH_NO         
+		   AND C.USER_NO = #{userNo}
+		ORDER BY 1
+    </select>
+
+    <insert id="insertLogin_I01" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.insertLogin_I01 */
+		INSERT INTO NWRK151TL (
+		    user_no, cnnt_log_no, mbl_yn
+		  , cnnt_y, cnnt_m, cnnt_d, cnnt_tmhh, cnnt_dttm
+		  , cnip, cnnt_info, os_cd
+		) VALUES (
+		    #{userNo}, SQ_NWRK151TL1.NEXTVAL, #{mblYn}
+		  , TO_CHAR(sysdate, 'yyyy'), TO_CHAR(sysdate, 'MM'), TO_CHAR(sysdate, 'dd'), TO_CHAR(sysdate, 'HH24'), TO_CHAR(sysdate, 'yyyyMMddHH24miss')
+		  , #{remoteAddr}, #{cnntInfo}, #{osCd}
+		)
+    </insert>
+
+    <select id="selectLogin_S04" parameterType="korea.wrk.login.service.UserLoginVO" resultType="egovMap">
+        /* korea.wrk.login.service.LoginService.selectLogin_S04 */
+		SELECT
+		        wrk002_one_id
+		      , wrk002_kor_nm
+		      , wrk002_std_id
+		      , (SELECT user_no FROM NWRK101TL nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
+		    FROM WRK002VW
+		   WHERE wrk002_one_id = #{loginId}
+		     AND (wrk002_encode_pw = CRYPTMD5(#{loginPwd}) OR wrk002_encode_pw = CRYPTMD5(#{loginPwd}))
+		     AND wrk002_join_dept = 'Y'
+    </select>
+
+    <select id="selectLogin_S08" parameterType="korea.wrk.login.service.UserLoginVO" resultType="egovMap">
+        /* korea.wrk.login.service.LoginService.selectLogin_S08 */
+		SELECT
+		        wrk002_one_id
+		      , wrk002_kor_nm
+		      , wrk002_std_id
+		      , (SELECT user_no FROM NWRK101TL nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
+		    FROM WRK002VW
+		   WHERE wrk002_one_id = #{loginId}
+		     AND wrk002_join_dept = 'Y'
+    </select>
+
+
+
+
+    <select id="selectLogin_S05" parameterType="korea.wrk.login.service.UserLoginVO" resultType="java.lang.Integer">
+        /* korea.wrk.login.service.LoginService.selectLogin_S05 */
+		SELECT COUNT(user_no)
+		    FROM NWRK101TL
+		   WHERE login_id = #{loginId}
+		     AND MBR_DC = 'K'
+		     AND SCDE_YN = 'N'
+    </select>
+    
+
+    <select id="selectLogin_S06" parameterType="korea.wrk.login.service.UserLoginVO" resultType="java.lang.String">
+        /* korea.wrk.login.service.LoginService.selectLogin_S06 */
+		SELECT SQ_NWRK100TL1.NEXTVAL FROM DUAL
+    </select>
+    
+
+    <insert id="insertLogin_I02" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.insertLogin_I02 */
+		INSERT INTO nwrk100tl (
+		        user_no, user_nm
+		      , rps_stno
+		      , wrt_pn_no, wrt_pn_ip, wrt_dttm
+		      , updt_pn_no, updt_pn_ip, updt_dttm
+		) VALUES (
+		        #{userNo}, #{userNm}
+		      , #{rpsStno}
+		      , #{userNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
+		      , #{userNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
+		)
+    </insert>
+
+    <insert id="insertLogin_I03" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.insertLogin_I03 */
+		INSERT INTO NWRK101TL (
+		        user_no, login_id
+		      , tmp_pwd_yn, mbr_dc
+		      , optr_auth_cd, scde_yn
+		      , wrt_pn_no, wrt_pn_ip, wrt_dttm
+		      , updt_pn_no, updt_pn_ip, updt_dttm
+		) VALUES (
+		        #{userNo}, #{loginId}
+		      , 'N', 'K'
+		      , '99', 'N'
+		      , #{userNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
+		      , #{userNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
+		)
+    </insert>
+    
+    <update id="updateLogin_U01" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+		UPDATE NWRK100TL
+		SET user_nm = #{userNm}
+		  , rps_stno = #{rpsStno}
+		  , updt_pn_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N') 
+		  , updt_pn_ip = #{remoteAddr}
+		  , updt_dttm = TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
+		WHERE user_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N')
+    </update>
+
+    <select id="selectLogin_S07" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
+        /* korea.wrk.login.service.LoginService.selectLogin_S07 */
+		SELECT
+		        nwrk101.user_no AS userNo
+		      , nwrk101.login_id AS loginId
+		      , nwrk101.mbr_dc AS mbrDc
+		      , nwrk101.tmp_pwd_yn AS tmpPwdYn
+		      , CASE WHEN SYSDATE-1 <![CDATA[ > ]]> TO_DATE(nwrk101.tmp_pwd_dttm, 'yyyyMMddHH24miss') 
+		            THEN 'Y' ELSE 'N' 
+		        END AS tmpPwdLimitYn
+		      , NVL(nwrk101.pwd_fail_tms, 0) AS pwdFailTms
+		      , CASE WHEN SYSDATE-90 <![CDATA[ > ]]> TO_DATE(nwrk101.pwd_chng_dttm, 'yyyyMMddHH24miss') OR nwrk101.pwd_chng_dttm IS NULL 
+		            THEN 'Y' ELSE 'N' 
+		        END AS pwdChngLimitYn
+		      , nwrk100.user_nm AS userNm
+		      , nwrk110.etr_nm AS etrNm
+		      , nwrk110.etr_no AS etrNo
+		      , nwrk110.biz_jang_no AS bizJangNo
+		      , nwrk110.del_yn AS nwrk200tlDelYn
+		    FROM 
+		        NWRK101TL nwrk101
+		    INNER JOIN NWRK100TL nwrk100
+		        ON nwrk101.user_no = nwrk100.user_no
+		    LEFT OUTER JOIN NWRK110TL nwrk110
+		        ON nwrk100.etr_no = nwrk110.etr_no 
+		    WHERE nwrk101.scde_yn = 'N'
+		      AND nwrk101.login_id = #{loginId}
+		      AND nwrk101.login_pwd = CRYPTMD5(#{loginPwd})
+		      AND nwrk101.mbr_dc = #{loginDiv}
+    </select>
+
+    <insert id="insertLogin_I04" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.insertLogin_I04 */
+		INSERT INTO NWRK150TL (
+		    user_no, cnnt_log_no, mbl_yn
+		  , cnnt_y, cnnt_m, cnnt_d, cnnt_tmhh, cnnt_dttm
+		  , cnip, cnnt_info, os_cd
+		) VALUES (
+		    #{userNo}, SQ_NWRK150TL1.NEXTVAL, #{mblYn}
+		  , TO_CHAR(sysdate, 'yyyy'), TO_CHAR(sysdate, 'MM'), TO_CHAR(sysdate, 'dd'), TO_CHAR(sysdate, 'HH24'), TO_CHAR(sysdate, 'yyyyMMddHH24miss')
+		  , #{remoteAddr}, #{cnntInfo}, #{osCd}
+		)
+    </insert>
+
+    <update id="updateLogin_U02" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+		UPDATE NWRK101TL
+		    SET pwd_fail_tms = NVL(pwd_fail_tms, 0)+1
+		WHERE login_id = #{loginId}
+		  AND mbr_dc = #{loginDiv}
+    </update>
+    
+    <update id="updateLogin_U03" parameterType="korea.wrk.login.service.UserLoginVO" >
+        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+		UPDATE NWRK101TL
+		    SET pwd_fail_tms = 0
+		WHERE user_no = #{userNo}
+    </update>
+</mapper>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.program.service.ProgramService">
+	
+	<select id="selectProgramList" parameterType="programVO" resultType="dataMap">
+		/* site.program.service.ProgramService.selectProgramList */
+		SELECT	A.*
+		FROM	(SELECT	Z.*, ROWNUM RO
+				FROM	(SELECT	OPTR_PGM_NO,
+								OPTR_PGM_NM,
+								OPTR_PGM_ID,
+								OPTR_PGM_URL_V,
+								WRT_DTTM,
+								OPTR_PGM_GRP_NO,
+								MENU_USE_YN 
+						FROM	NWRK250TL
+						<where>
+							<if test='(searchKey != null and searchKey != "") and (searchWord != null and searchWord != "") '>
+								AND DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
+							</if>
+							<if test='(searchOptrAuthNo != null and searchOptrAuthNo != "") '>
+								AND OPTR_PGM_NO NOT IN (SELECT OPTR_PGM_NO
+					                          FROM NWRK252TL
+					                          WHERE OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))	
+							</if>
+							<if test='(searchMenuUseYn != null and searchMenuUseYn != "") and searchMenuUseYn eq "0" '>
+								AND MENU_USE_YN = #{searchMenuUseYn}
+							</if>
+							<if test='(searchOptrPgmGrpNo != null and searchOptrPgmGrpNo != "") '>
+								AND OPTR_PGM_GRP_NO LIKE #{searchOptrPgmGrpNo}||'%'
+							</if>
+						</where>
+						
+					  <!-- <isNotEmpty property="searchKey">
+					  	<isNotEmpty prepend="AND" property="searchWord">
+					  	DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
+					  	</isNotEmpty>
+					  </isNotEmpty>
+					  <isNotEmpty prepend="AND" property="searchOptrAuthNo">
+					  OPTR_PGM_NO NOT IN (SELECT OPTR_PGM_NO
+					                          FROM NWRK252TL
+					                          WHERE OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))				  
+					  </isNotEmpty>
+					  <isNotEmpty property="searchMenuUseYn">
+						  <isNotEqual prepend="AND" property="searchMenuUseYn" compareValue="0">
+						  MENU_USE_YN = #{searchMenuUseYn}
+						  </isNotEqual>
+					  </isNotEmpty>
+					  <isNotEmpty prepend="AND" property="searchOptrPgmGrpNo">
+					  OPTR_PGM_GRP_NO LIKE #{searchOptrPgmGrpNo}||'%'
+					  </isNotEmpty> -->
+					  
+					ORDER BY OPTR_PGM_GRP_NO, OPTR_PGM_ID, OPTR_PGM_NM
+					) Z
+			) A
+			WHERE RO BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
+	</select>
+	
+	<select id="selectProgramListTotCnt" parameterType="programVO" resultType="int">
+		/* site.program.service.ProgramService.selectProgramListTotCnt */
+		SELECT	COUNT(*)
+		FROM	NWRK250TL
+		<where>
+			<if test='(searchKey != null and searchKey != "") and (searchWord != null and searchWord != "") '>
+				AND DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
+			</if>
+			<if test='(searchOptrAuthNo != null and searchOptrAuthNo != "") '>
+				AND OPTR_PGM_NO NOT IN (SELECT	OPTR_PGM_NO
+		    	                    FROM	NWRK252TL
+		        	                WHERE	OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))		
+			</if>
+			<if test='(searchMenuUseYn != null and searchMenuUseYn != "") and searchMenuUseYn eq "0" '>
+				AND MENU_USE_YN = #{searchMenuUseYn}
+			</if>
+			<if test='(searchOptrPgmGrpNo != null and searchOptrPgmGrpNo != "") '>
+				AND OPTR_PGM_GRP_NO LIKE #{searchOptrPgmGrpNo}||'%'
+			</if>
+		</where>
+		
+		<!-- <isNotEmpty property="searchKey">
+			<isNotEmpty prepend="AND" property="searchWord">
+				DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOptrAuthNo">
+			OPTR_PGM_NO NOT IN (SELECT	OPTR_PGM_NO
+		    	                    FROM	NWRK252TL
+		        	                WHERE	OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))				  
+		</isNotEmpty>
+		<isNotEmpty property="searchMenuUseYn">
+			<isNotEqual prepend="AND" property="searchMenuUseYn" compareValue="0">
+				MENU_USE_YN = #{searchMenuUseYn}
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOptrPgmGrpNo">
+			OPTR_PGM_GRP_NO LIKE #{searchOptrPgmGrpNo}||'%'
+		</isNotEmpty> -->
+	</select>
+	
+	<select id="selectProgramNo" resultType="String">
+		/* site.program.service.ProgramService.selectProgramNo */
+		SELECT SQ_OPTR_PGM.NEXTVAL AS OPTR_PGM_NO FROM DUAL
+	</select>
+	
+	<insert id="insertProgramHandle" parameterType="programVO">
+		/* site.program.service.ProgramService.insertProgramHandle */
+		INSERT INTO NWRK250TL (
+		   OPTR_PGM_NO, OPTR_PGM_ID, OPTR_PGM_URL_V, 
+		   OPTR_PGM_GRP_NO, OPTR_PGM_NM,
+		   MENU_USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
+		   UPDT_PN_NO, UPDT_PN_IP, UPDT_DTTM) 
+		VALUES (
+		   #{optrPgmNo}, #{optrPgmId}, #{optrPgmUrlV},
+		   #{optrPgmGrpNo}, #{optrPgmNm},
+		   #{menuUseYn}, #{loginUserNo#, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		   #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		)
+	</insert>
+	
+	<update id="updateProgramHandle" parameterType="programVO">
+		/* site.program.service.ProgramService.updateProgramHandle */
+		UPDATE NWRK250TL
+		SET    OPTR_PGM_NM 	   	= #{optrPgmNm},
+			   OPTR_PGM_ID     	= #{optrPgmId},
+		       OPTR_PGM_URL_V   = #{optrPgmUrlV},
+		       OPTR_PGM_GRP_NO 	= #{optrPgmGrpNo},
+		       MENU_USE_YN     	= #{menuUseYn},
+		       UPDT_PN_NO     	= #{loginUserNo},
+		       UPDT_PN_IP		= #{remoteAddr},
+		       UPDT_DTTM        = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		WHERE  OPTR_PGM_NO     	= #{optrPgmNo}	
+	</update>
+
+	<select id="selectProgramInfo" parameterType="programVO" resultType="dataMap" >
+		/* site.program.service.ProgramService.selectProgramInfo */
+		SELECT 
+			OPTR_PGM_NO,
+			OPTR_PGM_ID, 
+			OPTR_PGM_URL_V, 
+			OPTR_PGM_GRP_NO, 
+			MENU_USE_YN,
+			OPTR_PGM_NM
+		FROM 
+			NWRK250TL A
+		WHERE 
+			A.OPTR_PGM_NO = #{optrPgmNo}
+	</select>
+	
+	<delete id="deleteProgram" parameterType="programVO">
+		/* site.program.service.ProgramService.deleteProgram */
+		DELETE FROM NWRK250TL
+		WHERE OPTR_PGM_NO = #{optrPgmNo}
+	</delete>
+	
+	<delete id="deleteProgramAuth" parameterType="programVO">
+		/* site.program.service.ProgramService.deleteProgramAuth */
+		DELETE FROM NWRK252TL
+		WHERE OPTR_PGM_NO = #{optrPgmNo}
+	</delete>
+</mapper>

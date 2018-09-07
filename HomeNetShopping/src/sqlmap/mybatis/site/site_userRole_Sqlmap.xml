@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.userRole.service.UserRoleService">
+
+	<select id="selectRoleList" parameterType="userRoleVO" resultType="dataMap">
+		/* site.userRole.service.UserRoleService.selectRoleList*/
+		SELECT	T.OPTR_AUTH_NO,
+				T.OPTR_AUTH_NM,
+		        T.USE_YN,
+		        T.USER_AUTH_CD,
+				T.WRT_PN_NO,
+		        T.WRT_DTTM,
+		        T.UPDT_PN_NO,
+				T.UPDT_DTTM,
+				FN_COMM_NM('550', T.USER_AUTH_CD) USER_AUTH_NM
+		FROM	NWRK251TL T
+		ORDER BY T.OPTR_AUTH_NO ASC
+	</select>
+			
+	<insert id="insertRole" parameterType="userRoleVO">
+		/* site.userRole.service.UserRoleService.insertRole*/
+		<selectKey keyProperty="optrAuthNo" resultType="string"> 
+			SELECT SQ_OPTR_AUTH.NEXTVAL FROM DUAL
+		</selectKey> 	
+		INSERT INTO NWRK251TL (
+		   OPTR_AUTH_NO, USE_YN, OPTR_AUTH_NM, 
+		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,
+		   UPDT_DTTM, USER_AUTH_CD) 
+		VALUES (
+		   #{optrAuthNo}, #{useYn}, #{optrAuthNm},
+		   #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo},
+		   #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{optrAuthCd}
+		)	
+	</insert>
+	
+	<insert id="insertRoleSub" parameterType="hmap">
+		/* site.userRole.service.UserRoleService.insertRoleSub*/
+		INSERT INTO NWRK251TL_SUB (
+		   GLB_TP_CD, OPTR_AUTH_NO, OPTR_AUTH_NM, 
+		   WRT_PN_NO, WRT_DTTM, UPDT_PN_NO, UPDT_DTTM) 
+		VALUES (
+		   #{optrGlbTpCd}, #{optrAuthNo}, #{optrAuthNm},
+		   #{loginUserNo}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		)	
+	</insert>
+	
+	<update id="updateRole" parameterType="userRoleVO">
+		/* site.userRole.service.UserRoleService.updateRole*/
+		UPDATE NWRK251TL
+		SET    OPTR_AUTH_NM 	= #{optrAuthNm},
+			   USE_YN       	= #{useYn},
+		       UPDT_PN_NO  		= #{loginUserNo},
+		       UPDT_PN_IP  		= #{remoteAddr},		       
+		       UPDT_DTTM     	= TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		       USER_AUTH_CD 	= #{optrAuthCd}
+		WHERE  OPTR_AUTH_NO 	= #{optrAuthNo}	
+	</update>
+	
+	<update id="updateRoleSub" parameterType="hmap">
+		/* site.userRole.service.UserRoleService.updateRoleSub*/
+		UPDATE NWRK251TL_SUB
+		SET OPTR_AUTH_NM 	= #{optrAuthNm}
+		    , UPDT_PN_NO 	= #{loginUserNo}
+		    , UPDT_DTTM 	= TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		WHERE OPTR_AUTH_NO 	= #{optrAuthNo}
+			AND GLB_TP_CD 	= #{optrGlbTpCd}	
+	</update>
+	
+    <parameterMap type="java.util.Map" id="optrAuthDelete">
+        <parameter property="pOptrAuthNo" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+        <parameter property="oResult" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT"/>
+    </parameterMap>
+	
+	<select id="deleteRole" parameterMap="optrAuthDelete" resultType="dataMap">
+		/* site.userRole.service.UserRoleService.deleteRole*/
+		{ CALL PR_OPTR_AUTH_DELETE(?, ?) }
+	</select>
+	
+    <parameterMap type="java.util.Map" id="optrAuthCopy">
+        <parameter property="pOptrAuthNo" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+        <parameter property="pLoginUserNo" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN"/>
+        <parameter property="oResult" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT"/>
+    </parameterMap>
+	
+	<select id="copyRole" parameterMap="optrAuthCopy" resultType="dataMap">
+		/* site.userRole.service.UserRoleService.copyRole*/
+		{ CALL PR_OPTR_AUTH_COPY_PROC(?, ?, ?) }
+	</select>
+	
+	<select id="selectRoleInfo" parameterType="userRoleVO" resultType="userRoleVO">
+		/* site.userRole.service.UserRoleService.selectRoleInfo */
+		SELECT 
+		   T.OPTR_AUTH_NO AS optrAuthNo, 
+		   T.USE_YN AS useYn, 
+		   T.USER_AUTH_CD AS optrAuthCd,
+		   JOIN_STR(CURSOR(SELECT B.MENU_NO
+		                   FROM NWRK252TL A, NWRK253TL B 
+		                    WHERE A.OPTR_AUTH_NO = T.OPTR_AUTH_NO 
+		                    AND A.OPTR_PGM_NO = B.OPTR_PGM_NO
+		                    AND B.HGRK_MENU_NO NOT IN ('0', '1', '2')
+		                 ), ','
+		          ) AS optrMenuNos, 
+		   T.OPTR_AUTH_NM AS optrAuthNm
+		FROM NWRK251TL T
+		WHERE T.OPTR_AUTH_NO = #{optrAuthNo}
+
+	</select>
+	
+	<select id="selectRoleSubInfo" parameterType="userRoleVO" resultType="dataMap">
+		/* site.userRole.service.UserRoleService.selectRoleSubInfo */
+		SELECT X.CD_INS_V, X.CD_INS_NM, Y.OPTR_AUTH_NO, Y.OPTR_AUTH_NM
+		FROM ( 
+		    SELECT A.CD_INS_V, A.CD_INS_NM
+		    FROM TB_COMM_CD A
+		    WHERE A.CD_ID = '916'
+		    AND A.USE_YN = 'Y'
+		) X LEFT OUTER JOIN NWRK251TL_SUB Y
+		ON X.CD_INS_V = Y.GLB_TP_CD
+		AND Y.OPTR_AUTH_NO = #{optrAuthNo}
+	</select>
+	
+	<delete id="deleteRoleProgramInfo" parameterType="userRoleVO">
+		DELETE FROM NWRK252TL
+		WHERE OPTR_AUTH_NO = #{optrAuthNo}  	
+	</delete>
+	
+	<insert id="insertRoleProgramInfo" parameterType="userRoleVO">
+		/* site.userRole.service.UserRoleService.insertRoleProgramInfo */
+		INSERT INTO NWRK252TL (
+		   OPTR_PGM_NO, OPTR_AUTH_NO, 
+		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,UPDT_DTTM) 
+		SELECT X.OPTR_PGM_NO, #{optrAuthNo}, 
+		   #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')  
+		FROM NWRK250TL X
+		WHERE X.OPTR_PGM_GRP_NO IN (
+		    SELECT DISTINCT OPTR_PGM_GRP_NO FROM NWRK250TL A
+		    <foreach collection="optrPgmNos" item="item" index="index" separator="," open="WHERE OPTR_PGM_NO IN (" close=")">
+		    	#{item[index]}
+		    </foreach>
+		    <!-- WHERE OPTR_PGM_NO
+		    <iterate property="optrPgmNos" conjunction="," open="(" close=")" prepend="IN" >
+		        #{optrPgmNos[]}
+		    </iterate> -->
+		    )    
+	</insert>
+	
+	<select id="selectRoleProgram" parameterType="userRoleVO" resultType="dataMap">
+		/* site.userRole.service.UserRoleService.selectRoleProgram */
+		SELECT
+			A.OPTR_PGM_NO, A.OPTR_AUTH_NO
+		    , C.OPTR_PGM_GRP_NO, D.OPTR_PGM_NM, C.OPTR_PGM_URL_V
+		    , NVL(C.MENU_USE_YN, 'N') AS MENU_USE_YN
+		    , A.WR_AUTH_YN, A.DEL_AUTH_YN, A.READ_AUTH_YN
+		FROM
+			TB_OPTR_PGM_AUTH A
+		    , NWRK251TL B
+		    , TB_OPTR_PGM C
+		    , TB_OPTR_PGM_SUB D
+		WHERE
+			A.OPTR_AUTH_NO = B.OPTR_AUTH_NO
+			AND A.OPTR_PGM_NO = C.OPTR_PGM_NO
+		    AND C.OPTR_PGM_NO = D.OPTR_PGM_NO
+		    AND A.OPTR_AUTH_NO = #{optrAuthNo}
+		    AND B.USE_YN 	= #{useYn}
+		    AND GLB_TP_CD 	= #{glbTpCd}
+		ORDER BY OPTR_PGM_GRP_NO ASC
+	</select>
+	
+</mapper>	

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prjframework.common.file.service.PrjframeworkCmmnFileService">
+
+	<select id="CmmnFileService_S01" parameterType="java.lang.String" resultType="egovMap">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_S01 */
+			SELECT      
+			        B.APND_FILE_NM AS ATCHMNFL_NM,
+					B.APND_FILE_SAVE_NM AS ATCHMNFL_STRE_NM,
+					B.APND_FILE_SIZE AS ATCHMNFL_MG   	       
+			  FROM NWRK210TL A, 
+			       NWRK211TL B 
+			 WHERE A.APND_FILE_NO = B.APND_FILE_NO 
+			       AND A.APND_FILE_NO = #{atchmnflNo} 
+			ORDER BY APND_FILE_SN ASC
+	</select>
+
+	<select id="CmmnFileService_S02" resultType="string">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_S02 */
+			SELECT SQ_NWRK210TL1.NEXTVAL 
+  				FROM DUAL	
+	</select>
+	
+	<insert id="CmmnFileService_I01" parameterType="prjframework.common.file.service.PrjframeworkCmmnFileVO">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_I01 */
+			INSERT INTO NWRK210TL (
+		           APND_FILE_NO,
+		           WRT_PN_NO,
+		           WRT_PN_IP,
+		           WRT_DTTM,
+		           UPDT_PN_NO,
+		           UPDT_PN_IP,
+		           UPDT_DTTM
+		       ) VALUES (
+		           #{atchmnflNo},
+		           #{wrtPnNo},
+		           #{wrtPnIp},
+		           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		           #{wrtPnNo},
+		           #{wrtPnIp},
+		           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		       )
+	</insert>
+	
+	<insert id="CmmnFileService_I02" parameterType="prjframework.common.file.service.PrjframeworkCmmnFileVO">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_I02 */
+			INSERT INTO NWRK211TL (
+		           APND_FILE_SN,
+		           APND_FILE_NO,
+		           APND_FILE_NM,
+		           APND_FILE_SAVE_NM,
+		           APND_FILE_SIZE,
+		           WRT_PN_NO,
+		           WRT_PN_IP,
+		           WRT_DTTM,
+		           UPDT_PN_NO,
+		           UPDT_PN_IP,
+		           UPDT_DTTM
+		       ) VALUES (
+		           NVL((SELECT MAX(APND_FILE_SN) + 1 FROM NWRK211TL WHERE APND_FILE_NO = #{atchmnflNo}), 1),
+		           #{atchmnflNo},
+		           #{atchmnflNm},
+		           #{atchmnflStreNm},
+		           #{atchmnflMg},
+		           #{wrtPnNo},
+		           #{wrtPnIp},
+		           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		           #{wrtPnNo},
+		           #{wrtPnIp},
+		           TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		       )
+	</insert>
+	
+	<delete id="CmmnFileService_D01" parameterType="prjframework.common.file.service.PrjframeworkCmmnFileVO">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_D01 */
+			DELETE
+			  FROM NWRK210TL
+			 WHERE APND_FILE_NO = #{atchmnflNo}
+	</delete>
+	
+	<delete id="CmmnFileService_D02" parameterType="prjframework.common.file.service.PrjframeworkCmmnFileVO">
+		/* prjframework.common.file.service.PrjframeworkCmmnFileService.CmmnFileService_D02 */
+			DELETE
+			  FROM NWRK211TL
+			 WHERE APND_FILE_NO = #{atchmnflNo}
+	</delete>
+	
+</mapper>

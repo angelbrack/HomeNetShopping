@@ -1,0 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="conftag" uri="/WEB-INF/tld/ctag.tld" %>
+
+<iframe name="fileHiddenFrame" id="fileHiddenFrame" width="0" height="0" title="파일관련"></iframe>
+<div class="data-loading ">
+    <div class="loading_img">
+        <img src="<conftag:conf key="JS.CSS.PATH" />fileupload/img/i_large_loading.gif" alt="로딩중">
+    </div>
+</div>

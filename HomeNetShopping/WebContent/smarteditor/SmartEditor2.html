@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>\ub124\uc774\ubc84 :: Smart Editor 2 &#8482;</title>
+<script type="text/javascript" src="./js/HuskyEZCreator.js" charset="utf-8"></script>
+</head>
+<body>
+<form action="sample.php" method="post">
+	<textarea name="ir1" id="ir1" rows="10" cols="100" style="width:766px; height:412px; display:none;"></textarea>
+	<!--textarea name="ir1" id="ir1" rows="10" cols="100" style="width:100%; height:412px; min-width:610px; display:none;"></textarea-->
+	<p>
+		<input type="button" onclick="pasteHTML();" value="\ubcf8\ubb38\uc5d0 \ub0b4\uc6a9 \ub123\uae30" />
+		<input type="button" onclick="showHTML();" value="\ubcf8\ubb38 \ub0b4\uc6a9 \uac00\uc838\uc624\uae30" />
+		<input type="button" onclick="submitContents(this);" value="\uc11c\ubc84\ub85c \ub0b4\uc6a9 \uc804\uc1a1" />
+		<input type="button" onclick="setDefaultFont();" value="\uae30\ubcf8 \ud3f0\ud2b8 \uc9c0\uc815\ud558\uae30 (\uad81\uc11c_24)" />
+	</p>
+</form>
+<script type="text/javascript">
+var oEditors = [];
+nhn.husky.EZCreator.createInIFrame({
+	oAppRef: oEditors,
+	elPlaceHolder: "ir1",
+	sSkinURI: "SmartEditor2Skin.jsp",	
+	htParams : {bUseToolbar : true,
+		fOnBeforeUnload : function(){
+			//alert("\uc544\uc2f8!");	
+		}
+	}, //boolean
+	fOnAppLoad : function(){
+		//\uc608\uc81c \ucf54\ub4dc
+		//oEditors.getById["ir1"].exec("PASTE_HTML", ["\ub85c\ub529\uc774 \uc644\ub8cc\ub41c \ud6c4\uc5d0 \ubcf8\ubb38\uc5d0 \uc0bd\uc785\ub418\ub294 text\uc785\ub2c8\ub2e4."]);
+	},
+	fCreator: "createSEditor2"
+});
+
+function pasteHTML() {
+	var sHTML = "<span style='color:#FF0000;'>\uc774\ubbf8\uc9c0\ub3c4 \uac19\uc740 \ubc29\uc2dd\uc73c\ub85c \uc0bd\uc785\ud569\ub2c8\ub2e4.<\/span>";
+	oEditors.getById["ir1"].exec("PASTE_HTML", [sHTML]);
+}
+
+function showHTML() {
+	var sHTML = oEditors.getById["ir1"].getIR();
+	alert(sHTML);
+}
+	
+function submitContents(elClickedObj) {
+	oEditors.getById["ir1"].exec("UPDATE_CONTENTS_FIELD", []);	// \uc5d0\ub514\ud130\uc758 \ub0b4\uc6a9\uc774 textarea\uc5d0 \uc801\uc6a9\ub429\ub2c8\ub2e4.
+	
+	// \uc5d0\ub514\ud130\uc758 \ub0b4\uc6a9\uc5d0 \ub300\ud55c \uac12 \uac80\uc99d\uc740 \uc774\uacf3\uc5d0\uc11c document.getElementById("ir1").value\ub97c \uc774\uc6a9\ud574\uc11c \ucc98\ub9ac\ud558\uba74 \ub429\ub2c8\ub2e4.
+	
+	try {
+		elClickedObj.form.submit();
+	} catch(e) {}
+}
+
+function setDefaultFont() {
+	var sDefaultFont = '\uad81\uc11c';
+	var nFontSize = 24;
+	oEditors.getById["ir1"].setDefaultFont(sDefaultFont, nFontSize);
+}
+</script>
+
+</body>
+</html>

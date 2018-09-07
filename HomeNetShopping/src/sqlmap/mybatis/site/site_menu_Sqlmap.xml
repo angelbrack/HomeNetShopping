@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.menu.service.MenuService">
+
+	<select id="list" parameterType="MenuVO" resultType="dataMap">
+		/* site.menu.service.MenuService.list */
+		SELECT *
+		FROM (
+		  SELECT
+		         LEVEL
+		       , Z.SORT_OR
+		       , Z.MENU_NO
+		       , Z.HGRK_MENU_NO
+		       , Z.OPTR_PGM_NO
+		       , Z.MENU_NM
+		       , Z.USE_YN
+		       , Z.OPTR_PGM_NM
+		    FROM
+		         (SELECT
+		                A.SORT_OR
+		              , A.MENU_NO
+		              , A.HGRK_MENU_NO
+		              , A.OPTR_PGM_NO
+		              , A.MENU_NM
+		              , A.USE_YN
+		              , (SELECT X.OPTR_PGM_NM FROM NWRK250TL X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
+		           FROM
+		                NWRK253TL A
+		           	<where>
+						<if test='(useYn != null and useYn != "") '>
+							AND A.USE_YN = #{useYn}
+						</if>
+					</where>
+		           <!-- <isNotEmpty property="useYn">
+		           WHERE A.USE_YN = #{useYn}
+		           </isNotEmpty> -->
+		         ) Z
+			START WITH Z.HGRK_MENU_NO = 0
+			CONNECT BY PRIOR Z.MENU_NO = Z.HGRK_MENU_NO
+			ORDER SIBLINGS BY Z.SORT_OR
+		)
+	</select>
+	
+	<update id="update" parameterType="MenuVO">
+		/* site.menu.service.MenuService.update */
+		UPDATE 
+			NWRK253TL
+		SET
+			MENU_NM 	= #{menuNm},
+			OPTR_PGM_NO	= #{optrPgmNo},
+		    USE_YN		= #{useYn},
+		    SORT_OR		= #{sortOr},
+			UPDT_PN_NO	= #{loginUserNo},							
+			UPDT_PN_IP	= #{remoteAddr},							
+			UPDT_DTTM	= TO_CHAR(SYSDATE, 'yyyymmddhh24miss')		
+		WHERE 
+			MENU_NO = #{menuNo}
+	</update>
+	
+	<delete id="deleteMenu" parameterType="MenuVO">
+		/* site.menu.service.MenuService.deleteMenu */
+		DELETE 
+			NWRK253TL
+		WHERE 
+			MENU_NO = #{menuNo}
+	</delete>
+	
+	
+	<insert id="createMenu" parameterType="MenuVO">
+		/* site.menu.service.MenuService.createMenu */
+		<selectKey keyProperty="seqMenuNo" resultType="string"> 
+			SELECT SQ_OPTR_MENU.NEXTVAL FROM DUAL
+		</selectKey> 
+		
+			/* createMenu*/
+			INSERT INTO NWRK253TL    
+				(MENU_NO, HGRK_MENU_NO, MENU_NM, OPTR_PGM_NO, 
+				SORT_OR, USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
+				UPDT_PN_NO, UPDT_PN_IP, UPDT_DTTM) 
+			SELECT #{seqMenuNo}, #{hgrkMenuNo}, #{menuNm}, #{optrPgmNo},
+				NVL((SELECT MAX(SORT_OR) + 1 FROM NWRK253TL WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1), #{useYn}, #{loginUserNo}, #{remoteAddr},
+				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+			FROM NWRK253TL
+			WHERE MENU_NO = #{hgrkMenuNo}
+	</insert>
+	
+	<insert id="createMenu2" parameterType="MenuVO">
+		/* site.menu.service.MenuService.createMenu2 */
+		<selectKey keyProperty="seqMenuNo" resultType="string"> 
+			SELECT SQ_OPTR_MENU.NEXTVAL FROM DUAL
+		</selectKey> 
+		
+		/* createMenu2*/
+		INSERT INTO NWRK253TL	
+				(MENU_NO,
+				HGRK_MENU_NO,
+				MENU_NM,
+				OPTR_PGM_NO,
+				SORT_OR,
+				USE_YN,
+				WRT_PN_NO,
+				WRT_PN_IP,
+				WRT_DTTM,
+				UPDT_PN_NO,
+				UPDT_PN_IP,
+				UPDT_DTTM) 
+		VALUES	(#{seqMenuNo},
+				#{hgrkMenuNo},
+				#{menuNm},
+				#{optrPgmNo},
+				NVL((SELECT MAX(SORT_OR) + 1 FROM NWRK253TL WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1),
+				#{useYn},
+				#{loginUserNo},
+				#{remoteAddr},
+				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+				#{loginUserNo},
+				#{remoteAddr},
+				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		)
+	</insert>
+	
+	<select id="getMenuInfo" parameterType="hmap" resultType="dataMap">
+		/* site.menu.service.MenuService.getMenuInfo */
+		SELECT	*
+		FROM	(SELECT	LEVEL,
+						Z.SORT_OR,
+						Z.MENU_NO,
+						Z.HGRK_MENU_NO,
+						Z.OPTR_PGM_NO,
+						Z.MENU_NM,
+		       			Z.USE_YN,
+		       			Z.OPTR_PGM_NM
+				FROM	(SELECT	A.SORT_OR,
+								A.MENU_NO,
+								A.HGRK_MENU_NO,
+								A.OPTR_PGM_NO,
+								A.MENU_NM,
+								A.USE_YN,
+								(SELECT X.OPTR_PGM_NM FROM NWRK250TL X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
+						FROM	NWRK253TL A
+						)Z
+				WHERE	MENU_NO = #{menuNo}
+				START WITH Z.HGRK_MENU_NO = 0
+				CONNECT BY PRIOR Z.MENU_NO = Z.HGRK_MENU_NO
+				ORDER SIBLINGS BY Z.SORT_OR
+				)
+	</select>
+</mapper>

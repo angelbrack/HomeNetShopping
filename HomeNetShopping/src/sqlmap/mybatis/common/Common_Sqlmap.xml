@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="korea.wrk.comm.common.service.CommonService">
+	<!-- 공통 조회 컬럼 -->
+	<sql id="selectCommonCol">
+		, A.WRT_PN_NO    
+		, A.WRT_PN_IP    
+		, A.WRT_DTTM 
+		, A.UPDT_PN_NO    
+		, A.UPDT_PN_IP    
+		, A.UPDT_DTTM
+	</sql>
+	
+	<!-- 공통 등록 컬럼 -->
+	<sql id="insertCommonCol">
+		, WRT_PN_NO    
+		, WRT_PN_IP    
+		, WRT_DTTM 
+		, UPDT_PN_NO    
+		, UPDT_PN_IP    
+		, UPDT_DTTM
+	</sql>
+	
+	<!-- 공통 등록 값 -->
+	<sql id="insertCommonVal">
+		, #{wrtPnNo		}    
+		, #{wrtPnIp		}    
+		, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')	    
+		, #{updtPnNo	}
+		, #{updtPnIp	}
+		, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+	</sql>
+	
+	<!-- 공통 수정 -->
+	<sql id="updateCommon">
+		, UPDT_PN_NO	= #{updtPnNo	}		    
+		, UPDT_PN_IP	= #{updtPnIp	}    
+		, UPDT_DTTM		= TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+	</sql>
+</mapper>

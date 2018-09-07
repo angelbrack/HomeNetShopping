@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+	
+	<!-- 
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location= "classpath:/db/sampledb.sql"/>
+	</jdbc:embedded-database>
+	 -->
+
+	<!-- hsql  
+ 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"/>
+		<property name="url" value="jdbc:log4jdbc:hsqldb:hsql://localhost/sampledb"/>
+		<property name="username" value="sa"/>
+	</bean>
+	-->
+	<!-- mysql 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://db2:1621/rte"/>
+        <property name="username" value="rte"/>
+        <property name="password" value="rte01"/>
+    </bean>
+    -->
+    <!-- oracle
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@db1:1521:egovfrm"/>
+        <property name="username" value="rte"/>
+        <property name="password" value="rte01"/>
+    </bean>
+    -->
+    
+    <bean id="DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <!-- Real Server Start -->
+        <property name="url" value="jdbc:oracle:thin:@10.59.32.137:1521:psvcar"/>
+        <property name="username" value="tslms"/>
+        <property name="password" value="Tsdpfdpa5!"/>
+        <!-- Real Server End -->
+        <!-- Dev Server Start -->
+        <!-- <property name="url" value="jdbc:oracle:thin:@203.239.163.20:5555:nexgens"/>
+        <property name="username" value="ts_lms"/>
+        <property name="password" value="s12345"/> -->
+        <!-- Dev Server End -->
+    </bean>
+    
+    <bean id="SMSDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <property name="url" value="jdbc:sqlserver://10.59.35.27:1433;databaseName=kotsa"/>
+        <property name="username" value="tslms_sms"/>
+        <property name="password" value="Tslms!@#5"/>
+    </bean>
+</beans>

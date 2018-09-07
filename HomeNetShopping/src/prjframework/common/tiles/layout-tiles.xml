@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+<!-- ++++++++++++++++++++++++++++++++++++ -->	
+<!-- ++++++++++ prjframe tiles Start  ++++++++++ -->
+
+<!-- 	dafault loyout -->
+<!-- 	<definition name="user.default.layout" template="/WEB-INF/jsp/user/common/include/default_layout.jsp" preparer="DefaultMenuTilesPreparer" > -->
+	<definition name="user.default.layout" template="/WEB-INF/jsp/user/common/include/default_layout.jsp">
+		<put-attribute name="head" value="/WEB-INF/jsp/user/common/include/default_head.jsp"/>
+		<put-attribute name="top" value="/WEB-INF/jsp/user/common/include/default_top.jsp"/>
+		<put-attribute name="left" value=""/>
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/user/common/include/default_footer.jsp"/>
+	</definition>
+	
+	<definition name="user.main.layout" template="/WEB-INF/jsp/user/common/include/main_layout.jsp">
+		<put-attribute name="head" value="/WEB-INF/jsp/user/common/include/main_head.jsp"/>
+		<put-attribute name="top" value="/WEB-INF/jsp/user/common/include/default_top.jsp"/>
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/user/common/include/main_footer.jsp"/>
+	</definition>
+
+	<definition name="user.popup.layout" template="/WEB-INF/jsp/user/common/include/popup_layout.jsp">
+		<put-attribute name="head" value="/WEB-INF/jsp/user/common/include/default_head.jsp"/>
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="user.none.layout" template="/WEB-INF/jsp/user/common/include/none_layout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	
+
+	<definition name="USER01.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_01.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER01.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_01.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER01.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_01.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER01.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_01.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="USER02.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_02.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER02.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_02.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER02.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_02.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER02.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_02.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="USER03.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_03.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER03.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_03.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER03.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_03.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER03.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_03.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="USER04.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_04.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER04.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_04.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER04.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_04.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER04.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_04.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="USER05.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_05.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER05.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_05.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER05.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_05.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER05.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_05.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="USER06.*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_06.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="USER06.*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_06.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="USER06.*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_06.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="USER06.*/*/*/*" extends="user.default.layout">
+		<put-attribute name="left" value="/WEB-INF/jsp/user/common/include/left_06.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="PORTMAIN.*/*/*" extends="user.main.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="POP.*" extends="user.popup.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="POP.*/*" extends="user.popup.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="POP.*/*/*" extends="user.popup.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="POP.*/*/*/*" extends="user.popup.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<definition name="NON.*" extends="user.none.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}.jsp" />
+	</definition>
+	<definition name="NON.*/*" extends="user.none.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}.jsp" />
+	</definition>
+	<definition name="NON.*/*/*" extends="user.none.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}.jsp" />
+	</definition>
+	<definition name="NON.*/*/*/*" extends="user.none.layout">
+		<put-attribute name="body" value="/WEB-INF/jsp/user/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- Controller return String Mapping -->
+
+	<definition name="error" template="/common/error.jsp">
+	</definition>
+	<definition name="error404" template="/common/error404.jsp">
+	</definition>
+	<definition name="error500" template="/common/error500.jsp">
+	</definition>
+	<definition name="error503" template="/common/error500.jsp">
+	</definition>
+
+</tiles-definitions>

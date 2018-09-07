@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="ko-KR" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="ko-KR" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="ko-KR" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="UTF-8" class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KNOU 드림캠퍼스</title>
+
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+        a {
+            text-decoration: none;
+        }
+        body {
+            font-family: sans-serif;
+            background-color: #ffffff;
+            letter-spcing: -0.5em;
+        }
+		.font-nanumsquare {
+			font-family: 'NanumSquare', sans-serif;
+		}
+
+        .text-lightblue {
+            color: #44bfde;
+        }
+        .text-magenta {
+            color: #d1286f;
+        }
+        .font-14 {
+            font-size: 14px;
+        }
+        .font-18 {
+            font-size: 18px;
+        }
+        .font-20 {
+            font-size: 20px;
+        }
+        .font-24 {
+            font-size: 24px;
+        }
+        .font-30 {
+            font-size: 30px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #44bfde;
+        }
+        .header {
+            text-align: center;
+            padding: 60px;
+            /*font-size: 50px;*/
+        }
+        .hr {
+			background: url('${server_url}/html/user/img/email/gradient_pt50.png') repeat-x;
+            width: 100%;
+			height: 50px;
+            border: 0;
+		}
+        .dot-hr {
+            width: 100%;
+            border: 0;
+            border-top: 1px dotted #CACAD9;
+			margin-bottom: 20px;
+        }
+        .body {
+            /* padding-left: 20px;
+            padding-right: 20px; */
+            padding: 20px;
+        }
+        .body-title {
+            font-weight: 600;
+			 margin-bottom: 10px;
+			 letter-spacing: -0.1em;
+        }
+        .body-content {
+            line-height: 1.4;
+            border-radius: 5px;
+            border: 1px solid #c8c8c8;
+            background-color: #fafafa;
+            padding: 30px;
+            margin: 20px 20px;
+        }
+        .notice {
+			padding:10px;
+            margin-bottom: 50px;
+        }
+        .btn-group {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+        .btn-group button {
+            border: 0;
+            background-color: #44bfde;
+            color: #ffffff;
+            padding: 10px 20px;
+			 border-radius: 5px;
+			 -webkit-border-radius: 5px;
+			 -moz-border-radius: 5px;
+        }
+        .notice-list {
+            margin-bottom: 20px;
+        }
+        .notice-list ul {
+            list-style-type: disc;
+            color: #999;
+        }
+        .notice-list ul li {
+            line-height: 20px;
+			font-size: 14px;
+        }
+
+		.btn-style-a {
+			background: #44bfde;
+			border-color: #44bfde;
+			color: #fff;
+		}
+
+		.btn-style-a:active {
+			background: #009ec4;
+			border-color: #009ec4;
+		}
+
+        .footer {}
+        .footer img {
+            width: 100%;
+            height: 100%;
+            vertical-align: bottom;
+        }
+        @media (max-width: 700px) {
+            .body {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            .body-content {
+                padding: 10px;
+                margin: 20px 5px 0;
+            }
+            .notice-list ul li {
+                margin-left: -20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">R
+
+        <div class="header text-lightblue">
+            <img src="${server_url}/html/user/img/email/title.png" alt="로고">
+        </div>
+
+        <div class="body">
+
+            <div class="hr"></div>
+
+            <div class="body-title text-lightblue font-24 font-nanumsquare">
+                	${title}
+            </div>
+            <div class="body-content font-16">
+		            ${contents}
+            </div>
+            
+        </div>
+
+        <div class="footer">
+            <img src="${server_url}/html/user/img/email/footer.png" alt="푸터이미지">
+        </div>
+    </div>
+
+</body>
+</html>

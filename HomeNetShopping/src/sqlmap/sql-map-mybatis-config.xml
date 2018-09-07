@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <!-- <setting name="logImpl" value="LOG4J" /> -->
+        <setting name="jdbcTypeForNull" value="VARCHAR" />
+    </settings>
+    <typeAliases>
+    	<typeAlias  alias="egovMap" 				type="egovframework.rte.psl.dataaccess.util.EgovMap"		/>
+    	<typeAlias  alias="dataMap" 				type="prjframework.common.dataaccess.util.DataMap"			/>
+    	<typeAlias  alias="hmap" 					type="java.util.HashMap"									/>
+		
+		<typeAlias 	alias="CodeVO" 					type="site.code.service.CodeVO"								/>	
+		<typeAlias  alias="MenuVO"  				type="site.menu.service.MenuVO"								/>
+		<typeAlias  alias="userRoleVO" 				type="site.userRole.service.UserRoleVO"						/>
+		<typeAlias  alias="programVO" 				type="site.program.service.ProgramVO"						/>
+
+		<typeAlias  alias="indvInfoVO" 				type="site.common.service.impl.IndvInfoVO"					/>
+
+		<!-- 게시판 -->
+		<typeAlias 	alias="boardVO" 				type="korea.wrk.brd.common.service.BoardVO"					/>
+    	
+    </typeAliases>
+</configuration>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.home.menu.service.SiteHomeMenuService">
+
+	<select id="selectTopMenuList" parameterType="dataMap" resultType="dataMap">
+		/** site.home.menu.service.SiteHomeMenuService.selectTopMenuList **/
+		SELECT DISTINCT A.SORT_OR ORD, A.MENU_NO, A.MENU_NM, 'Y' ROLYN
+		  FROM NWRK253TL A
+		 WHERE A.USE_YN = 'Y'
+		   AND A.HGRK_MENU_NO = (SELECT MENU_NO FROM NWRK253TL
+                                  WHERE HGRK_MENU_NO = 0)
+		START WITH OPTR_PGM_NO IN (
+		    SELECT B.OPTR_PGM_NO
+		    FROM NWRK252TL B
+		    WHERE B.OPTR_PGM_NO = A.OPTR_PGM_NO
+		    AND B.OPTR_AUTH_NO = #{optrAuthNo}
+		)
+		CONNECT BY PRIOR HGRK_MENU_NO = A.MENU_NO 
+		ORDER BY 1,2
+	</select>
+	
+	<select id="selectLeftMenuList" parameterType="dataMap" resultType="site.home.menu.service.HomeMenuVO">
+		/** site.home.menu.service.SiteHomeMenuService.selectLeftMenuList **/
+		SELECT 
+		        a.menu_no AS menuNo
+		      , a.menu_nm AS menuNm
+		      , c.optr_pgm_url_v AS optrPgmUrlV
+		      , a.hgrk_menu_no AS hgrkMenuNo
+		      , a.lvl
+		    FROM 
+		        (
+		SELECT
+		                A.SORT_OR
+		              , A.MENU_NO
+		              , A.HGRK_MENU_NO
+		              , A.OPTR_PGM_NO
+		              , A.MENU_NM
+		              , A.USE_YN
+		              , level as lvl
+		              , rownum as row_or
+		           FROM
+		                NWRK253TL A
+		start with MENU_NO = #{hgrkMenuNo}
+		connect by prior MENU_NO = HGRK_MENU_NO
+		ORDER SIBLINGS BY A.SORT_OR
+		) A
+		LEFT OUTER JOIN NWRK250TL C ON C.OPTR_PGM_NO = A.OPTR_PGM_NO
+		WHERE use_yn = 'Y'
+		  and EXISTS (
+		            SELECT 'X'
+		                FROM 
+		                    (
+		                    SELECT menu_no, menu_nm
+		                        FROM NWRK253TL
+		                    start with menu_no IN (select menu_no from NWRK252TL WHERE NWRK252TL.OPTR_PGM_NO = NWRK253TL.OPTR_PGM_NO AND NWRK252TL.OPTR_AUTH_NO = '0')
+		                    connect by prior HGRK_MENU_NO = MENU_NO
+		                    ) X
+		               WHERE x.menu_no = a.menu_no
+		             )
+		ORDER BY row_or
+        
+	</select>
+
+    <select id="selectCheckAuthList" parameterType="dataMap" resultType="dataMap">
+    	/** site.home.menu.service.SiteHomeMenuService.selectCheckAuthList **/
+		SELECT '1' INFO_TP, /** 프로그램 기본 정보 조회 **/
+		    A.OPTR_PGM_NO, A.OPTR_PGM_ID, A.OPTR_PGM_URL_V, A.OPTR_PGM_GRP_NO, A.OPTR_PGM_NM
+		FROM NWRK250TL A
+		WHERE A.OPTR_PGM_URL_V LIKE #{requestUri}||'%'
+		    AND ROWNUM = 1
+		UNION ALL
+		SELECT '2' INFO_TP, /** 사용자 권한 조회 **/
+		    A.OPTR_PGM_NO, A.OPTR_PGM_ID, A.OPTR_PGM_URL_V, A.OPTR_PGM_GRP_NO, A.OPTR_PGM_NM
+		FROM NWRK250TL A, NWRK252TL B
+		WHERE A.OPTR_PGM_URL_V LIKE #{requestUri}||'%'
+		    AND A.OPTR_PGM_NO = B.OPTR_PGM_NO    
+		    AND B.OPTR_AUTH_NO = #{optrAuthNo}
+		    AND ROWNUM = 1
+    </select>
+    
+    <insert id="insertIndvInfoInqHist_I01" parameterType="indvInfoVO">
+    	/** site.home.menu.service.SiteHomeMenuService.commonIndvInfoInqHistService **/
+    	INSERT INTO TB_LS_INDV_INFO_INQ_HIST
+    	(HIST_SEQ_NO, OPTR_PGM_NO, OPTR_PGM_NM, 
+    	 INDV_INFO_INQ_RSN_CN, QUERY_EXE_CN, OPTR_PGM_URL_V, INQ_T, CONN_USER_NO, 
+    	 CONN_USER_NM, CONN_DTM, CONN_IP, DCARD_YN)
+		VALUES 
+		(SQ_LS_INDV_INFO_INQ_HIST.NEXTVAL, #{optrPgmNo}, #{optrPgmNm}, 
+		 #{indvInfoInqRsnCn}, #{queryExeCn}, #{optrPgmUrlV}, 0, #{connUserNo}, 
+		 #{connUserNm}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{connIp}, 'N')
+    </insert>
+
+	<select id="selectMainEduUserList" resultType="dataMap">
+		/** site.home.menu.service.SiteHomeMenuService.selectMainEduUserList **/
+		SELECT FN_COMM_NM('560', EDU_OPTR_APPR_STAT_CD) AS EDU_OPTR_APPR_STAT_NM, EDU_OPTR_APPR_STAT_CD, COUNT(1) CNT
+		  FROM NWRK101TL
+		 WHERE EDU_OPTR_APPR_STAT_CD IS NOT NULL
+		   AND SUBSTR(EDU_OPTR_APPR_DTM, 1, 4) = TO_CHAR(SYSDATE, 'YYYY')
+		 GROUP BY EDU_OPTR_APPR_STAT_CD
+		 ORDER BY EDU_OPTR_APPR_STAT_CD
+	</select>
+	
+	<select id="selectMainUserList" resultType="dataMap">
+		/** site.home.menu.service.SiteHomeMenuService.selectMainUserList **/
+		SELECT '총인원' GBN, COUNT(1) CNT
+           FROM NWRK100TL
+         UNION ALL
+         SELECT '종사자' GBN, COUNT(1) CNT
+           FROM NWRK100TL A, NWRK101TL B
+          WHERE A.USER_NO = B.USER_NO
+            AND B.MBR_YN = 'Y'
+         UNION ALL  
+         SELECT '교육기간 담당자' GBN, COUNT(1) CNT
+           FROM NWRK101TL
+          WHERE EDU_OPTR_APPR_STAT_CD = '2'
+	</select>
+</mapper>

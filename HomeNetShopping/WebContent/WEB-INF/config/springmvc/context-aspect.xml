@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<!-- Token Validation AOP -->
+	<bean id="saveTokenValidator" class="prjframework.common.aop.advice.SaveTokenValidator" />
+
+ 	<aop:config>
+		<aop:pointcut id="saveTokenTargetMethod"
+			expression="@annotation(prjframework.common.annotation.ValidSaveToken)" />
+		<aop:aspect ref="saveTokenValidator">
+			<aop:before pointcut-ref="saveTokenTargetMethod" method="beforeTargetMethod" />
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- SESSION Checker AOP -->
+	<bean id="sessionCheckerGenerator" class="prjframework.common.aop.advice.SessionCheckerGenerator" />
+
+ 	<aop:config>
+		<aop:pointcut id="sessionCheckerTargetMethod"
+			expression="@annotation(prjframework.common.annotation.SessionChecker)" />
+		<aop:aspect ref="sessionCheckerGenerator">
+			<aop:before pointcut-ref="sessionCheckerTargetMethod" method="afterTargetMethod" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>

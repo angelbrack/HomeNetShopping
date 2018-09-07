@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="ctag" uri="/WEB-INF/tld/ctag.tld" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+<title>고려대학교 경력개발시스템</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<c:set var="_CTX_PATH" value="${pageContext.request.contextPath}" />
+
+<%-- css --%>
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.CSS.PATH" />fileupload/fileupload.css" />
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />jquery/smoothness/jquery-ui-1.8.9.custom.css"  /> 
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="THEME.PATH" />mgnt/css/ts.css" />
+<%-- error message --%>
+<style type="text/css">
+	.errorMsg { padding:10px; font-size:13px; color: red; }
+</style>  
+<%-- bootstrap --%>
+<%-- <link rel="stylesheet" href="<c:url value='/html/script/bootstrap/css/bootstrap.css'/>" type="text/css" /> --%>
+<!-- <script type="text/javascript" src="/html/script/bootstrap/js/bootstrap.js"></script> -->
+
+<%-- jquery --%>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.8.21.custom.min.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/bootstrap-transition.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uniform.min.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.noty.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uploadify-3.1.min.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.history.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.multiselect.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.fileupload.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jstree.1.0.1/jquery.jstree.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/util.tree.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.ui.datepicker-ko.js"></script>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.bpopup.min.js"></script> --%>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/plugin/jquery.validate.js"></script> --%>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.validate.default.js"></script> --%>
+	
+<script src="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.js" type="text/javascript"></script>
+<link href="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/jquery.inputmask.bundle.js" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/inputmask/phone-codes/phone.js" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jTemplates/jquery-jtemplates_uncompressed.js"" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />validate/jquery.validate.js" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_util.js" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_valid.js" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_file.js" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/webutil.js" ></script>
+
+<script type="text/javascript">
+	//CONTEXT PATH
+	var CTX_PATH	= "<c:out value="${pageContext.request.contextPath}" />";
+
+	var JS_PATH 	= "<ctag:conf key="JS.PATH" />";
+	var THEME_PATH 	= "<ctag:conf key="THEME.PATH" />";
+	
+	jQuery.datepicker.setDefaults(jQuery.datepicker.regional['ko']);
+	var imgCalPath = CTX_PATH + "<ctag:conf key="THEME.PATH" />/mgnt/images/btn_cal_01.jpg";
+	
+</script>
+
+
+
+

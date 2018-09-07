@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    - DispatcherServlet application context for Application's web tier.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:util="http://www.springframework.org/schema/util"
+	    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	 
+
+    <!--
+        - The controllers are autodetected POJOs labeled with the @Controller annotation.
+    -->
+    <context:component-scan base-package="egovframework,prjframework,mgnt,site,korea">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+    
+    <!-- <mvc:annotation-driven />  -->
+    
+    <!-- Register the Customer.properties -->
+<!--     <bean id="messageSource1" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> -->
+<!-- 	   <property name="basenames"> -->
+<!-- 		   <list> -->
+<!-- 			   <value>/WEB-INF/messages/messageResources</value> -->
+<!-- 		   </list> -->
+<!-- 	   </property> -->
+<!-- 	   <property name="cacheSeconds" value="5"/> -->
+<!-- 	</bean> -->
+	    
+<!--     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"> -->
+<!--         <property name="basename" value="classpath*:lms/common/message/messageResources.properties" /> -->
+<!--     </bean> -->
+    
+	
+    <!-- Spring3 Validator 처리 -->
+<!--     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    	<property name="validationMessageSource">
+        	<ref bean="messageSource"/>
+    	</property>
+    </bean> -->
+    
+    <!-- CSRF 방지를 위한 Interceptor -->
+	<bean id="saveTokenInterceptor" class="prjframework.common.interceptor.SaveTokenInterceptor" />
+    
+    <!-- 파일업로드 시작 -->
+	<bean id="fileUploadInterceptor" class="prjframework.common.interceptor.FileUploadInterceptor" />
+	<!-- 파일업로드 유효성 체크 -->
+	<bean id="fileUploadCheck" class="prjframework.common.interceptor.service.impl.DefaultFileUploadCheckImpl" />
+    
+    <!--
+        - The form-based controllers within this application provide @RequestMapping 
+        - annotations at the type level for path mapping URLs and @RequestMapping 
+        - at the method level for request type mappings (e.g., GET and POST). 
+        - In contrast, ClinicController - which is not form-based - provides 
+        - @RequestMapping only at the method level for path mapping URLs.
+        -
+        - DefaultAnnotationHandlerMapping is driven by these annotations and is 
+        - enabled by default with Java 5+.
+    -->
+
+    <!--
+        - This bean processes annotated handler methods, applying Application-specific PropertyEditors
+        - for request parameter binding. It overrides the default AnnotationMethodHandlerAdapter.
+     -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="prjframework.common.web.EgovBindingInitializer"/>
+        </property>
+        <property name="customArgumentResolvers">
+            <list>
+                <bean class="egovframework.rte.ptl.mvc.bind.CommandMapArgumentResolver"/>
+            </list>
+        </property>
+        <property name="messageConverters">
+        	<!-- JSON -->
+        	<bean class="prjframework.common.converter.GsonHttpMessageConverter" >		
+      		</bean>
+        </property>
+    </bean>
+
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" p:order="1">
+    	<property name="alwaysUseFullPath" value="true"/>
+        <property name="interceptors">
+            <list>
+                <ref bean="saveTokenInterceptor" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean class="prjframework.common.exception.resolver.SimpleMappingExceptionResolver" />
+    
+<!--     <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> -->
+<!--         <property name="defaultErrorView" value="cmm/error/egovError"/> -->
+<!--         <property name="exceptionMappings"> -->
+<!--             <props> -->
+<!--                 <prop key="prjframework.common.exception.CommonAlertException">AML.common/error/commonAlertException</prop> -->
+<!--             </props> -->
+<!--         </property> -->
+<!--     </bean> -->
+    
+	<!-- Tiles View--> 
+<!--	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver" lazy-init="false"> --> 
+<!--		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" /> -->
+<!--		<property name="order" value="1" /> -->
+<!--	</bean> -->
+<!--	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer" lazy-init="false"> -->
+<!--		<property name="definitions"> -->
+<!--			<list> -->
+<!--				<value>classpath*:prjframework/common/tiles/*-tiles.xml</value> -->
+<!--			</list> -->
+<!--		</property> -->
+<!--		<property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory"/> -->
+<!--	</bean> -->
+	
+	<!--
+        - This bean configures the 'prefix' and 'suffix' properties of 
+        - InternalResourceViewResolver, which resolves logical view names 
+        - returned by Controllers. For example, a logical view name of "vets" 
+        - will be mapped to "/WEB-INF/jsp/vets.jsp".
+    -->
+     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="2" 
+   	 p:viewClass="org.springframework.web.servlet.view.JstlView" 
+     p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
+
+    <!--
+        - Message source for this context, loaded from localized "messages_xx" files.
+        - Could also reside in the root application context, as it is generic,
+        - but is currently just used within Application's web tier.
+    
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+            p:basename="messages"/>
+    -->
+    
+   
+    <!-- For Pagination Tag -->
+    <!-- 
+    <bean id="imageRenderer" class="egovframework.rte.cmmn.web.EgovImgPaginationRenderer"/>
+
+    <bean id="paginationManager" class="egovframework.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager">
+        <property name="rendererType">
+            <map>
+                <entry key="image" value-ref="imageRenderer"/> 
+            </map>
+        </property>
+    </bean>
+     -->
+	<!-- /For Pagination Tag -->
+	
+	 <mvc:interceptors>
+	 	<!-- SMART EIDTOR FILE UPLOAD -->
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do"/>
+            <bean class="prjframework.common.interceptor.FileUploadInterceptor" />
+        </mvc:interceptor>
+        <!-- 관리자 화면 권한 체크-->
+        <mvc:interceptor>
+            <mvc:mapping path="/mgnt/**/*.do" />
+            <mvc:mapping path="/mgnt/**/*.ajax" />
+            <mvc:mapping path="/mgnt/**/*.json" />
+            <mvc:mapping path="/user/**/*.do" />
+            <mvc:mapping path="/user/**/*.ajax" />
+            <mvc:mapping path="/user/**/*.json" />
+            <bean class="prjframework.common.interceptor.AuthCheckInterceptor" >
+		        <property name="checkService">
+		            <ref bean="userAuthCheckService"/>
+		        </property>
+		         <property name="permittedURL">
+		            <set>
+		                <value>/mgnt/home/loginAction.do</value>
+		                <value>/mgnt/login/loginAction.do</value>
+		                <value>/mgnt/home/logoutAction.do</value>
+		                <value>/mgnt/home/menuMainAction.do</value>
+		            </set>
+			     </property>
+			     <property name="allowURL">
+                    <set>
+                    </set>
+                 </property>
+			     
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+ 
+	<!-- 운영자 로그인시 권한 체크 서비스 -->
+	<bean id="userAuthCheckService" class="prjframework.common.interceptor.service.impl.UserAuthCheckServiceImpl">
+		<!-- 권한체크 설정 적용 여부 -->
+		<property name="check">
+			<value>true</value>
+        </property>
+	</bean>
+</beans>

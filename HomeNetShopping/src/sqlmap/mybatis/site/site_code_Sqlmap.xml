@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.code.service.CodeService">
+
+    <resultMap id="mypCodeIdList" type="site.code.service.CodeVO"> 
+        <result property="grpCdId"          column="GRP_CD_ID"      />
+        <result property="cdNm"             column="CD_NM"          />
+    </resultMap>
+    
+    <resultMap id="mypCodeCommonList" type="site.code.service.CodeVO">
+        <result property="grpCdId"          column="GRP_CD_ID"          />
+        <result property="cdId"             column="CD_ID"              />
+        <result property="cdNm"             column="CD_NM"              />
+        <result property="sortOr"           column="SORT_OR"            />
+        <result property="useYn"            column="USE_YN"             />
+    </resultMap>
+    
+    <resultMap id="mypCodeCommonInfo" type="site.code.service.CodeVO">
+        <result property="grpCdId"          column="GRP_CD_ID"          />
+        <result property="cdId"             column="CD_ID"              />
+        <result property="cdNm"             column="CD_NM"              />
+        <result property="cdCn"             column="CD_CN"              />
+        <result property="sortOr"           column="SORT_OR"            />
+        <result property="useYn"            column="USE_YN"             />
+        <result property="cnnctInsCd"       column="CNNCT_INS_CD"       />
+        <result property="cnnctInsCdNm"     column="CNNCT_INS_CD_NM"    />
+        <result property="refeV1"           column="REFE_V_1"           />
+        <result property="refeV2"           column="REFE_V_2"           />
+        <result property="refeV3"           column="REFE_V_3"           />
+        <result property="refeV4"           column="REFE_V_4"           />
+        <result property="refeV5"           column="REFE_V_5"           />
+    </resultMap>
+    
+    <resultMap id="codeGroupList" type="site.code.service.CodeVO">
+        <result property="grpCdId"          column="GRP_CD_ID"          />
+        <result property="cdId"             column="CD_ID"              />
+        <result property="cdNm"             column="CD_NM"              />
+        <result property="sortOr"           column="SORT_OR"            />
+        <result property="useYn"            column="USE_YN"             />
+        <collection  column="{grpCdId=GRP_CD_ID,refeV1=CD_ID}" property="subList"  	ofType="site.code.service.CodeVO" select="getCodeGroupSubList" />
+    </resultMap>
+    
+    <resultMap id="codeGroupSubList" type="site.code.service.CodeVO">
+        <result property="grpCdId"          column="GRP_CD_ID"          />
+        <result property="cdId"             column="CD_ID"              />
+        <result property="cdNm"             column="CD_NM"              />
+        <result property="sortOr"           column="SORT_OR"            />
+        <result property="useYn"            column="USE_YN"             />
+    </resultMap>
+    
+    
+    <select id="getCommonCodeList" parameterType="string" resultType="dataMap">
+        /** getCommonCodeList   **/
+        <![CDATA[
+            SELECT 
+                GRP_CD_ID, CD_ID, CD_NM
+            FROM NWRK200TL
+            WHERE GRP_CD_ID = #{cdId}
+              AND USE_YN = 'Y'
+            ORDER BY SORT_OR ASC
+        ]]>
+    </select>
+    
+    <select id="getCommonCodeList2" parameterType="string" resultMap="mypCodeCommonList">
+        /** getCommonCodeList   **/
+        <![CDATA[
+            SELECT 
+                GRP_CD_ID, CD_ID, CD_NM, SORT_OR, USE_YN
+            FROM NWRK200TL
+            WHERE GRP_CD_ID = #{grpCdId}
+              AND USE_YN = 'Y'
+            ORDER BY SORT_OR ASC
+        ]]>
+    </select>
+    
+    <select id="getCommonCodeList2_backup" parameterType="string" resultMap="mypCodeCommonList">
+        /** getCommonCodeList   **/
+        <![CDATA[
+            SELECT 
+                GRP_CD_ID, CD_ID, CD_NM, SORT_OR, USE_YN
+            FROM NWRK200TL
+            WHERE GRP_CD_ID = #{grpCdId}
+              AND REFE_V_1 IS NULL
+              AND USE_YN = 'Y'
+            ORDER BY SORT_OR ASC
+        ]]>
+    </select>
+    
+    <select id="getCodeGroupList" parameterType="string" resultMap="codeGroupList">
+        /** "getCodeGroupList"   **/
+        <![CDATA[
+            SELECT 
+                GRP_CD_ID, CD_ID, CD_NM, SORT_OR, USE_YN
+            FROM NWRK200TL
+            WHERE GRP_CD_ID = #{grpCdId}
+              AND REFE_V_1 IS NULL
+              AND USE_YN = 'Y'
+            ORDER BY SORT_OR ASC
+        ]]>
+    </select>
+    
+    <select id="getCodeGroupSubList" parameterType="CodeVO" resultMap="codeGroupSubList">
+        /** getCodeGroupSubList   **/
+             SELECT 
+                GRP_CD_ID, CD_ID, CD_NM, SORT_OR, USE_YN
+            FROM NWRK200TL
+            WHERE GRP_CD_ID = #{grpCdId}
+            <if test='hgrkGrpCdId != null and hgrkGrpCdId != ""'>
+              AND HGRK_GRP_CD_ID = #{hgrkGrpCdId}
+            </if>
+            <if test='hgrkCdId != null and hgrkCdId != ""'>
+              AND HGRK_CD_ID = #{hgrkCdId}
+            </if>
+            <if test='refeV1 != null and refeV1 != ""'>
+              AND REFE_V_1 = #{refeV1}
+            </if>
+            <if test='refeV2 != null and refeV2 != ""'>
+              AND REFE_V_2 = #{refeV2}
+            </if>
+            <if test='refeV3 != null and refeV3 != ""'>
+              AND REFE_V_3 = #{refeV3}
+            </if>
+            <if test='refeV4 != null and refeV4 != ""'>
+              AND REFE_V_4 = #{refeV4}
+            </if>
+            <if test='refeV5 != null and refeV5 != ""'>
+              AND REFE_V_5 = #{refeV5}
+            </if>
+              AND USE_YN = 'Y'
+            ORDER BY SORT_OR ASC
+    </select>
+
+    <select id="selectCommonList_S01" parameterType="CodeVO" resultMap="mypCodeCommonList" >
+        <![CDATA[
+        SELECT 
+            Y.GRP_CD_ID, Y.CD_ID, Y.CD_NM, Y.SORT_OR, Y.USE_YN
+        FROM
+            (
+            SELECT 
+                X.GRP_CD_ID, X.CD_ID, X.CD_NM, X.SORT_OR, X.USE_YN, ROWNUM RO
+            FROM 
+                (
+                SELECT 
+                    GRP_CD_ID, CD_ID, CD_NM, SORT_OR, USE_YN
+                FROM NWRK200TL
+                WHERE 1 = 1
+                ]]>
+                <if test='searchGrpCdId != null and searchGrpCdId != ""'>
+                    <![CDATA[   AND GRP_CD_ID = #{searchGrpCdId}        ]]>
+                </if>
+                <if test='searchWord != null and searchWord != ""'>
+                    <![CDATA[   AND CD_NM LIKE '%' || #{searchWord} || '%'  ]]>
+                </if>
+                <![CDATA[
+                ORDER BY GRP_CD_ID, SORT_OR
+                ) X
+            ) Y
+        WHERE RO BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}        
+        ]]>
+    </select>
+
+    <select id="selectCommonList_S02" parameterType="CodeVO" resultType="java.lang.Integer">
+        <![CDATA[
+        SELECT COUNT(*)
+        FROM NWRK200TL
+        WHERE 1 = 1
+        ]]>
+        <if test='searchGrpCdId != null and searchGrpCdId != ""'>
+            <![CDATA[   AND GRP_CD_ID = #{searchGrpCdId}        ]]>
+        </if>
+        <if test='searchWord != null and searchWord != ""'>
+            <![CDATA[   AND CD_NM LIKE '%' || #{searchWord} || '%'  ]]>
+        </if>
+    </select>
+    
+    <select id="selectCommonList_S03" parameterType="CodeVO" resultMap="mypCodeIdList" >
+        <![CDATA[
+        SELECT 
+              GRP_CD_ID
+            , CD_NM || '(' || GRP_CD_ID || ')' AS CD_NM
+        FROM NWRK200TL
+        WHERE SORT_OR = 0
+        ORDER BY GRP_CD_ID  
+        ]]>
+    </select>
+        
+    <select id="selectCommonInfo_S01" parameterType="CodeVO" resultMap="mypCodeCommonInfo">
+        <![CDATA[
+        /** selectCommonInfo_S01 **/
+        SELECT 
+              GRP_CD_ID
+            , CD_ID
+            , CD_NM
+            , CD_CN
+            , SORT_OR
+            , USE_YN
+            , CNNCT_INS_CD
+            , CNNCT_INS_CD_NM
+            , REFE_V_1
+            , REFE_V_2
+            , REFE_V_3
+            , REFE_V_4
+            , REFE_V_5
+        FROM NWRK200TL
+        WHERE GRP_CD_ID = #{grpCdId}
+            AND CD_ID = #{cdId}
+        ]]>
+    </select>
+
+    <insert id="insertCommonInfo_I01" parameterType="CodeVO">
+        <![CDATA[
+        INSERT INTO NWRK200TL (
+              GRP_CD_ID
+            , CD_ID
+            , CD_NM
+            , CD_CN 
+            , SORT_OR
+            , USE_YN
+            , CNNCT_INS_CD
+            , CNNCT_INS_CD_NM
+            , REFE_V_1
+            , REFE_V_2
+            , REFE_V_3
+            , REFE_V_4
+            , REFE_V_5
+            , WRT_PN_NO
+            , WRT_DTTM
+            , UPDT_PN_NO
+            , UPDT_DTTM
+        ) VALUES ( 
+              #{grpCdId} 
+            , #{cdId}
+            , #{cdNm}
+            , #{cdCn} 
+            , #{sortOr}
+            , #{useYn}
+            , #{cnnctInsCd}
+            , #{cnnctInsCdNm}
+            , #{refeV1}
+            , #{refeV2}
+            , #{refeV3}
+            , #{refeV4}
+            , #{refeV5}
+            , #{wrtPnNo}
+            , TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+            , #{updtPnNo}
+            , TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        )
+        ]]>
+    </insert>
+                        
+    <update id="updateCommonInfo_U01" parameterType="CodeVO">
+        <![CDATA[
+        UPDATE NWRK200TL SET 
+              GRP_CD_ID             = #{grpCdId}
+            , CD_ID                 = #{cdId}
+            , CD_NM                 = #{cdNm}
+            , CD_CN                 = #{cdCn}
+            , SORT_OR               = #{sortOr}
+            , USE_YN                = #{useYn}
+            , CNNCT_INS_CD          = #{cnnctInsCd}
+            , CNNCT_INS_CD_NM       = #{cnnctInsCdNm}
+            , REFE_V_1              = #{refeV1}
+            , REFE_V_2              = #{refeV2}
+            , REFE_V_3              = #{refeV3}
+            , REFE_V_4              = #{refeV4}
+            , REFE_V_5              = #{refeV5}
+            , UPDT_PN_NO            = #{updtPnNo}
+            , UPDT_DTTM             = TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        WHERE GRP_CD_ID = #{grpCdId}
+            AND CD_ID   = #{cdId}
+        ]]>
+    </update>
+
+    <delete id="deleteCommonInfo_D01" parameterType="CodeVO">
+        <![CDATA[
+        DELETE FROM NWRK200TL
+        WHERE GRP_CD_ID = #{grpCdId}
+            AND CD_ID   = #{cdId}   
+        ]]>
+    </delete>   
+	
+</mapper>
