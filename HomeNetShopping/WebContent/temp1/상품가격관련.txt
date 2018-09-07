@@ -1,0 +1,178 @@
+#. 가격정보 PR_GOODS_PRC_HIST
+PRC_CHG_TP_CD 
+01 가격인하
+02 세일
+03 단순가격변경
+04 기타
+
+<select id="getPriceBase" resultType="ehimart.app.domain.bo.goods.model.PriceHistoryBase">
+  	SELECT 
+		  /* 파일명[파일설명] : Goods.xml[가격정보 조회]
+		  SQL ID : getPriceBase
+		   업무파트: 상품
+		   작성자 :	 evelyn	
+		   작성일시 : 2015.06.04
+		*/ 
+		  
+		  A.GOODS_NO AS priceHistoryGoodsNo
+		  ,A.HIST_STRT_DTIME AS priceHistoryStartDate
+		  ,to_char(A.HIST_STRT_DTIME,'YYYY') AS priceStartDateYYYY
+		  ,to_char(A.HIST_STRT_DTIME,'MM') AS priceStartDateMM
+		  ,to_char(A.HIST_STRT_DTIME,'DD') AS priceStartDateDD
+		  
+		  ,to_char(A.HIST_STRT_DTIME,'YYYY-MM-DD') AS priceStartDateDay
+	      ,to_char(A.HIST_STRT_DTIME,'HH24') AS priceStartDateTimeHour
+	   	  ,to_char(A.HIST_STRT_DTIME,'MI') AS priceStartDateTimeMinute
+	      ,to_char(A.HIST_STRT_DTIME,'SS') AS priceStartDateTimeSeconds
+	      
+	      ,A.HIST_END_DTIME AS priceHistoryEndDate
+	      ,to_char(A.HIST_END_DTIME,'YYYY') AS priceEndDateYYYY
+	      ,to_char(A.HIST_END_DTIME,'MM') AS priceEndDateMM
+	      ,to_char(A.HIST_END_DTIME,'DD') AS priceEndDateDD
+	      
+	      ,to_char(A.HIST_END_DTIME,'YYYY-MM-DD') AS priceEndDateDay
+	      ,to_char(A.HIST_END_DTIME,'HH24') AS priceEndDateTimeHour
+	      ,to_char(A.HIST_END_DTIME,'MI') AS priceEndDateTimeMinute
+	      ,to_char(A.HIST_END_DTIME,'SS')  AS priceEndDateTimeSeconds
+		  
+		  ,A.PRC_CHG_TP_CD AS priceHistoryModTypeCode
+		  ,A.SALE_PRC AS priceHistorySalePrice
+		  ,A.DSCNT_TP_CD AS priceHistoryDiscountTypeCode
+		  ,A.DSCNT_RT AS priceHistoryDiscountRate
+		  ,A.ADJ_PUR_PRC AS priceHistoryADJ
+		  ,A.STN_MRGN_YN AS priceHistoryReMargin
+		  ,A.PRC_PROM_TXT_CONT AS priceHistoryPromotionTxt
+		  ,NVL(A.STN_MRGN_YN,'N') AS priceHistoryReMargin
+		  ,(
+		  CASE 
+		    WHEN A.PRC_CHG_TP_CD = '01' THEN  -- 가격인하
+		      CASE WHEN SYSDATE < A.HIST_STRT_DTIME THEN '3'
+		      ELSE '0'
+		      END
+		    WHEN A.PRC_CHG_TP_CD = '02' THEN 
+		      CASE WHEN SYSDATE < A.HIST_STRT_DTIME THEN '1'
+		      WHEN (A.HIST_STRT_DTIME < SYSDATE AND SYSDATE < A.HIST_END_DTIME) THEN '2' 
+		      ELSE '0'
+		      END
+		    WHEN A.PRC_CHG_TP_CD = '03' THEN 
+		      CASE WHEN SYSDATE < A.HIST_STRT_DTIME THEN '4'
+		      ELSE '0'
+		      END
+		    WHEN A.PRC_CHG_TP_CD = '04' THEN 
+		      CASE WHEN SYSDATE < A.HIST_STRT_DTIME THEN '5'
+		      ELSE '0'
+		      END
+		    WHEN NVL(A.PRC_CHG_TP_CD,'1') = '1' THEN '0'
+		  END
+		  ) AS priceRevStat -- 가격변경예약상태
+		  ,A.SYS_REGR_ID as registantId
+		  ,A.SYS_REG_DTIME as timeOfRegistered
+		  ,A.SYS_MODR_ID as modifierId
+		  ,A.SYS_MOD_DTIME as timeOfLastModified
+	FROM 
+		PR_GOODS_PRC_HIST A
+	WHERE 
+		GOODS_NO = #{goodsSearchNo}
+		
+		 
+		 /* 
+		  * 가격 조회 구분(priceBaseType)  
+		  * next : 패키지 미래 설정 가격조회
+		  * Now : 패키지 현재 가격조회
+		  */
+		<if test="@nframework.persistent.mybatis.Expression@isEmpty(priceBaseType)">
+	    	/*ingPrice*/
+	    	
+	    	AND (
+				(PRC_CHG_TP_CD IN ( '01', '03') AND SYSDATE < A.HIST_STRT_DTIME ) 
+				OR
+				(PRC_CHG_TP_CD = '02' AND SYSDATE < A.HIST_STRT_DTIME )
+				OR
+				(PRC_CHG_TP_CD = '02' AND SYSDATE BETWEEN A.HIST_STRT_DTIME AND A.HIST_END_DTIME )
+			) 
+	    </if>
+		<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(priceBaseType)">
+			AND ( SYSDATE > A.HIST_STRT_DTIME OR 
+			SYSDATE BETWEEN A.HIST_STRT_DTIME AND A.HIST_END_DTIME )
+			/*Base*/
+			AND A.PRC_CHG_TP_CD != '02'
+	    	AND ROWNUM = '1'
+	    	ORDER BY A.HIST_STRT_DTIME DESC
+		    
+	    </if>
+  
+  </select>
+  
+  <select id="getGoodsSalePriceInfo" resultType="ehimart.app.domain.bo.goods.model.PriceHistoryBase">
+    	SELECT 
+    	
+    		/* 파일명[파일설명] : Goods.xml[상품판매가격정보조회]
+			  SQL ID : getGoodsSalePriceInfo
+			   업무파트: 상품
+			   작성자 :	 evelyn	
+			   작성일시 : 2015.06.01
+			*/ 
+    		
+    		GOODS_NO	AS priceHistoryGoodsNo
+		    ,HIST_STRT_DTIME AS priceHistoryStartDate
+			,to_char(HIST_STRT_DTIME,'YYYY-MM-DD') AS priceStartDateDay
+		    ,to_char(HIST_STRT_DTIME,'HH24') AS priceStartDateTimeHour
+		   	,to_char(HIST_STRT_DTIME,'MI') AS priceStartDateTimeMinute
+		    ,to_char(HIST_STRT_DTIME,'SS') AS priceStartDateTimeSeconds
+		      
+		    ,HIST_END_DTIME AS priceHistoryEndDate
+		    ,to_char(HIST_END_DTIME,'YYYY-MM-DD') AS priceEndDateDay
+		    ,to_char(HIST_END_DTIME,'HH24') AS priceEndDateTimeHour
+		    ,to_char(HIST_END_DTIME,'MI') AS priceEndDateTimeMinute
+		    ,to_char(HIST_END_DTIME,'SS')  AS priceEndDateTimeSeconds
+		    ,PRC_CHG_TP_CD AS priceHistoryModTypeCode
+		    ,SALE_PRC AS priceHistorySalePrice
+		    ,DSCNT_TP_CD AS priceHistoryDiscountTypeCode
+		    ,DSCNT_RT AS priceHistoryDiscountRate
+		    ,PRC_PROM_TXT_CONT AS priceHistoryPromotionTxt
+		    ,STN_MRGN_YN AS priceHistoryReMargin
+		  FROM 
+		  PR_GOODS_PRC_HIST
+		  WHERE ROWNUM=1
+		  AND GOODS_NO = #{goodsSearchNo}
+		  <if test="@nframework.persistent.mybatis.Expression@isNotEmpty(goodsPriceType)">
+			  	<if test="goodsPriceType == 'Price'">
+			  	AND SYSDATE BETWEEN HIST_STRT_DTIME AND HIST_END_DTIME
+			  	</if>
+			  	<if test="goodsPriceType == 'Sale'">
+			  	AND PRC_CHG_TP_CD = '02'
+			  	AND SYSDATE &lt; HIST_STRT_DTIME 
+			  	</if>
+			  	<if test="goodsPriceType == 'Rescent'">
+			  	ORDER BY HIST_STRT_DTIME DESC 
+			  	</if>
+			  	<if test="goodsPriceType == 'Date'">
+			  	/*시작일이 포함되는 가격정보*/
+			  	AND #{priceStartDate} BETWEEN HIST_STRT_DTIME AND HIST_END_DTIME
+			  	</if>
+			  	<if test="goodsPriceType == 'PrePrice'">
+			  	/*시작일이 이전 가격정보*/
+			  	AND HIST_STRT_DTIME &lt; #{priceStartDate} 
+			  	ORDER BY HIST_STRT_DTIME DESC 
+			  	</if>
+			  	<if test="goodsPriceType == 'NextPrice'">
+			  	/*시작일이 이후 가격정보*/
+			  	AND HIST_STRT_DTIME &gt;= #{priceStartDate} 
+			  	ORDER BY HIST_STRT_DTIME ASC 
+			  	</if>
+			  	<if test="goodsPriceType == 'LastFix'">
+			  	/*현재까지 세일을 제외한 상품의 최종가격 */
+			  	AND HIST_STRT_DTIME = (
+					  SELECT MAX(HIST_STRT_DTIME) FROM PR_GOODS_PRC_HIST
+					  WHERE GOODS_NO = #{goodsSearchNo}
+					  AND ( PRC_CHG_TP_CD &lt;&gt; '02' OR PRC_CHG_TP_CD IS NULL ) 
+					) 
+			  	</if>
+			  	<if test="goodsPriceType == 'existPrice'">
+			  	/*시작일이 같은  */
+			  	AND HIST_STRT_DTIME = #{priceStartDate} 
+					 
+			  	</if>
+		  </if>
+		    	
+  </select>
