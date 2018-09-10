@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="korea.wrk.login.service.LoginService">
+<mapper namespace="homenet.shop.login.service.LoginService">
 
-    <select id="selectLogin_S01" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
-        /* korea.wrk.login.service.LoginService.selectLogin_S01 */
+    <select id="selectLogin_S01" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
+        /* homenet.shop.login.service.LoginService.selectLogin_S01 */
 		SELECT 
 		        nw101tl.user_no AS userNo
 		      , nw101tl.login_id AS loginId
@@ -24,8 +24,8 @@
 		     AND nw101tl.user_no = nw100tl.user_no  
     </select>
     
-    <select id="selectLogin_S02" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
-        /* korea.wrk.login.service.LoginService.selectLogin_S02 */
+    <select id="selectLogin_S02" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
+        /* homenet.shop.login.service.LoginService.selectLogin_S02 */
 		SELECT 
 		        nw101tl.user_no AS userNo
 		      , nw101tl.login_id AS loginId
@@ -51,8 +51,8 @@
 		     AND wrk002.wrk002_encode_pw = CRYPTMD5(#{loginPwd})
     </select>
 
-    <select id="selectLogin_S03" parameterType="string" resultType="korea.wrk.login.service.RoleVO">
-        /* korea.wrk.login.service.LoginService.selectLogin_S03 */
+    <select id="selectLogin_S03" parameterType="string" resultType="homenet.shop.login.service.RoleVO">
+        /* homenet.shop.login.service.LoginService.selectLogin_S03 */
 		SELECT 
 		        B.OPTR_AUTH_NO AS optrAuthNo
 		      , B.OPTR_AUTH_NM AS optrAuthNm
@@ -64,8 +64,8 @@
 		ORDER BY 1
     </select>
 
-    <insert id="insertLogin_I01" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.insertLogin_I01 */
+    <insert id="insertLogin_I01" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.insertLogin_I01 */
 		INSERT INTO NWRK151TL (
 		    user_no, cnnt_log_no, mbl_yn
 		  , cnnt_y, cnnt_m, cnnt_d, cnnt_tmhh, cnnt_dttm
@@ -77,8 +77,8 @@
 		)
     </insert>
 
-    <select id="selectLogin_S04" parameterType="korea.wrk.login.service.UserLoginVO" resultType="egovMap">
-        /* korea.wrk.login.service.LoginService.selectLogin_S04 */
+    <select id="selectLogin_S04" parameterType="homenet.shop.login.service.UserLoginVO" resultType="egovMap">
+        /* homenet.shop.login.service.LoginService.selectLogin_S04 */
 		SELECT
 		        wrk002_one_id
 		      , wrk002_kor_nm
@@ -90,8 +90,8 @@
 		     AND wrk002_join_dept = 'Y'
     </select>
 
-    <select id="selectLogin_S08" parameterType="korea.wrk.login.service.UserLoginVO" resultType="egovMap">
-        /* korea.wrk.login.service.LoginService.selectLogin_S08 */
+    <select id="selectLogin_S08" parameterType="homenet.shop.login.service.UserLoginVO" resultType="egovMap">
+        /* homenet.shop.login.service.LoginService.selectLogin_S08 */
 		SELECT
 		        wrk002_one_id
 		      , wrk002_kor_nm
@@ -105,8 +105,8 @@
 
 
 
-    <select id="selectLogin_S05" parameterType="korea.wrk.login.service.UserLoginVO" resultType="java.lang.Integer">
-        /* korea.wrk.login.service.LoginService.selectLogin_S05 */
+    <select id="selectLogin_S05" parameterType="homenet.shop.login.service.UserLoginVO" resultType="java.lang.Integer">
+        /* homenet.shop.login.service.LoginService.selectLogin_S05 */
 		SELECT COUNT(user_no)
 		    FROM NWRK101TL
 		   WHERE login_id = #{loginId}
@@ -115,14 +115,14 @@
     </select>
     
 
-    <select id="selectLogin_S06" parameterType="korea.wrk.login.service.UserLoginVO" resultType="java.lang.String">
-        /* korea.wrk.login.service.LoginService.selectLogin_S06 */
+    <select id="selectLogin_S06" parameterType="homenet.shop.login.service.UserLoginVO" resultType="java.lang.String">
+        /* homenet.shop.login.service.LoginService.selectLogin_S06 */
 		SELECT SQ_NWRK100TL1.NEXTVAL FROM DUAL
     </select>
     
 
-    <insert id="insertLogin_I02" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.insertLogin_I02 */
+    <insert id="insertLogin_I02" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.insertLogin_I02 */
 		INSERT INTO nwrk100tl (
 		        user_no, user_nm
 		      , rps_stno
@@ -136,8 +136,8 @@
 		)
     </insert>
 
-    <insert id="insertLogin_I03" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.insertLogin_I03 */
+    <insert id="insertLogin_I03" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.insertLogin_I03 */
 		INSERT INTO NWRK101TL (
 		        user_no, login_id
 		      , tmp_pwd_yn, mbr_dc
@@ -153,8 +153,8 @@
 		)
     </insert>
     
-    <update id="updateLogin_U01" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+    <update id="updateLogin_U01" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.updateLogin_U01 */
 		UPDATE NWRK100TL
 		SET user_nm = #{userNm}
 		  , rps_stno = #{rpsStno}
@@ -164,8 +164,8 @@
 		WHERE user_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N')
     </update>
 
-    <select id="selectLogin_S07" parameterType="korea.wrk.login.service.UserLoginVO" resultType="korea.wrk.login.service.UserLoginVO">
-        /* korea.wrk.login.service.LoginService.selectLogin_S07 */
+    <select id="selectLogin_S07" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
+        /* homenet.shop.login.service.LoginService.selectLogin_S07 */
 		SELECT
 		        nwrk101.user_no AS userNo
 		      , nwrk101.login_id AS loginId
@@ -195,8 +195,8 @@
 		      AND nwrk101.mbr_dc = #{loginDiv}
     </select>
 
-    <insert id="insertLogin_I04" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.insertLogin_I04 */
+    <insert id="insertLogin_I04" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.insertLogin_I04 */
 		INSERT INTO NWRK150TL (
 		    user_no, cnnt_log_no, mbl_yn
 		  , cnnt_y, cnnt_m, cnnt_d, cnnt_tmhh, cnnt_dttm
@@ -208,16 +208,16 @@
 		)
     </insert>
 
-    <update id="updateLogin_U02" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+    <update id="updateLogin_U02" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.updateLogin_U01 */
 		UPDATE NWRK101TL
 		    SET pwd_fail_tms = NVL(pwd_fail_tms, 0)+1
 		WHERE login_id = #{loginId}
 		  AND mbr_dc = #{loginDiv}
     </update>
     
-    <update id="updateLogin_U03" parameterType="korea.wrk.login.service.UserLoginVO" >
-        /* korea.wrk.login.service.LoginService.updateLogin_U01 */
+    <update id="updateLogin_U03" parameterType="homenet.shop.login.service.UserLoginVO" >
+        /* homenet.shop.login.service.LoginService.updateLogin_U01 */
 		UPDATE NWRK101TL
 		    SET pwd_fail_tms = 0
 		WHERE user_no = #{userNo}

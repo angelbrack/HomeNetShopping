@@ -9,7 +9,7 @@
 
 	<aop:config>
 		<aop:pointcut id="serviceMethod"
-			expression="execution(* egovframework.com..impl.*Impl.*(..)) or execution(* prjframework..impl.*Impl.*(..)) or execution(* mgnt..impl.*Impl.*(..)) or execution(* korea..impl.*Impl.*(..))" />
+			expression="execution(* egovframework.com..impl.*Impl.*(..)) or execution(* prjframework..impl.*Impl.*(..)) or execution(* homenet..impl.*Impl.*(..))" />
 
 		<aop:aspect ref="exceptionTransfer">
 			<aop:after-throwing throwing="exception"

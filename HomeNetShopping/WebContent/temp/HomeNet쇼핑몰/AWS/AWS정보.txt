@@ -1,0 +1,8 @@
+#. 아마존 계정
+이메이주소 : tuffgay@empas.com
+암호 : Angelbrack1!
+AWS계정이름 : angelbrack
+
+#. window서버
+암호 : aDF!6P@aMUU?a*6n)q)-8?X5(7W!LJkh
+퍼블릭 DNS: ec2-54-250-247-38.ap-northeast-1.compute.amazonaws.com

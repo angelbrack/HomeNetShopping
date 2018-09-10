@@ -20,7 +20,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.sun.org.apache.bcel.internal.generic.LLOAD;
 
 import egovframework.com.cmm.EgovMessageSource;
-import korea.wrk.login.service.UserLoginVO;
+import homenet.shop.login.service.UserLoginVO;
 import prjframework.common.dataaccess.util.DataMap;
 import prjframework.common.exception.UserAuthNotExistsException;
 import prjframework.common.interceptor.service.UserAuthCheckService;

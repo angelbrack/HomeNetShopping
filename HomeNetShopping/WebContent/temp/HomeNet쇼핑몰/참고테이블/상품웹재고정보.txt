@@ -1,0 +1,20 @@
+INSERT INTO /* 파일명[파일설명] : goods.xml[재고정보등록]
+                  SQL ID : createInventoryHMS
+                  업무파트: 상품
+                  작성자 :  evleyn    
+                  작성일시 : 2015.04.28
+                */  
+                PR_GOODS_WEB_INV_INFO
+            (
+                GOODS_NO
+				,ERDD_INV_QTY
+				,RMND_INV_QTY
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			)
+        values (
+            #{inventoryGoodsNo}
+            ,#{inventoryFirstInv}
+            ,#{inventoryRemainInv}
+            
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )

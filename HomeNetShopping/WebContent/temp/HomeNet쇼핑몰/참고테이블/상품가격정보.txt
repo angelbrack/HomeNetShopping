@@ -1,0 +1,33 @@
+INSERT INTO /* 파일명[파일설명] : goods.xml[상품가격정보등록]
+                  SQL ID : createPriceHistoryHMS
+                  업무파트: 상품
+                  작성자 :  evleyn    
+                  작성일시 : 2015.04.28
+                */  
+                PR_GOODS_PRC_HIST
+            (
+                GOODS_NO
+				,HIST_STRT_DTIME
+				,HIST_END_DTIME
+				,PRC_CHG_TP_CD
+				,SALE_PRC
+				,DSCNT_TP_CD
+				,DSCNT_RT
+				,PRC_PROM_TXT_CONT
+				,ADJ_PUR_PRC
+				,STN_MRGN_YN
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			)
+        values (
+            #{priceHistoryGoodsNo}
+            ,#{priceHistoryStartDate}
+            ,#{priceHistoryEndDate}
+            ,#{priceHistoryModTypeCode}
+            ,#{priceHistorySalePrice}
+            ,#{priceHistoryDiscountTypeCode}
+            ,#{priceHistoryDiscountRate}
+            ,#{priceHistoryPromotionTxt}
+            ,(SELECT ADJ_PUR_PRC FROM PR_GOODS_BASE WHERE GOODS_NO = #{priceHistoryGoodsNo} )
+            ,#{priceHistoryReMargin}
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )

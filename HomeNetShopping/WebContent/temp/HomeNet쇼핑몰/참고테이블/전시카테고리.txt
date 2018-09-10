@@ -1,0 +1,22 @@
+#. 전시카테고리
+INSERT INTO PR_DISP_GOODS_INFO 
+	/* 파일명[파일설명] : Goods.xml[전시카테고리 등록]
+	  SQL ID : createDispCate
+	   업무파트: 상품
+	   작성자 :	 evelyn	
+	   작성일시 : 2015.05.20
+	*/
+	(
+                DISP_NO
+				,GOODS_NO
+				,DISP_PRIO_RNK
+				,USE_YN
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			)
+        values (
+            #{displayGoodsInfoDisplayNo}
+            ,#{displayGoodsInfoGoodsNo}
+            ,#{displayGoodsInfoRank}
+            ,#{displayGoodsInfoIsUse}
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )

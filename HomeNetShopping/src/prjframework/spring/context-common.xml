@@ -57,7 +57,7 @@
 	<bean id="defaultTraceHandler"
 		class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
 	 
-     <context:component-scan base-package="egovframework,prjframework,mgnt,site,korea">
+     <context:component-scan base-package="egovframework,prjframework,site,homenet">
        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
     

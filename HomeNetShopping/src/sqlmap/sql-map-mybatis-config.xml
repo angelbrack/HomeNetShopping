@@ -19,7 +19,7 @@
 		<typeAlias  alias="indvInfoVO" 				type="site.common.service.impl.IndvInfoVO"					/>
 
 		<!-- 게시판 -->
-		<typeAlias 	alias="boardVO" 				type="korea.wrk.brd.common.service.BoardVO"					/>
+		<typeAlias 	alias="boardVO" 				type="homenet.shop.brd.common.service.BoardVO"					/>
     	
     </typeAliases>
 </configuration>

@@ -1,0 +1,49 @@
+MERGE INTO PR_GOODS_CONTS_INFO A
+        USING ( SELECT #{contentsGoodsNo} GOODS_NO,  #{contentsTypeCode} CONTS_TP_CD, #{contentsNo} CONTS_SN FROM DUAL ) B
+        	ON (
+        		A.GOODS_NO = B.GOODS_NO 
+        		and A.CONTS_TP_CD = B.CONTS_TP_CD
+        		and A.CONTS_SN = B.CONTS_SN
+        		)
+        WHEN MATCHED THEN
+        UPDATE  SET  /* 파일명[파일설명] : goodsHMS.xml[상품컨텐츠정보 수정]
+        			  SQL ID : updateContentHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.05.14
+                    */  		
+                
+                <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+                ,DTL_INFO_TIT_NM = #{contentsTitle}
+				,CONTS_FILE_PATH_NM = #{contentsFilePath}
+				,CONTS_FILE_NM = #{contentsFileName}
+				,USE_YN = #{contentsIsUse}
+				
+        WHEN NOT MATCHED THEN
+        INSERT /* 파일명[파일설명] : goods.xml[상품컨텐츠정보, MD공지, 관리자메모 등록]
+                  SQL ID : createContentHMS
+                  업무파트: 상품
+                  작성자 :  evleyn    
+                  작성일시 : 2015.04.28
+                */  
+            (
+                GOODS_NO
+				,CONTS_TP_CD
+				,CONTS_SN
+				,DTL_INFO_TIT_NM
+				,CONTS_FILE_PATH_NM
+				,CONTS_FILE_NM
+				,USE_YN
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			)
+        values (
+            #{contentsGoodsNo}
+            ,#{contentsTypeCode}
+            ,(select nvl(max(conts_sn)+1,0) from PR_GOODS_CONTS_INFO WHERE GOODS_NO = #{contentsGoodsNo} and CONTS_TP_CD=#{contentsTypeCode})
+            ,#{contentsTitle}
+            ,#{contentsFilePath}
+            ,#{contentsFileName}
+            ,#{contentsIsUse}
+            
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )

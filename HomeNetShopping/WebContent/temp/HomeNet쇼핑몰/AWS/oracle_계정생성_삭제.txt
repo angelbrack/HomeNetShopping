@@ -1,0 +1,93 @@
+<1> 테이블스페이스 생성
+테이블스페이스 정보 조회
+: SELECT * FROM DBA_DATA_FILES;
+
+DBA_TABLESPACES 테이블스페이스 목록
+: SELECT TABLESPACE_NAME, STATUS, CONTENTS FROM DBA_TABLESPACES;
+
+DBA_DATA_FILES 테이블스페이스 파일 목록
+: SELECT FILE_NAME, BYTES, STATUS FROM DBA_DATA_FILES;
+
+DBA_FREE_SPACE 테이블스페이스 잔여 공간
+: SELECT TABLESPACE_NAME, BYTES, BLOCKS FROM DBA_FREE_SPACE;
+
+테이블스페이스 생성
+create tablespace info_data
+datafile '/DATA/oracle/oradata/ORCL/infodata.dbf'
+size 200m
+default storage(
+           initial               80k
+           next                80k
+           minextents        1
+           maxextents        121
+           pctincrease        80
+           )online;
+
+테이블스페이스 online/offline
+: ALTER TABLESPACE info_data offline;
+  ALTER TABLESPACE info_data online;
+
+생성된 테이블스페이스의 추가하기 공간 늘여주기
+: ALTER TABLESPACE info_data
+  ADD DATAFILE '/DATA/oracle/oradata/ORCL/dbf'
+  SIZE 100m;
+
+생성된 테이블스페이스 크기 변경하기
+: ALTER DATABASE DATAFILE '/DATA/oracle/oradata/ORCL/infodata.dbf'
+  RESIZE 200M;
+
+기존 테이블스페이스에 자동확장 변경하기
+: ALTER DATABASE DATAFILE '/DATA/oracle/oradata/ORCL/infodata.dbf'
+  AUTOEXTEND ON NEXT 10m
+  MAXSIZE 100m;
+
+테이블스페이스 삭제
+: DROP TABLESPACE info_data
+  INCLUDING CONTENTS
+  CASCADE CONSTRAINTS;
+
+테이블스페이스의 물리적 파일까지 삭제하기
+: DROP TABLESPACE info_data INCLUDING CONTENTS AND DATAFILES;
+
+데이터베이스 사용자 아이디 생성 및 수정
+: CREATE USER scbyun 
+  IDENTIFIED BY scbyun;
+
+생성한 유저에 권한주고 연결하기
+: GRANT RESOURCE, CONNECT TO scbyun;
+  GRANT DBA TO scbyun;
+
+
+
+출처: http://sangchul.kr/468 [변군이글루]
+
+<1> 오라클 계정 생성
+
+SQL Plus에 접속
+
+C:>sqlplus system/비밀번호 (또는 C:>sqlplus "/as sysdba")
+일반계정으로 연결되어 있다면 SQL>conn /as sysdba
+
+계정 생성 : create user 유저네임 identified by 패스워드;
+접속권한부여 : grant resource, connect to 유저네임; 
+                     resource, connect 는 일반적인것을 다 사용 할 수 있음. DDL, DML 사용 가능 
+
+작업 tablesapce 지정 : alter user 유저네임 default tablespace users;
+임시 tablespace 지정 : alter user 유저네임 temporary tablespace tem
+
+<2> 오라클 계정 삭제
+
+SQL Plus에 접속
+C:>sqlplus system/비밀번호
+SQL>drop user 유저네임 cascade;   사용자 삭제
+
+cascade 를 명시하면 유저네임과 관련된 모든 데이터베이스 스키마가 데이터 사전으로부터 삭제되고 모든 스키마 객체도 물리적으로 삭제 됨
+
+
+====================================================================================
+GN 쇼핑몰 db 계정
+
+CREATE USER gn IDENTIFIED BY gn;
+grant resource, connect to gn;
+alter user gn default tablespace users;
+alter user gn temporary tablespace temp;

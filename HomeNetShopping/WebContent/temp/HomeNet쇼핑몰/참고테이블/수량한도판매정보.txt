@@ -1,0 +1,46 @@
+#. 수량한도판매정보
+MERGE INTO PR_QTY_LMT_SALE_INFO A
+        USING ( 
+        SELECT #{restrictedGoodsNo} GOODS_NO FROM DUAL ) B
+        	ON (A.GOODS_NO = B.GOODS_NO )
+        WHEN MATCHED THEN
+        UPDATE  SET  /* 파일명[파일설명] : goodsHMS.xml[수량한도 판매정보 수정]
+        			  SQL ID : updateRestrictedHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.04.28
+                    */                	
+				<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+				,SALE_PSB_QTY = #{restrictedSalePossibleCount}
+				,SALE_QTY = #{restrictedSaleCount}
+				,LMT_SALE_CAUS_CD = #{restrictedReasonCode}
+				,ETC_CAUS_CONT = #{restrictedReasonEtc}
+				
+        
+        WHEN NOT MATCHED THEN
+        
+        INSERT /* 파일명[파일설명] : goodsHMS.xml[수량한도 판매정보 등록]
+                      SQL ID : createRestrictedHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.04.28
+                    */ 
+              (   
+              	GOODS_NO
+				,SALE_PSB_QTY
+				,SALE_QTY
+				,LMT_SALE_CAUS_CD
+				,ETC_CAUS_CONT
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+              
+              )   
+        	VALUES
+        	( 
+        		#{restrictedGoodsNo}
+	            ,#{restrictedSalePossibleCount}
+	            ,#{restrictedSaleCount}
+	            ,#{restrictedReasonCode}
+	            ,#{restrictedReasonEtc}
+	            
+	            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        	)

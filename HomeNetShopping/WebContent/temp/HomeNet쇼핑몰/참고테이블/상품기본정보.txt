@@ -1,0 +1,187 @@
+PR_GOODS_BASE (
+      GOODS_NO																									 #{goodsNo}			   									상품번호                                                        
+      ,GOODS_ID                                                 ,#{goodsId}          								상품아이디                                    
+			,MDL_NM                                                   ,#{goodsModelName}      						모델명                                 
+			,ARTC_CD                                                  ,#{goodsArticleCode}   							품목코드                                  
+			,BRND_NO                                                  ,#{goodsBrandNo}    								브랜드번호                                     
+			,BRND_CRTT_SCT_CD                                         ,#{goodsBrandChar}    							브랜드특성코드                                   
+			,WEB_SALE_PSB_YN                                          ,#{goodsIsECDisplay}      					전시EC매장노출여부                               
+			,MBL_SALE_PSB_YN                                          ,#{goodsIsMCDisplay}      					전시MC매장노출여부                               
+			,GOODS_TP_CD                                              ,#{goodsTypeCode}        						상품유형코드                                
+			,GOODS_CMPS_CD                                            ,#{goodsCompositionCode}  					상품구성코드                              
+			,GOODS_NM                                                 ,REPLACE(REPLACE(#{goodsName},CHR(39),'‘'),CHR(34),'＂')   상품명
+			,ORPL_NM                                                  ,#{goodsOriginCountry}     					원산지명                              
+			,MFCP_NM                                                  ,#{goodsMakerName}    							제조사명                                   
+			,IMPR_NM                                                  ,#{goodsImportador}       					수입자명                               
+			,SFT_CERT_TGT_YN                                          ,#{goodsIsSafetyCertification}   		안전인증대상여부                        
+			,BYR_AGE_LMT_CD                                           ,#{goodsBuyerAgeLimitCode}  				구임자나이제한코드                             
+			,RSV_GOODS_YN                                             ,#{goodsIsReservation}         			예약판매여부                          
+			,QTY_LMT_GOODS_YN                                         ,#{goodsIsRestrictedSales}    			한정판매수량상품여부                           
+			,RGN_LMT_GOODS_YN                                         ,#{goodsIsRestrictedArea}        		지역한정상품여부                        
+			,BRGN_GOODS_YN                                            ,#{goodsIsBargain}         					흥정가능여부                              
+			,SMP_YN                                                   ,#{goodsIsSmartPic}              		스마트픽가능여부                        
+			,EVLM_ORD_PSB_YN                                          ,#{goodsIsOrderMass}    						대량주문가능여부                                 
+			,SALE_STAT_CD                                             ,#{goodsSalesCode}                	판매상태코드                       
+			,SALE_STRT_DTIME                                          ,#{goodsSalesStartDate}      				판매시작일자                            
+			,SALE_END_DTIME                                           ,#{goodsSalesEndDate}               판매종료일자                    
+			,NGS_MRK_END_DT                                           ,#{goodsNewEndDate}                 신상품표시종료일자                     
+			,GOODS_PR_CONT                                            ,#{goodsPromotoTxt}            			상품홍보문구                          
+			,ADTN_IMG_CNT                                             ,#{goodsAccessoriesCount}           부가이미지 수                   
+			,ASSOC_SCH_KWD_NM                                         ,#{goodsAssocSearchKwd}   					연관검색키워드명                               
+			,SCH_EXP_YN                                               ,#{goodsIsSearch}             			통합검색노출여부                           
+			,SCH_KWD_NM                                               ,#{goodsSEOKeyword}            			seo키워드                          
+			,SCH_KWD_DESC                                             ,#{goodsSEODetail}                  seo상세설명                     
+			,MDL_LNCH_DT                                              ,#{goodsLaunchDate}                 출시일자                     
+			,MGMT_STAT_CD                                             ,#{goodsDiscontinueCode}            단종관리상태코드                     
+			,MGMT_STAT_DT                                             ,#{goodsDiscontinueDate}            단종관리일자                     
+			,TDF_SCT_CD                                               ,#{goodsTaxDutyFreeSectionCode}  		과면세구분코드                        
+			,PNT_RSRV_YN                                              ,#{goodsIsLPoint}         					L포인트적립여부                               
+			,CLM_DSCNT_PSB_YN                                         ,#{goodsIsAskDiscount}              청구할인가능여부                     
+			,STAFF_DSCNT_PSB_YN                                       ,#{goodsIsStaffUse}                	임직원할인가능여부                      
+			,INV_MGMT_YN                                              ,#{goodsIsInventory}            		재고관리여부                         
+			,MAX_PUR_QTY_LMT_YN                                       ,#{goodsIsBuyLimit}    							구매수량제한여부                                  
+			,MIN_LMT_QTY                                              ,#{goodsBuyMin}             				최소구매제한수량                             
+			,MAX_LMT_QTY                                              ,#{goodsBuyMax}           					최대구매제한수량                               
+			,SHOP_INV_OWN_YN                                          ,#{goodsIsShopInvOwn}               매장재고보유여부                     
+			,INDIV_GOODS_SALE_PSB_YN                                  ,#{goodsIsSalesPiece}    						개별상품판매가능여부                                
+			,EVT_CPN_USE_PSB_YN                                       ,#{goodsIsEventCouponUse}           이벤트쿠폰사용가능여부                     
+			,PAY_MEAN_LMT_YN                                          ,#{goodsIsPayMeanLmt}             	결제수단제한여부                       
+			,DLV_TP_CD                                                ,#{goodsDeliveryTypeCode}           배송처리유형코드                     
+			,DLV_MEAN_CD                                              ,#{goodsDeliveryMeansCode}          배송수단코드                     
+			,EXCH_RTGS_LMT_TXT_CD                                     ,#{goodsExchangeLMTCD}              교환반품안내문구 BO                     
+			,EXCH_RTGS_GD_TXT_CD                                      ,#{goodsExchangeTxt}              	교환반품안내문구 FRONT                       
+			,EXCH_RTGS_PSB_YN                                         ,#{goodsIsExchange}     						교환반품가능여부                                 
+			,INST_GOODS_YN                                            ,#{goodsIsInstall}        					설치여부                               
+			,ATTCHD_GOODS_EXIT_YN                                     ,#{goodsIsAccessries}       				부속상품존재여부                             
+			,ATTCHD_GOODS_TP_CD                                       ,#{goodsAccessriesType}        			부속상품유형                          
+			,OMNI_CHL_GOODS_YN                                        ,#{goodsIsOmni}                 		옴니상품여부                         
+			,OMNI_CHL_GOODS_STRT_DT                                   ,#{goodsOmniStartDate}            	옴니상품시작일자                       
+			,OMNI_CHL_GOODS_END_DT                                    ,#{goodsOmniEndDate}                옴니상품종료일자                     
+			,CMCM_CD                                                  ,#{goodsMobileOperatiorCode}        모바일상품통신사코드                     
+			,RLS_PRC                                                  ,#{goodsMobilePrice}               	모바일출고가                      
+			,STD_PRC                                                  ,#{goodsHisisBasicPrice}  					하이시스 기준가                               
+			,MIN_PRC                                                  ,#{goodsHisisLimitPrice}           	하이시스 하한가                      
+			,MRGN_GRADE_CD                                            ,#{goodsHisisMarginGrade}           하이시스 마진등급                     
+			,RGF_AMT                                                  ,#{goodsRentRegPrice}          			임대상품 등록비                          
+			,INST_CST_AMT                                             ,#{goodsRentInstallPrice}     			임대상품 설치비                           
+			,MM_RNTL_AMT                                              ,#{goodsRentPrice}       						임대상품 임대비                                
+			,RNTL_TERM_MM_CNT                                         ,#{goodsRentMonth}                	임대상품 임대기간개월수                       
+			,STAFF_DSCNT_PRC                                          ,#{goodsStaffDiscount}        			임직원할인금액                           
+			,WEB_MAST_DISP_NO                                         ,#{goodsWebDispNo}                 	웹대표전시번호                      
+			,MBL_MAST_DISP_NO                                         ,#{goodsMobileDispNo}               모바일대표전시번호                     
+			,SUP_CORP_NO                                              ,#{goodsSupplyComponyCode}       		공급사코드                        
+			,CMCM_OPNN_YN                                             ,#{goodsIsMobile}       						모바일공기계판매여부                                 
+			                                                                                                                   
+			,DLV_STRT_FCST_DT                                         ,#{goodsDeliveryStratDate}     			상품 배송시작일                          
+			,SD_WCBL_COMM_YN                                          ,#{goodsIsBluetooth}         				근거리무선통신여부(블루투스)                            
+			,DEAL_GOODS_YN                                            ,#{goodsIsBigDeal}            			대박딜상품여부                           
+			,HLM_MBR_DSCNT_YN                                         ,#{goodsIsHLMdiscount}         			HLM 등급할인 가능여부                          
+			,HIMART_SVMN_RSRV_YN                                      ,#{goodsIsHimartSave}     					하이마트 적립금적립여부                               
+			                                                                                                                   
+			,DLV_SUP_CORP_NO                                          ,#{goodsDLVCorpNo}              		MD공지MC                         
+			,GEN_GOODS_DLV_YN                                         ,#{goodsIsGENDlvYn}        					일반상품배송여부                              
+			,BADN_JDGM_MDTY_YN                                        ,#{goodsIsBadnYn}                   불량판정필수여부                     
+			,ADJ_PUR_PRC                                              ,#{goodsHisisADJ}	   								정산매입가(사입가)                                    
+			,RLS_PRC_IMMED_PAY_PSB_YN                                 ,#{goodsIsOneSale}                  모바일완납가능여부                     
+			                                                                                                                   
+			,MD_NTC_EXP_STRT_DTIME                                    ,#{goodsMDStartDate}	   						상품MD공지시작일                                
+			,MD_NTC_EXP_END_DTIME                                     ,#{goodsMDEndDate}                  상품MD공지종료일                     
+			                                                                                                                   
+			,HISIS_CHG_CONF_YN                                         ,'Y'	                                                   
+			
+			,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+		)   
+        VALUES
+        (
+            #{goodsNo}
+            ,#{goodsId}
+            ,#{goodsModelName}
+            ,#{goodsArticleCode}
+            ,#{goodsBrandNo}
+            ,#{goodsBrandChar}
+            ,#{goodsIsECDisplay}
+            ,#{goodsIsMCDisplay}
+            ,#{goodsTypeCode}
+            ,#{goodsCompositionCode}
+            ,REPLACE(REPLACE(#{goodsName},CHR(39),'‘'),CHR(34),'＂')
+            ,#{goodsOriginCountry}
+            ,#{goodsMakerName}
+            ,#{goodsImportador}
+            ,#{goodsIsSafetyCertification}
+            ,#{goodsBuyerAgeLimitCode}
+            ,#{goodsIsReservation}
+            ,#{goodsIsRestrictedSales}
+            ,#{goodsIsRestrictedArea}
+            ,#{goodsIsBargain}
+            ,#{goodsIsSmartPic}
+            ,#{goodsIsOrderMass}
+            ,#{goodsSalesCode}
+            ,#{goodsSalesStartDate}
+            ,#{goodsSalesEndDate}
+            ,#{goodsNewEndDate}
+            ,#{goodsPromotoTxt}
+            ,#{goodsAccessoriesCount}
+            ,#{goodsAssocSearchKwd}
+            ,#{goodsIsSearch}
+            ,#{goodsSEOKeyword}
+            ,#{goodsSEODetail}
+            ,#{goodsLaunchDate}
+            ,#{goodsDiscontinueCode}
+            ,#{goodsDiscontinueDate}
+            ,#{goodsTaxDutyFreeSectionCode}
+            ,#{goodsIsLPoint}
+            ,#{goodsIsAskDiscount}
+            ,#{goodsIsStaffUse}
+            ,#{goodsIsInventory}
+            ,#{goodsIsBuyLimit}
+            ,#{goodsBuyMin}
+            ,#{goodsBuyMax}
+            ,#{goodsIsShopInvOwn}
+            ,#{goodsIsSalesPiece}
+            ,#{goodsIsEventCouponUse}
+            ,#{goodsIsPayMeanLmt}
+            ,#{goodsDeliveryTypeCode}
+            ,#{goodsDeliveryMeansCode}
+            ,#{goodsExchangeLMTCD}
+            ,#{goodsExchangeTxt}
+            ,#{goodsIsExchange}
+            ,#{goodsIsInstall}
+            ,#{goodsIsAccessries}
+            ,#{goodsAccessriesType}
+            ,#{goodsIsOmni}
+            ,#{goodsOmniStartDate}
+            ,#{goodsOmniEndDate}
+            ,#{goodsMobileOperatiorCode}
+            ,#{goodsMobilePrice}
+            ,#{goodsHisisBasicPrice}     
+            ,#{goodsHisisLimitPrice}
+            ,#{goodsHisisMarginGrade}
+            ,#{goodsRentRegPrice}
+            ,#{goodsRentInstallPrice}
+            ,#{goodsRentPrice}
+            ,#{goodsRentMonth}
+            ,#{goodsStaffDiscount}
+            ,#{goodsWebDispNo}
+            ,#{goodsMobileDispNo}
+            ,#{goodsSupplyComponyCode} 
+            ,#{goodsIsMobile}
+            
+            ,#{goodsDeliveryStratDate}
+            ,#{goodsIsBluetooth}
+            ,#{goodsIsBigDeal}
+            ,#{goodsIsHLMdiscount}
+            ,#{goodsIsHimartSave}
+            
+            ,#{goodsDLVCorpNo}
+            ,#{goodsIsGENDlvYn}
+            ,#{goodsIsBadnYn}
+            ,#{goodsHisisADJ}	
+            ,#{goodsIsOneSale}
+            
+            ,#{goodsMDStartDate}	
+            ,#{goodsMDEndDate}
+            
+             ,'Y'	
+            
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )

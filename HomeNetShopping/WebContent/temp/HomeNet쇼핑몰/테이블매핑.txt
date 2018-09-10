@@ -1,0 +1,41 @@
+#. 패키지 매핑
+korea.wrk		: homenet.shop
+mgnt.system	: homenet.shop.system
+
+#. 페이블 매핑
+NWRK200TL 	: TB_COMM_CD								공통코드
+NWRK210TL		: TB_ATTACH_FILE						공통첨부
+NWRK211TL		: TB_ATTACH_FILE_DTL				공통첨부상세
+
+NWRK250TL		: TB_OPTR_PGM								운영자프로그램
+NWRK251TL		: TB_OPTR_AUTH							운영자권한
+NWRK253TL		: TB_OPTR_MENU							운영자메뉴
+NWRK252TL		: TB_OPTR_PGM_AUTH					운영자프로그램권한
+NWRK254TL		: TB_OPTR_PRSN_AUTH					운영자개인권한
+
+
+
+#. 상품
+- /02_Application/src/main/resources/ehimart/app/domain/bo/goods/mapper/Article.xml
+PR_GOODS_ARTC_OPT_INFO	: 	기준정보-품목군관리-품목군 옵션정보(상품 품목코드, 옵션코드)
+- /02_Application/src/main/resources/ehimart/app/domain/bo/goods/mapper/AssociateGoods.xml
+PR_ASSOC_GOODS_REL_INFO : 	연관상품
+- /02_Application/src/main/resources/ehimart/app/domain/bo/goods/mapper/GoodsAssessment.xml
+PR_GDAS_INFO						: 	상품평
+PR_GDAS_CONT_INFO				: 	상품평상세내용
+-
+PR_BRND_BASE						: 	브랜드	(브랜드한글명, 브랜드영문명, 블랜드 상세설명)
+PR_BRND_IMG_INFO				:		브랜드 이미지
+-
+PR_GOODS_BASE									:		상품기본정보(상품번호, 상품아이디, 모델명, 상품유형코드, 제조사모델코드, 브랜드번호, 부속상품존재여부 ....)
+PR_GOODS_CONTS_INFO						:		상품컨텐츠정보(상품번호, 컨텐츠유형코드, 컨텐츠일련번호, 상세정보제목명, 컨텐츠파일경로명, 컨텐츠파일명, 사용여부)
+PR_GOODS_DESC_INFO						: 	상품설명정보(전시몰번호, 상품번호, 상세설명유형코드, 상세설명일련번호, 상세설명구분코드, HTML상세설명 )
+PR_GOODS_PRC_HIST							:		상품가격정보(상품번호, 이력시작일시, 이력종료일시, 가격변경유형코드, 판매가, 할인유형코드, 할인율, 가격프로모션문구내용, 정산매입가(사입가), 역마진 설정여부)
+PR_GOODS_PAY_IMPS_MEAN_INFO		: 	상품결재불가수단정보(상품번호, 결재수단코드)
+PR_GOODS_WEB_INV_INFO					: 	상품웹재고정보(상품번호, 초기재고수량, 잔여재고수량)
+PR_QTY_LMT_SALE_INFO					:		수량한도판매정보(상품번호, 판매가능수량, 판매수량, 한도판매사유코드, 기타사유)
+PR_RSV_SALE_HIST							:		예약판매정보(상품번호, 예약시작일시, 예약종료일시, 출고지시예정일자, 예약가능수량)
+PR_GOODS_REL_INFO							: 	상품관계정보(기준상품번호, 대상상품번호, 구성수량, 대표상품여부, 사용여부, 전시우선순위, 그룹번호, 정산대상상품번호)
+PR_DISP_GOODS_INFO						: 	전시카테고리(전시번호, 상품번호, 전시우선순위, 사용여부)
+
+                             

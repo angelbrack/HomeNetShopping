@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import korea.wrk.login.service.RoleVO;
-import korea.wrk.login.service.UserLoginVO;
+import homenet.shop.login.service.RoleVO;
+import homenet.shop.login.service.UserLoginVO;
 
 /**
  * session Util

@@ -1,0 +1,28 @@
+#. 상품설명정보
+INSERT INTO /* 파일명[파일설명] : goodsHMS.xml[상품설명정보 등록]
+                      SQL ID : createDescHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.05.12
+                    */ 
+             PR_GOODS_DESC_INFO
+              (   
+              	DPML_NO
+				,GOODS_NO
+				,DTL_DESC_TP_CD
+				,DTL_DESC_SN
+				,DTL_DESC_SCT_CD
+				,DTL_DESC_CONT
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+                  )   
+	        VALUES
+	        ( 
+	        	#{goodsDescDpmlNo}
+	            ,#{goodsDescGoodsNo}
+	            ,#{goodsDescTypeCode}
+	            ,#{goodsDescNo}
+	            ,#{goodsDescDetailCode}
+	            ,#{goodsDescHtmlDetail}
+	            
+	            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+	         )
