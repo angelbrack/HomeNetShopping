@@ -6,11 +6,11 @@ MERGE INTO PR_GOODS_CONTS_INFO A
         		and A.CONTS_SN = B.CONTS_SN
         		)
         WHEN MATCHED THEN
-        UPDATE  SET  /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goodsHMS.xml[»óÇ°ÄÁÅÙÃ÷Á¤º¸ ¼öÁ¤]
+        UPDATE  SET  /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goodsHMS.xml[ìƒí’ˆì»¨í…ì¸ ì •ë³´ ìˆ˜ì •]
         			  SQL ID : updateContentHMS
-                      ¾÷¹«ÆÄÆ®: »óÇ°
-                      ÀÛ¼ºÀÚ :  evelyn    
-                      ÀÛ¼ºÀÏ½Ã : 2015.05.14
+                      ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                      ìž‘ì„±ìž :  evelyn    
+                      ìž‘ì„±ì¼ì‹œ : 2015.05.14
                     */  		
                 
                 <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
@@ -20,11 +20,11 @@ MERGE INTO PR_GOODS_CONTS_INFO A
 				,USE_YN = #{contentsIsUse}
 				
         WHEN NOT MATCHED THEN
-        INSERT /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goods.xml[»óÇ°ÄÁÅÙÃ÷Á¤º¸, MD°øÁö, °ü¸®ÀÚ¸Þ¸ð µî·Ï]
+        INSERT /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goods.xml[ìƒí’ˆì»¨í…ì¸ ì •ë³´, MDê³µì§€, ê´€ë¦¬ìžë©”ëª¨ ë“±ë¡]
                   SQL ID : createContentHMS
-                  ¾÷¹«ÆÄÆ®: »óÇ°
-                  ÀÛ¼ºÀÚ :  evleyn    
-                  ÀÛ¼ºÀÏ½Ã : 2015.04.28
+                  ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                  ìž‘ì„±ìž :  evleyn    
+                  ìž‘ì„±ì¼ì‹œ : 2015.04.28
                 */  
             (
                 GOODS_NO

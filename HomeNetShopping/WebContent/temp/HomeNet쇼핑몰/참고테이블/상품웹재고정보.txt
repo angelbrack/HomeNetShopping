@@ -1,8 +1,8 @@
-INSERT INTO /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goods.xml[Àç°íÁ¤º¸µî·Ï]
+INSERT INTO /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goods.xml[ìž¬ê³ ì •ë³´ë“±ë¡]
                   SQL ID : createInventoryHMS
-                  ¾÷¹«ÆÄÆ®: »óÇ°
-                  ÀÛ¼ºÀÚ :  evleyn    
-                  ÀÛ¼ºÀÏ½Ã : 2015.04.28
+                  ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                  ìž‘ì„±ìž :  evleyn    
+                  ìž‘ì„±ì¼ì‹œ : 2015.04.28
                 */  
                 PR_GOODS_WEB_INV_INFO
             (

@@ -1,8 +1,8 @@
-INSERT INTO /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goods.xml[»óÇ°°¡°ÝÁ¤º¸µî·Ï]
+INSERT INTO /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goods.xml[ìƒí’ˆê°€ê²©ì •ë³´ë“±ë¡]
                   SQL ID : createPriceHistoryHMS
-                  ¾÷¹«ÆÄÆ®: »óÇ°
-                  ÀÛ¼ºÀÚ :  evleyn    
-                  ÀÛ¼ºÀÏ½Ã : 2015.04.28
+                  ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                  ìž‘ì„±ìž :  evleyn    
+                  ìž‘ì„±ì¼ì‹œ : 2015.04.28
                 */  
                 PR_GOODS_PRC_HIST
             (

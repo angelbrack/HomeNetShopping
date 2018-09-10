@@ -1,8 +1,8 @@
-#. ¾Æ¸¶Á¸ °èÁ¤
-ÀÌ¸ŞÀÌÁÖ¼Ò : tuffgay@empas.com
-¾ÏÈ£ : Angelbrack1!
-AWS°èÁ¤ÀÌ¸§ : angelbrack
+#. ì•„ë§ˆì¡´ ê³„ì •
+ì´ë©”ì´ì£¼ì†Œ : tuffgay@empas.com
+ì•”í˜¸ : Angelbrack1!
+AWSê³„ì •ì´ë¦„ : angelbrack
 
-#. window¼­¹ö
-¾ÏÈ£ : aDF!6P@aMUU?a*6n)q)-8?X5(7W!LJkh
-ÆÛºí¸¯ DNS: ec2-54-250-247-38.ap-northeast-1.compute.amazonaws.com
+#. windowì„œë²„
+ì•”í˜¸ : aDF!6P@aMUU?a*6n)q)-8?X5(7W!LJkh
+í¼ë¸”ë¦­ DNS: ec2-54-250-247-38.ap-northeast-1.compute.amazonaws.com

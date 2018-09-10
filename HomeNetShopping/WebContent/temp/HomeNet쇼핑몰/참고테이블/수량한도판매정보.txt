@@ -1,14 +1,14 @@
-#. ¼ö·®ÇÑµµÆÇ¸ÅÁ¤º¸
+#. ìˆ˜ëŸ‰í•œë„íŒë§¤ì •ë³´
 MERGE INTO PR_QTY_LMT_SALE_INFO A
         USING ( 
         SELECT #{restrictedGoodsNo} GOODS_NO FROM DUAL ) B
         	ON (A.GOODS_NO = B.GOODS_NO )
         WHEN MATCHED THEN
-        UPDATE  SET  /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goodsHMS.xml[¼ö·®ÇÑµµ ÆÇ¸ÅÁ¤º¸ ¼öÁ¤]
+        UPDATE  SET  /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goodsHMS.xml[ìˆ˜ëŸ‰í•œë„ íŒë§¤ì •ë³´ ìˆ˜ì •]
         			  SQL ID : updateRestrictedHMS
-                      ¾÷¹«ÆÄÆ®: »óÇ°
-                      ÀÛ¼ºÀÚ :  evelyn    
-                      ÀÛ¼ºÀÏ½Ã : 2015.04.28
+                      ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                      ìž‘ì„±ìž :  evelyn    
+                      ìž‘ì„±ì¼ì‹œ : 2015.04.28
                     */                	
 				<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
 				,SALE_PSB_QTY = #{restrictedSalePossibleCount}
@@ -19,11 +19,11 @@ MERGE INTO PR_QTY_LMT_SALE_INFO A
         
         WHEN NOT MATCHED THEN
         
-        INSERT /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : goodsHMS.xml[¼ö·®ÇÑµµ ÆÇ¸ÅÁ¤º¸ µî·Ï]
+        INSERT /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : goodsHMS.xml[ìˆ˜ëŸ‰í•œë„ íŒë§¤ì •ë³´ ë“±ë¡]
                       SQL ID : createRestrictedHMS
-                      ¾÷¹«ÆÄÆ®: »óÇ°
-                      ÀÛ¼ºÀÚ :  evelyn    
-                      ÀÛ¼ºÀÏ½Ã : 2015.04.28
+                      ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+                      ìž‘ì„±ìž :  evelyn    
+                      ìž‘ì„±ì¼ì‹œ : 2015.04.28
                     */ 
               (   
               	GOODS_NO
