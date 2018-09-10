@@ -27,13 +27,13 @@ MERGE INTO PR_GOODS_CONTS_INFO A
                   작성일시 : 2015.04.28
                 */  
             (
-                GOODS_NO
-				,CONTS_TP_CD
-				,CONTS_SN
-				,DTL_INFO_TIT_NM
-				,CONTS_FILE_PATH_NM
-				,CONTS_FILE_NM
-				,USE_YN
+                 GOODS_NO						-- 상품번호
+				,CONTS_TP_CD					-- 컨텐츠유형코드(01:첨부파일-사용설명서)
+				,CONTS_SN						-- 컨텐츠일련번호
+				,DTL_INFO_TIT_NM				-- 상세정보제목명
+				,CONTS_FILE_PATH_NM				-- 컨텐츠파일경로명
+				,CONTS_FILE_NM					-- 컨텐츠파일명
+				,USE_YN							-- 사용여부
 				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
 			)
         values (

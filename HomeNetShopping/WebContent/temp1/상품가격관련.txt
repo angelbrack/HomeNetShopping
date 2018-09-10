@@ -1,17 +1,17 @@
-#. °¡°ÝÁ¤º¸ PR_GOODS_PRC_HIST
+#. ê°€ê²©ì •ë³´ PR_GOODS_PRC_HIST
 PRC_CHG_TP_CD 
-01 °¡°ÝÀÎÇÏ
-02 ¼¼ÀÏ
-03 ´Ü¼ø°¡°Ýº¯°æ
-04 ±âÅ¸
+01 ê°€ê²©ì¸í•˜
+02 ì„¸ì¼
+03 ë‹¨ìˆœê°€ê²©ë³€ê²½
+04 ê¸°íƒ€
 
 <select id="getPriceBase" resultType="ehimart.app.domain.bo.goods.model.PriceHistoryBase">
   	SELECT 
-		  /* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : Goods.xml[°¡°ÝÁ¤º¸ Á¶È¸]
+		  /* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : Goods.xml[ê°€ê²©ì •ë³´ ì¡°íšŒ]
 		  SQL ID : getPriceBase
-		   ¾÷¹«ÆÄÆ®: »óÇ°
-		   ÀÛ¼ºÀÚ :	 evelyn	
-		   ÀÛ¼ºÀÏ½Ã : 2015.06.04
+		   ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+		   ìž‘ì„±ìž :	 evelyn	
+		   ìž‘ì„±ì¼ì‹œ : 2015.06.04
 		*/ 
 		  
 		  A.GOODS_NO AS priceHistoryGoodsNo
@@ -45,7 +45,7 @@ PRC_CHG_TP_CD
 		  ,NVL(A.STN_MRGN_YN,'N') AS priceHistoryReMargin
 		  ,(
 		  CASE 
-		    WHEN A.PRC_CHG_TP_CD = '01' THEN  -- °¡°ÝÀÎÇÏ
+		    WHEN A.PRC_CHG_TP_CD = '01' THEN  -- ê°€ê²©ì¸í•˜
 		      CASE WHEN SYSDATE < A.HIST_STRT_DTIME THEN '3'
 		      ELSE '0'
 		      END
@@ -64,7 +64,7 @@ PRC_CHG_TP_CD
 		      END
 		    WHEN NVL(A.PRC_CHG_TP_CD,'1') = '1' THEN '0'
 		  END
-		  ) AS priceRevStat -- °¡°Ýº¯°æ¿¹¾à»óÅÂ
+		  ) AS priceRevStat -- ê°€ê²©ë³€ê²½ì˜ˆì•½ìƒíƒœ
 		  ,A.SYS_REGR_ID as registantId
 		  ,A.SYS_REG_DTIME as timeOfRegistered
 		  ,A.SYS_MODR_ID as modifierId
@@ -76,9 +76,9 @@ PRC_CHG_TP_CD
 		
 		 
 		 /* 
-		  * °¡°Ý Á¶È¸ ±¸ºÐ(priceBaseType)  
-		  * next : ÆÐÅ°Áö ¹Ì·¡ ¼³Á¤ °¡°ÝÁ¶È¸
-		  * Now : ÆÐÅ°Áö ÇöÀç °¡°ÝÁ¶È¸
+		  * ê°€ê²© ì¡°íšŒ êµ¬ë¶„(priceBaseType)  
+		  * next : íŒ¨í‚¤ì§€ ë¯¸ëž˜ ì„¤ì • ê°€ê²©ì¡°íšŒ
+		  * Now : íŒ¨í‚¤ì§€ í˜„ìž¬ ê°€ê²©ì¡°íšŒ
 		  */
 		<if test="@nframework.persistent.mybatis.Expression@isEmpty(priceBaseType)">
 	    	/*ingPrice*/
@@ -106,11 +106,11 @@ PRC_CHG_TP_CD
   <select id="getGoodsSalePriceInfo" resultType="ehimart.app.domain.bo.goods.model.PriceHistoryBase">
     	SELECT 
     	
-    		/* ÆÄÀÏ¸í[ÆÄÀÏ¼³¸í] : Goods.xml[»óÇ°ÆÇ¸Å°¡°ÝÁ¤º¸Á¶È¸]
+    		/* íŒŒì¼ëª…[íŒŒì¼ì„¤ëª…] : Goods.xml[ìƒí’ˆíŒë§¤ê°€ê²©ì •ë³´ì¡°íšŒ]
 			  SQL ID : getGoodsSalePriceInfo
-			   ¾÷¹«ÆÄÆ®: »óÇ°
-			   ÀÛ¼ºÀÚ :	 evelyn	
-			   ÀÛ¼ºÀÏ½Ã : 2015.06.01
+			   ì—…ë¬´íŒŒíŠ¸: ìƒí’ˆ
+			   ìž‘ì„±ìž :	 evelyn	
+			   ìž‘ì„±ì¼ì‹œ : 2015.06.01
 			*/ 
     		
     		GOODS_NO	AS priceHistoryGoodsNo
@@ -147,21 +147,21 @@ PRC_CHG_TP_CD
 			  	ORDER BY HIST_STRT_DTIME DESC 
 			  	</if>
 			  	<if test="goodsPriceType == 'Date'">
-			  	/*½ÃÀÛÀÏÀÌ Æ÷ÇÔµÇ´Â °¡°ÝÁ¤º¸*/
+			  	/*ì‹œìž‘ì¼ì´ í¬í•¨ë˜ëŠ” ê°€ê²©ì •ë³´*/
 			  	AND #{priceStartDate} BETWEEN HIST_STRT_DTIME AND HIST_END_DTIME
 			  	</if>
 			  	<if test="goodsPriceType == 'PrePrice'">
-			  	/*½ÃÀÛÀÏÀÌ ÀÌÀü °¡°ÝÁ¤º¸*/
+			  	/*ì‹œìž‘ì¼ì´ ì´ì „ ê°€ê²©ì •ë³´*/
 			  	AND HIST_STRT_DTIME &lt; #{priceStartDate} 
 			  	ORDER BY HIST_STRT_DTIME DESC 
 			  	</if>
 			  	<if test="goodsPriceType == 'NextPrice'">
-			  	/*½ÃÀÛÀÏÀÌ ÀÌÈÄ °¡°ÝÁ¤º¸*/
+			  	/*ì‹œìž‘ì¼ì´ ì´í›„ ê°€ê²©ì •ë³´*/
 			  	AND HIST_STRT_DTIME &gt;= #{priceStartDate} 
 			  	ORDER BY HIST_STRT_DTIME ASC 
 			  	</if>
 			  	<if test="goodsPriceType == 'LastFix'">
-			  	/*ÇöÀç±îÁö ¼¼ÀÏÀ» Á¦¿ÜÇÑ »óÇ°ÀÇ ÃÖÁ¾°¡°Ý */
+			  	/*í˜„ìž¬ê¹Œì§€ ì„¸ì¼ì„ ì œì™¸í•œ ìƒí’ˆì˜ ìµœì¢…ê°€ê²© */
 			  	AND HIST_STRT_DTIME = (
 					  SELECT MAX(HIST_STRT_DTIME) FROM PR_GOODS_PRC_HIST
 					  WHERE GOODS_NO = #{goodsSearchNo}
@@ -169,7 +169,7 @@ PRC_CHG_TP_CD
 					) 
 			  	</if>
 			  	<if test="goodsPriceType == 'existPrice'">
-			  	/*½ÃÀÛÀÏÀÌ °°Àº  */
+			  	/*ì‹œìž‘ì¼ì´ ê°™ì€  */
 			  	AND HIST_STRT_DTIME = #{priceStartDate} 
 					 
 			  	</if>

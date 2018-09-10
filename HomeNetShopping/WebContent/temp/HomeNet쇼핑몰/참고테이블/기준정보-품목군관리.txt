@@ -1,0 +1,113 @@
+#. 기준정보-품목군관리-품목군 상세정보 
+<select id="getArticleInfo" resultType="ehimart.app.domain.bo.goods.model.ArticleBase">
+	  
+	   	/* 파일명[파일설명] : Article.xml[품목군 상세]
+		  SQL ID : getArticleInfo
+		   업무파트: 기준정보-품목군관리-품목군 상세
+		   작성자 :	 ellen
+		   작성일시 : 2015.05.29
+		*/ 
+		
+		SELECT ARTC.ARTC_CD AS articleCode   /** 품목군**/
+			     , ARTC.UPR_ARTC_CD AS articleUpCod /** 상위 품목코드**/
+	             , ARTC.EC_ARTC_CD AS articleECartcCode  /**공정위 품목군코드 **/
+				 , (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS articleECName /**공정위 품목군 **/
+	             , (SELECT ARTC_NM FROM PR_GOODS_ARTC_CD WHERE ARTC_CD = ARTC.UPR_ARTC_CD) AS articleUpName  /** 하이마트 품목군명**/
+	             , ARTC.ARTC_NM AS articleName  /** 품목명**/
+	             , ARTC.ONL_BRCH_INV_RT AS articleWebInvRate  /**재고율 **/
+	             , ARTC.MAX_LMT_QTY AS maxLmtQty   /** 최대구매수량**/
+	             , ARTC.SIZE_LKTB_FILE_NM AS sizeLookTableFileNm  /** 사이즈조견표 파일명**/
+	             , ARTC.SIZE_LKTB_PATH_NM AS sizeLookTablePathNm  /** 사이즈조견표 파일패스**/
+	             , ARTC.ASGD_MD_CD AS asgdMdId   /** 담당MD**/
+	             , ARTC.SYS_REGR_ID AS regrId
+	             , ARTC.SYS_REG_DTIME AS regDtime
+	             , ARTC.SYS_MODR_ID AS modrId
+	             , ARTC.SYS_MOD_DTIME AS modDtime
+				 , ARTC.ASGD_MD_CD as articleMdCd /**담당MD**/
+				 , ARTC.ASGD_ORG_CD as articleMdGroupCd /**MD조직**/
+	      FROM PR_GOODS_ARTC_CD ARTC
+	    WHERE ARTC.ARTC_CD = #{articleCode}
+</select>
+<update id="updateArticleBase">
+		   	/* 파일명[파일설명] : Article.xml[품목군 상세정보 수정]
+			  SQL ID : updateArticleBase
+			   업무파트: 기준정보-품목군관리-품목군 상세정보 수정
+			   작성자 :	 ellen
+			   작성일시 : 2015.05.29
+			*/
+				  
+           UPDATE PR_GOODS_ARTC_CD
+                 SET EC_ARTC_CD = #{articleECartcCode}							articleECartcCode
+                      , ONL_BRCH_INV_RT = #{articleWebInvRate}
+                      , MAX_LMT_QTY = #{maxLmtQty}
+                      , SIZE_LKTB_PATH_NM = #{sizeLookTablePathNm}
+                      , SIZE_LKTB_FILE_NM = #{sizeLookTableFileNm}
+                      , <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+					  <if test="@nframework.persistent.mybatis.Expression@isNotEmpty(articleMdCd)">
+					  , ASGD_MD_CD = #{articleMdCd}
+					  </if>
+					  <if test="@nframework.persistent.mybatis.Expression@isNotEmpty(articleMdGroupCd)">
+					  , ASGD_ORG_CD = #{articleMdGroupCd}
+					  </if>
+             WHERE ARTC_CD = #{articleCode}  					품목코드  
+ 	  </update>
+
+#. 기준정보-품목군관리-품목군 옵션정보 등록
+<insert id="insertArticleAttribute">
+      		/* 파일명[파일설명] : Article.xml[품목군 옵션정보 등록]
+			  SQL ID : deleteArticleAttribute
+			   업무파트: 기준정보-품목군관리-품목군 옵션정보 등록
+			   작성자 :	 ellen
+			   작성일시 : 2015.05.29
+			*/
+			
+            INSERT INTO PR_GOODS_ARTC_OPT_INFO (
+                                ARTC_CD						품목군 코드	
+                              , OPT_CD						옵션코드
+                              , SYS_REGR_ID
+                              , SYS_REG_DTIME
+                              , SYS_MODR_ID
+                              , SYS_MOD_DTIME
+            ) VALUES (
+                                #{articleCode}
+                              , #{optCd}
+                              , #{sysRegrId}
+                              , SYSDATE
+                              , #{sysModrId}
+                              , SYSDATE
+                           )			 
+      </insert>
+      
+      <insert id="createAttributeGroupGrid">
+  
+		INSERT /* [AttributeMgmt.xml][attributeMgmt.createAttributeGroupGrid][속성그룹등록][리로이][2015.06.24] */
+		  INTO PR_ATTR_GRP_CD
+		(
+			OPT_CD,
+			OPT_NM,
+			USE_YN,
+			<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+		)
+		VALUES
+		(
+			#{optCd},
+			#{optNm},
+			#{useYn},
+			<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+		)
+    
+	</insert>
+      
+      <sql id="artcAttrList">
+	  
+		    SELECT T1.ARTC_CD AS articleCode
+		     		 ,  T1.OPT_CD AS optCd
+		             ,  (SELECT OPT_NM FROM PR_ATTR_GRP_CD WHERE OPT_CD = T1.OPT_CD) AS optNm 
+		             ,  T1.SYS_REGR_ID AS regrId
+		             ,  TO_CHAR(T1.SYS_REG_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS regDtime
+		             ,  T1.SYS_MODR_ID AS modrId
+		             ,  TO_CHAR(T1.SYS_MOD_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS modDtime
+		      FROM PR_GOODS_ARTC_OPT_INFO T1
+		    WHERE T1.ARTC_CD=#{articleCode}
+		    	  
+	  </sql>

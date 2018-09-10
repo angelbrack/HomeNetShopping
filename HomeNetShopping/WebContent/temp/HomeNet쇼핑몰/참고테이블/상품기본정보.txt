@@ -1,14 +1,19 @@
+#. 상품기본정보
+HCodeConstants
+GoodsConstants
+GoodsHMSManageBizImpl
+- createGoods : 상품생성
 PR_GOODS_BASE (
-      GOODS_NO																									 #{goodsNo}			   									상품번호                                                        
-      ,GOODS_ID                                                 ,#{goodsId}          								상품아이디                                    
+      GOODS_NO															#{goodsNo}			   									상품번호                                                        
+      ,GOODS_ID                                                 		,#{goodsId}          								상품아이디                                    
 			,MDL_NM                                                   ,#{goodsModelName}      						모델명                                 
 			,ARTC_CD                                                  ,#{goodsArticleCode}   							품목코드                                  
 			,BRND_NO                                                  ,#{goodsBrandNo}    								브랜드번호                                     
-			,BRND_CRTT_SCT_CD                                         ,#{goodsBrandChar}    							브랜드특성코드                                   
+			,BRND_CRTT_SCT_CD                                         ,#{goodsBrandChar}    							브랜드특성코드 (01: NB, 02: NPB, 03:PB)                                  
 			,WEB_SALE_PSB_YN                                          ,#{goodsIsECDisplay}      					전시EC매장노출여부                               
 			,MBL_SALE_PSB_YN                                          ,#{goodsIsMCDisplay}      					전시MC매장노출여부                               
-			,GOODS_TP_CD                                              ,#{goodsTypeCode}        						상품유형코드                                
-			,GOODS_CMPS_CD                                            ,#{goodsCompositionCode}  					상품구성코드                              
+			,GOODS_TP_CD                                              ,#{goodsTypeCode}        						상품유형코드(01: 일반상품, 02: 경품, 03: 사은품, 04:부속품 , 05: 렌탈상품, 06: 모바일상품)                                
+			,GOODS_CMPS_CD                                            ,#{goodsCompositionCode}  					상품구성코드  (01 일반상품, 02 패키지, 03 옵션 선택 상품 정보, 04 다중선택형)                            
 			,GOODS_NM                                                 ,REPLACE(REPLACE(#{goodsName},CHR(39),'‘'),CHR(34),'＂')   상품명
 			,ORPL_NM                                                  ,#{goodsOriginCountry}     					원산지명                              
 			,MFCP_NM                                                  ,#{goodsMakerName}    							제조사명                                   
@@ -21,7 +26,7 @@ PR_GOODS_BASE (
 			,BRGN_GOODS_YN                                            ,#{goodsIsBargain}         					흥정가능여부                              
 			,SMP_YN                                                   ,#{goodsIsSmartPic}              		스마트픽가능여부                        
 			,EVLM_ORD_PSB_YN                                          ,#{goodsIsOrderMass}    						대량주문가능여부                                 
-			,SALE_STAT_CD                                             ,#{goodsSalesCode}                	판매상태코드                       
+			,SALE_STAT_CD                                             ,#{goodsSalesCode}                	판매상태코드(01 판매중, 02 품절, 03 판매종료)                       
 			,SALE_STRT_DTIME                                          ,#{goodsSalesStartDate}      				판매시작일자                            
 			,SALE_END_DTIME                                           ,#{goodsSalesEndDate}               판매종료일자                    
 			,NGS_MRK_END_DT                                           ,#{goodsNewEndDate}                 신상품표시종료일자                     
@@ -32,9 +37,9 @@ PR_GOODS_BASE (
 			,SCH_KWD_NM                                               ,#{goodsSEOKeyword}            			seo키워드                          
 			,SCH_KWD_DESC                                             ,#{goodsSEODetail}                  seo상세설명                     
 			,MDL_LNCH_DT                                              ,#{goodsLaunchDate}                 출시일자                     
-			,MGMT_STAT_CD                                             ,#{goodsDiscontinueCode}            단종관리상태코드                     
+			,MGMT_STAT_CD                                             ,#{goodsDiscontinueCode}            단종관리상태코드(01:정상 , 02:단종예정 , 03: 단종 , 04:단종예정, 05:폐종)                     
 			,MGMT_STAT_DT                                             ,#{goodsDiscontinueDate}            단종관리일자                     
-			,TDF_SCT_CD                                               ,#{goodsTaxDutyFreeSectionCode}  		과면세구분코드                        
+			,TDF_SCT_CD                                               ,#{goodsTaxDutyFreeSectionCode}  		과면세구분코드(01:과세 , 02:면세 , 03: 영세 , 04:해당없음)                        
 			,PNT_RSRV_YN                                              ,#{goodsIsLPoint}         					L포인트적립여부                               
 			,CLM_DSCNT_PSB_YN                                         ,#{goodsIsAskDiscount}              청구할인가능여부                     
 			,STAFF_DSCNT_PSB_YN                                       ,#{goodsIsStaffUse}                	임직원할인가능여부                      
@@ -46,14 +51,14 @@ PR_GOODS_BASE (
 			,INDIV_GOODS_SALE_PSB_YN                                  ,#{goodsIsSalesPiece}    						개별상품판매가능여부                                
 			,EVT_CPN_USE_PSB_YN                                       ,#{goodsIsEventCouponUse}           이벤트쿠폰사용가능여부                     
 			,PAY_MEAN_LMT_YN                                          ,#{goodsIsPayMeanLmt}             	결제수단제한여부                       
-			,DLV_TP_CD                                                ,#{goodsDeliveryTypeCode}           배송처리유형코드                     
-			,DLV_MEAN_CD                                              ,#{goodsDeliveryMeansCode}          배송수단코드                     
+			,DLV_TP_CD                                                ,#{goodsDeliveryTypeCode}           배송처리유형코드(01:하이마트물류 , 02:일반판매)                     
+			,DLV_MEAN_CD                                              ,#{goodsDeliveryMeansCode}          배송수단코드(01:직배 , 02:택배)                     
 			,EXCH_RTGS_LMT_TXT_CD                                     ,#{goodsExchangeLMTCD}              교환반품안내문구 BO                     
 			,EXCH_RTGS_GD_TXT_CD                                      ,#{goodsExchangeTxt}              	교환반품안내문구 FRONT                       
 			,EXCH_RTGS_PSB_YN                                         ,#{goodsIsExchange}     						교환반품가능여부                                 
 			,INST_GOODS_YN                                            ,#{goodsIsInstall}        					설치여부                               
 			,ATTCHD_GOODS_EXIT_YN                                     ,#{goodsIsAccessries}       				부속상품존재여부                             
-			,ATTCHD_GOODS_TP_CD                                       ,#{goodsAccessriesType}        			부속상품유형                          
+			,ATTCHD_GOODS_TP_CD                                       ,#{goodsAccessriesType}        			부속상품유형(01_연동기프트, 02_자재, 03_구성품)                          
 			,OMNI_CHL_GOODS_YN                                        ,#{goodsIsOmni}                 		옴니상품여부                         
 			,OMNI_CHL_GOODS_STRT_DT                                   ,#{goodsOmniStartDate}            	옴니상품시작일자                       
 			,OMNI_CHL_GOODS_END_DT                                    ,#{goodsOmniEndDate}                옴니상품종료일자                     

@@ -1,0 +1,52 @@
+#. 상품관계-부속상품정보
+<update id="createAccessriesGoodsRelaInfoHMS" >
+        MERGE INTO PR_GOODS_REL_INFO A
+        USING ( SELECT #{goodsRelaMainGoodsNo} STD_GOODS_NO, #{goodsRelaSubGoodsNo} TGT_GOODS_NO FROM DUAL ) B
+        	ON (A.STD_GOODS_NO = B.STD_GOODS_NO AND A.TGT_GOODS_NO = B.TGT_GOODS_NO)
+        WHEN MATCHED THEN
+        UPDATE  SET  /* 파일명[파일설명] : goods.xml[상품관계정보-부속상품등록]
+        			  SQL ID : updateAccessriesGoodsRelaInfoHMS
+	                  업무파트: 상품
+	                  작성자 :  evleyn    
+	                  작성일시 : 2015.05.19
+	                */
+	                <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+	                ,CMPS_QTY = #{goodsRelaGoodsCount}
+					,MAST_GOODS_YN = #{goodsRelaDefaultGoods}
+					,USE_YN = #{goodsRelaUse}
+					,DISP_PRIO_RNK = #{goodsRelaPriority}
+					,GRP_NO = #{goodsGrpNo}
+					,ADJ_STD_GOODS_NO = #{goodsADJNo}
+        
+        WHEN NOT MATCHED THEN
+        
+        INSERT /* 파일명[파일설명] : goods.xml[상품관계정보-부속상품등록]
+                  SQL ID : createAccessriesGoodsRelaInfoHMS
+                  업무파트: 상품
+                  작성자 :  evleyn    
+                  작성일시 : 2015.04.28
+                */  
+            (
+                STD_GOODS_NO					기준상품번호
+				,TGT_GOODS_NO					대상상품번호
+				,CMPS_QTY						구성수량
+				,MAST_GOODS_YN					대표상품여부
+				,USE_YN							사용여부
+				,DISP_PRIO_RNK					전시우선순위
+				,GRP_NO							그룹번호
+				,ADJ_STD_GOODS_NO				정산대상상품번호
+				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			)
+        values (
+            #{goodsRelaMainGoodsNo}
+            ,#{goodsRelaSubGoodsNo}
+            ,#{goodsRelaGoodsCount}
+            ,#{goodsRelaDefaultGoods}
+            ,#{goodsRelaUse}
+            ,#{goodsRelaPriority}
+            ,#{goodsGrpNo}
+            ,#{goodsADJNo}
+            
+            ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )
+    </update>

@@ -1,0 +1,68 @@
+#. 공급업체 기본정보
+ehimart.app.domain.bo.system.model.SupplyCompany
+<select id="getSupplyCompanyList" resultMap="supplyCompany.supplyCompanyListResult">
+	
+		SELECT /* [SupplyCompany.xml][supplyCompany.getSupplyCompanyList][공급사 관리 그리드 조회][리로이][2015.06.18] */
+	           X.SUP_CORP_NO
+	         , X.SUP_CORP_NM
+	         , X.MAST_PHON
+	         , X.FAX_NO
+	         , X.AEMP_NM
+	         , X.MAST_EMAIL_ADDR
+	         , X.CORP_SCT_CD
+	         , X.CUR_ENTR_YN
+			 , X.SYS_REGR_ID
+			 , X.SYS_REG_DTIME
+			 , X.SYS_MODR_ID
+			 , X.SYS_MOD_DTIME
+		  FROM ( SELECT ROWNUM AS ROW_NO
+		              , PageTarget.SUP_CORP_NO
+		              , PageTarget.SUP_CORP_NM
+		              , PageTarget.MAST_PHON
+				      , PageTarget.FAX_NO
+				      , PageTarget.AEMP_NM
+				      , PageTarget.MAST_EMAIL_ADDR
+				      , PageTarget.CORP_SCT_CD
+				      , PageTarget.CUR_ENTR_YN
+				      , PageTarget.SYS_REGR_ID
+				      , PageTarget.SYS_REG_DTIME
+				      , PageTarget.SYS_MODR_ID
+				      , PageTarget.SYS_MOD_DTIME
+			       FROM ( SELECT SUP_CORP_NO					공급업체번호
+			                   , SUP_CORP_NM					공급업체명
+			                   , MAST_PHON						대표번화번호
+			                   , FAX_NO							팩스번호
+			                   , AEMP_NM						담당자이름
+			                   , MAST_EMAIL_ADDR				대표이메일주소
+			                   , CORP_SCT_CD					업체구분코드
+			                   , CUR_ENTR_YN					현재거래처여부
+			                   , SYS_REGR_ID
+			                   , TO_CHAR(SYS_REG_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS SYS_REG_DTIME
+			                   , SYS_MODR_ID
+			                   , TO_CHAR(SYS_MOD_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS SYS_MOD_DTIME
+                            FROM ET_SUP_CORP_BASE
+                           WHERE 1 = 1
+<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchUseYn)">
+                             AND CUR_ENTR_YN = #{searchUseYn}
+</if>
+<if test="searchOption == 'name'">
+	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchOptionKeyword)">
+                             AND SUP_CORP_NM LIKE '%' || #{searchOptionKeyword} || '%'
+	</if>
+</if>
+<if test="searchOption == 'no'">
+	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchOptionKeyword)">
+                             AND SUP_CORP_NO LIKE '%' || #{searchOptionKeyword} || '%'
+	</if>
+</if>
+<if test="searchOption == 'phoneNo'">
+	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchOptionKeyword)">
+                             AND MAST_PHON LIKE '%' || #{searchOptionKeyword} || '%'
+	</if>
+</if>
+			            ) PageTarget
+	              WHERE ROWNUM &lt;= #{lastItemNo}
+	           ) X
+		 WHERE ROW_NO &gt;= #{firstItemNo}
+
+	</select>

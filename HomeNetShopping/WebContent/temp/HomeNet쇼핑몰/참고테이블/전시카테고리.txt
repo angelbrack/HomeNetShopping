@@ -1,16 +1,67 @@
-#. ����ī�װ���
-INSERT INTO PR_DISP_GOODS_INFO 
-	/* ���ϸ�[���ϼ���] : Goods.xml[����ī�װ��� ���]
+#. 전시카테고리
+<select id="getGoodsCateConrList" resultType="ehimart.app.domain.bo.goods.model.DisplayCateBase">
+    	SELECT 
+    	/* 파일명[파일설명] : Goods.xml[상품 전시카테고리 조회 - 코너]
+		  SQL ID : getGoodsCateConrList
+		   업무파트: 상품
+		   작성자 :	 evelyn	
+		   작성일시 : 2015.06.03
+		*/ 
+    	  DISP.DISP_NO displayCateDisplayNo
+		  , SUBSTR( CATE.A,2,LENGTH(CATE.A)) displayCateName
+		FROM 
+		(
+			SELECT 
+			SYS_CONNECT_BY_PATH(DISP_NM,' >> ') A  
+			,SYS_CONNECT_BY_PATH(DISP_NO,' >> ') B
+			,DPML_NO, DISP_NO, UPR_DISP_NO, DISP_NM
+			FROM PR_DISP_SHOP_BASE
+			WHERE 1=1 
+			/*DPML_NO = 'EC1'*/
+			START WITH UPR_DISP_NO IS NULL
+			CONNECT BY UPR_DISP_NO = PRIOR DISP_NO
+		) CATE ,
+		(
+		SELECT 
+			DS.DISP_NO
+		FROM PR_DISP_SHOP_BASE DS
+		WHERE 1=1
+			AND DS.DISP_NO IN ( 
+							SELECT B.DISP_NO
+						  	FROM 
+						  		PR_CONR_CONTS_INFO A,
+						    	PR_DISP_CONR_INFO B
+						  	WHERE 1=1
+								AND A.DISP_CONTS_NO = #{goodsSearchNo}
+							  	AND A.CONR_NO    = B.CONR_NO
+							  	AND A.CONR_TGT_CD='01'
+							  	AND A.LMT_TP_CD  = 'Y'
+							GROUP BY B.DISP_NO
+						  )
+		) DISP
+		WHERE CATE.DISP_NO = DISP.DISP_NO   	
+  </select>
+
+
+PR_DISP_SHOP_BASE
+	DISP_NO				전시번호
+	UPR_DISP_NO			상위 전시번호
+	DISP_NM				전시명
+
+<insert id="createDispCate">
+	
+	INSERT INTO PR_DISP_GOODS_INFO 
+	/* 파일명[파일설명] : Goods.xml[전시카테고리 등록]
 	  SQL ID : createDispCate
-	   ������Ʈ: ��ǰ
-	   �ۼ��� :	 evelyn	
-	   �ۼ��Ͻ� : 2015.05.20
+	   업무파트: 상품
+	   작성자 :	 evelyn	
+	   작성일시 : 2015.05.20
 	*/
 	(
-                DISP_NO
-				,GOODS_NO
-				,DISP_PRIO_RNK
-				,USE_YN
+                DISP_NO								: 전시번호
+				,GOODS_NO							: 상품번호
+				,DISP_PRIO_RNK						: 전시우선순위
+				,USE_YN								: 사용여부
 				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
 			)
         values (
@@ -20,3 +71,5 @@ INSERT INTO PR_DISP_GOODS_INFO
             ,#{displayGoodsInfoIsUse}
             ,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
         )
+	
+	</insert>

@@ -6,16 +6,16 @@ INSERT INTO /* 파일명[파일설명] : goods.xml[상품가격정보등록]
                 */  
                 PR_GOODS_PRC_HIST
             (
-                GOODS_NO
-				,HIST_STRT_DTIME
-				,HIST_END_DTIME
-				,PRC_CHG_TP_CD
-				,SALE_PRC
-				,DSCNT_TP_CD
-				,DSCNT_RT
-				,PRC_PROM_TXT_CONT
-				,ADJ_PUR_PRC
-				,STN_MRGN_YN
+                GOODS_NO							상품번호
+				,HIST_STRT_DTIME					이력시작일시
+				,HIST_END_DTIME						이력종료일시
+				,PRC_CHG_TP_CD						가격변경유형코드(01 가격인하, 02 세일, 03 단순가격변경, 04 기타)
+				,SALE_PRC							판매가
+				,DSCNT_TP_CD						할인유형코드
+				,DSCNT_RT							할인율
+				,PRC_PROM_TXT_CONT					가격프로모션문구내용
+				,ADJ_PUR_PRC						정산매입가(사입가)
+				,STN_MRGN_YN						역마진 설정여부
 				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
 			)
         values (
