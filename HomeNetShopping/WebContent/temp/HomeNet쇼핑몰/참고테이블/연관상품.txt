@@ -1,0 +1,108 @@
+#. 연관상품 그룹정보
+<insert id="createAssociateGoodsGroupGrid">
+  		/* [AssociateGoods.xml][AssociateGoods.createAssociateGoodsGroupGrid][연관상품그룹등록][Karl][2015.07.17] */
+		INSERT 
+		  INTO PR_ASSOC_GOODS_GRP_INFO
+		  	(		
+					ARTC_CD					품목코드
+				, 	ASSOC_GOODS_GRP_SN		연관상품그룹일련번호
+				, 	ASSOC_GOODS_GRP_NM		연관상품그룹명					
+				, 	DISP_PRIO_RNK			순서
+				,  	<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+            ) 
+            VALUES 
+            (
+				  #{articleCode}
+			  	<if test="assocGoodsGrpSn == null or assocGoodsGrpSn ==0 ">			  	
+					, (SELECT NVL(MAX(ASSOC_GOODS_GRP_SN), 0) + 1
+						FROM PR_ASSOC_GOODS_GRP_INFO
+						WHERE ARTC_CD=#{articleCode} )
+				</if>
+				<if test="assocGoodsGrpSn != null and assocGoodsGrpSn !=0 ">
+					, #{assocGoodsGrpSn} 
+				</if>
+				, #{assocGoodsGrpNm}
+				, #{dispPrioRnk}                              
+				, <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+			)			 
+    
+</insert>
+<select id="getAssociateGoodsGroupGrid" resultType="ehimart.app.domain.bo.goods.model.AssociateGoodsGroupBase">
+	  
+		   	/* [AssociateGoods.xml][associateGoods.getAssociateGoodsGroupGrid][연관상품그룹목록조회][Karl][2015.07.17] */
+			<include refid="AssociateGoodsGroupList"></include>
+	</select>
+	  
+	<sql id="AssociateGoodsGroupList">
+	  
+		    SELECT A.ARTC_CD 				AS articleCode             
+				, A.ASSOC_GOODS_GRP_SN		as assocGoodsGrpSn
+				, A.ASSOC_GOODS_GRP_NM		as assocGoodsGrpNm
+				, A.DISP_PRIO_RNK			as dispPrioRnk		/*전시우선순위*/                 
+				, A.SYS_REGR_ID AS regrId	
+				, TO_CHAR(A.SYS_REG_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS regDtime
+				, A.SYS_MODR_ID AS modrId
+				, TO_CHAR(A.SYS_MOD_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS modDtime
+				
+				, (SELECT COUNT(1) CNT 
+					FROM PR_ASSOC_GOODS_REL_INFO	/* 연관상품 관계 정보*/  
+					WHERE ARTC_CD=A.ARTC_CD AND ASSOC_GOODS_GRP_SN=A.ASSOC_GOODS_GRP_SN 
+				) AS assocGoodsCnt 														/*연결상품수*/ 
+				
+	      	FROM PR_ASSOC_GOODS_GRP_INFO A		      	  	/* 연관상품 그룹 정보*/            	
+		    WHERE A.ARTC_CD=#{articleCode}		     
+		    	  
+</sql>
+
+#. 연관상품 정보
+<insert id="createAssociateGoodsRelationGrid">
+	
+		INSERT /* [AssociateGoods.xml][AssociateGoods.createAssociateGoodsRelationGrid][연관상품관계등록][Karl][2015.07.17] */
+		  INTO PR_ASSOC_GOODS_REL_INFO
+			(
+					ARTC_CD						품목코드
+				, 	ASSOC_GOODS_GRP_SN			연관상품그룹일련번호	
+				, 	GOODS_NO					상품번호
+								
+				,  	<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+				
+            ) 
+            VALUES 
+            (
+                 	#{articleCode}
+				, 	#{assocGoodsGrpSn}				
+				, 	#{goodsNo}   
+                                           
+				, 	<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+				
+            )			
+</insert>
+<select id="getAssociateGoodsRelationGrid" resultType="ehimart.app.domain.bo.goods.model.AssociateGoodsRelation">
+	  
+	   	/* [AssociateGoods.xml][associateGoods.getAssociateGoodsRelationGrid][연관상품관계목록][Karl][2015.07.17] */
+		<include refid="AssociateGoodsRelationList"></include>
+	</select>
+	  
+	<sql id="AssociateGoodsRelationList">
+	  
+	    SELECT A.ARTC_CD 			AS articleCode             
+			, A.ASSOC_GOODS_GRP_SN	as assocGoodsGrpSn
+			, A.GOODS_NO			as goodsNo	
+			
+			, B.GOODS_NM			as goodsNm
+			, B.ARTC_CD 			as artcCode
+			, B.MDL_NM				as mdlNm
+			, B.WEB_SALE_PSB_YN		as webSalePsbYn
+			, B.MBL_SALE_PSB_YN		as mblSalePsbYn								
+			                 
+			, A.SYS_REGR_ID AS regrId
+			, TO_CHAR(A.SYS_REG_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS regDtime
+			, A.SYS_MODR_ID AS modrId
+			, TO_CHAR(A.SYS_MOD_DTIME, 'YYYY-MM-DD HH24:MI:SS') AS modDtime				 
+			
+      	FROM PR_ASSOC_GOODS_REL_INFO A		      	  	/* 연관상품 관계 정보*/
+      		JOIN PR_GOODS_BASE B ON A.GOODS_NO=B.GOODS_NO             	
+	    WHERE A.ARTC_CD=#{articleCode}		     
+	    	AND A.ASSOC_GOODS_GRP_SN=#{assocGoodsGrpSn}
+		    	  
+	</sql>
