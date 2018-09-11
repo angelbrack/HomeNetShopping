@@ -1,0 +1,212 @@
+#. 모델정보
+<sql id="modelHMSBaseCondition">
+	SELECT /*+ FIRST_ROWS ORDERED */ 
+                A.PRD_ID
+                ,A.PRD_CD
+                ,C.ITEM_CD
+                ,C.ITEM_ALL_NM
+                ,C.ITEM_NM
+                ,A.MKR_ID
+                ,D.VNDR_NM
+                ,A.PRD_NM
+                ,F.CM_CD_NM
+                ,B.HM_LNCH_DT
+                ,CASE WHEN C.ITEM_CD LIKE 'D%' 
+                        THEN A.MKR_CLS_CD
+                 END CMCM_CD
+                ,B.BRND_ATTR_VAL
+                ,A.USE_VOLT_CD
+                ,A.CSP_EP
+                ,B.ENRG_CSP_EFFCNC_GRD_CD
+                ,A.RTH_WTH
+                ,A.RTH_VTH
+                ,A.RTH_HG
+                ,A.RTH_WEHT
+                ,A.REG_DTM
+                ,B.AS_TELNO
+                ,B.AS_CHRG_VNDR_ID
+            FROM HI_SC011M A   
+              JOIN HI_SC012M B ON (A.PRD_ID = B.PRD_ID)
+              JOIN HI_SC010C C ON (C.ITEM_ID = A.ITEM_ID)
+              JOIN HI_CM101C D ON (D.VNDR_ID = A.MKR_ID)
+              LEFT JOIN HI_CM401C F ON (F.CM_CLS_CD = 'SC0019' AND F.CM_CD = A.MNF_NTN_CD)
+            WHERE    1 = 1
+              
+              /* 관리상태 정상 START */
+              AND NOT EXISTS ( SELECT 1
+                               FROM HI_SC130T E
+                               WHERE E.PRD_ID = A.PRD_ID
+                               AND E.PRD_OPER_STS_CD IN ( 'X',  'Y',  'Z')
+                                 AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN E.EFF_STRT_DT AND E.EFF_END_DT
+                             )
+              /* 관리상태 정상 END */
+              
+              	
+              	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(goodsModelName)">
+					AND A.PRD_CD LIKE '%'|| #{goodsModelName} ||'%' 
+				</if>
+				
+				<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchValue)">
+					<if test="searchType == 'modelNm'">
+			      		AND A.PRD_CD LIKE '%'|| #{searchValue} ||'%' 
+					</if>
+					<if test="searchType == 'goodsNm'">
+						AND A.PRD_NM LIKE '%'|| #{searchValue} ||'%'
+			        </if>
+			    </if>
+              	
+              	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(detailSearchType)">
+					<if test="detailSearchType == 'SET'">
+					AND A.PRD_ID IN (
+						SELECT REP_PRD_ID FROM HI_SC023M
+					)
+					</if>
+				</if>	
+				
+				<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(endDate)">
+					AND A.REG_DTM BETWEEN #{startDate} AND #{endDate}
+			    </if>
+              
+              
+            ORDER BY A.PRD_ID DESC 
+	</sql>
+<select id="getModelHMSlList" resultType="ehimart.app.domain.bo.goods.model.HisisGoodsBase">
+    	
+   	/* 파일명[파일설명] : Goods.xml[모델조회 목록]
+	  SQL ID : getModelList
+	   업무파트: 상품
+	   작성자 :	 evelyn	
+	   작성일시 : 2015.04.24
+	*/ 
+    	
+	SELECT list.*
+       ,NVL((SELECT DLV_PSB_YN
+             FROM ET_SUP_CORP_BASE
+             WHERE SUP_CORP_NO = hisisSupplyComponyCode
+        ),'N') AS hisisSupplyIsDelivery 
+       ,ROUND((  NVL(hisisADJ, 0) * (1 + NVL(POLC.POLC_VAL_CONT,0))) ,-1) AS hsisBuyLimitPrice  
+	FROM (
+    SELECT /*+ use_nl(l,ECARTC,MGMT,PRC,DC1,DC6,DC_P,DC_A) */  
+            RNUM
+           ,l.PRD_CD AS hisisModelName
+           ,l.PRD_ID AS hisisGoodsID  
+           ,l.PRD_NM AS hisisGoodsName 
+           ,l.ITEM_CD || ' | ' || ITEM_NM AS hisisAtrcCodeTxt
+           ,l.ITEM_CD AS hisisAtrcCode
+           ,ECARTC.EC_ARTC_CD AS hisisArticleECartcCode
+           ,l.ITEM_ALL_NM AS hisisArtcFullName
+           ,l.ITEM_NM AS hisisAtrcCodeName
+           ,REGEXP_REPLACE(l.REG_DTM,'^(\d{4})(\d{2})(\d{2})(\d{6})', '\1-\2-\3 \4') AS hisisRegDate 
+           ,l.MKR_ID AS hisisBrandNo
+           ,l.VNDR_NM AS hisisBrandName
+           ,l.VNDR_NM AS hisisMakerName
+           ,l.CM_CD_NM AS hisisOriginCountry
+           ,(SELECT CNTT
+             FROM   HI_SC039T                 /*상품고시정보*/
+             WHERE PRD_ID = l.PRD_ID
+               AND INFO_CF_CD = '08'
+               AND ROWNUM = 1)
+            AS hisisImportador    
+           ,(SELECT DECODE (CNTT, '1', 'Y', 'N')
+             FROM   HI_SC039T                 /*상품고시정보*/
+             WHERE PRD_ID = l.PRD_ID
+               AND INFO_CF_CD = '01'
+               AND ROWNUM = 1)
+            AS hisisSafetyCertification    
+           ,l.HM_LNCH_DT AS hisisLaunchDate 
+           ,CASE MGMT.PRD_OPER_STS_CD
+                 WHEN 'X' THEN '02'
+                 WHEN 'Y' THEN '03'
+                 WHEN 'Z' THEN '05'
+                 ELSE '01' 
+           END AS hisisDiscontinueCode
+           , MGMT.EFF_STRT_DT AS hisisDiscontinueDate 
+           ,(SELECT CASE SET_RLT_TYPE_CD
+                         WHEN '1' THEN '01' /*-- 1:연동기프트*/
+                         WHEN '3' THEN '02'  /*-- 3:설치자재*/
+                         ELSE '03'              /*-- 구성품*/
+                      END
+             FROM   HI_SC023M              /*--SET상품구성*/
+             WHERE  REP_PRD_ID = l.PRD_ID 
+               AND ROWNUM = 1
+           ) AS hisisAccAttchd
+           ,NVL((SELECT 'Y'
+               FROM   HI_SC023M                /*SET상품구성*/
+               WHERE  REP_PRD_ID = l.PRD_ID 
+                 AND ROWNUM = 1 
+            ),'N') AS hisisAccIsExist 
+           ,CMCM_CD AS hisisMobileOperatiorName
+           ,PRC.STD_PRC AS hisisBasicPrice
+           ,PRC.SALE_LLMT_PRC AS hisisLimitPrice
+           ,(SELECT MGN_GRD_CD
+             FROM HI_SC082T /*상품마진등급 */
+               WHERE PRD_ID = l.PRD_ID
+                 AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN EFF_STRT_DT AND EFF_END_DT
+                 AND ROWNUM = 1
+            ) AS hisisMarginGrade
+            ,(SELECT BUY_VNDR_ID
+               FROM   HI_SC022M                  /*상품구매처*/
+               WHERE PRD_ID = l.PRD_ID
+                 AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN EFF_STRT_DT AND EFF_END_DT /*운영중*/
+                 AND ROWNUM = 1
+            ) AS hisisSupplyComponyCode       /*공급업체번호*/
+            ,(SELECT VNDR_NM
+               FROM   HI_SC022M K 
+                 JOIN HI_CM101C S ON (S.VNDR_ID = K.BUY_VNDR_ID)  /*상품구매처*/
+               WHERE K.PRD_ID = l.PRD_ID
+                 AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN K.EFF_STRT_DT AND K.EFF_END_DT /*운영중*/
+                 AND ROWNUM = 1
+             ) AS hisisSupplyComponyName        /*공급업체명*/
+             ,l.BRND_ATTR_VAL AS hisisBrandChar
+             ,( DECODE(DC6.SALE_PRC, NULL, DECODE(DC1.SALE_PRC, NULL, NVL(PRC.STD_PRC,0), DC1.SALE_PRC), DC6.SALE_PRC) /* PRC */
+                - ( DECODE(DC6.SALE_PRC, NULL, DECODE(DC1.SALE_PRC, NULL, NVL(PRC.STD_PRC,0), DC1.SALE_PRC), DC6.SALE_PRC) /* PRC */
+                    *
+                    DECODE( DECODE(DC6.SALE_PRC, NULL, DC1.SALE_PRC),NULL
+                             , DECODE(DC_P.CPTN_PRC_RT, NULL, NVL(DC_A.CPTN_PRC_RT,0), DC_P.CPTN_PRC_RT)
+                             , DECODE(DC_P.PLNG_PRC_RT, NULL, NVL(DC_A.PLNG_PRC_RT,0), DC_P.PLNG_PRC_RT)) /* RATE */
+                    / 100             
+                  )
+              ) AS hisisgoodsStaffDiscount
+              ,l.USE_VOLT_CD AS hisisEcItemVLTG
+              ,l.CSP_EP AS hisisEcItemPOWER
+              ,l.ENRG_CSP_EFFCNC_GRD_CD AS hisisEcItemCNSM
+              ,l.RTH_WTH AS hisisEcItemWDTH
+              ,l.RTH_VTH AS hisisEcItemLNTH
+              ,l.RTH_HG AS hisisEcItemHGT
+              ,l.RTH_WEHT AS hisisEcItemWGT
+              ,(SELECT VNDR_NM
+                FROM HI_CM101C                     /*업체*/
+                WHERE VNDR_ID = l.AS_CHRG_VNDR_ID
+                  AND ROWNUM = 1
+              ) AS hisisEcItemASMGRNM
+              ,l.AS_TELNO AS hisisEcItemASMGRPHON
+              ,PRC.ADJM_BU_PRC AS hisisADJ
+              ,(SELECT 'Y'
+                FROM   HI_SC112M                /* 품목상품통제*/
+                WHERE ITEM_PRD_ID = l.PRD_ID 
+                  AND CTRL_CD = '41' /*통제코드 > 정찰제 통제*/
+                  AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN CTRL_STRT_DT AND CTRL_END_DT
+                  AND CTRL_MG_VAL2 = '1' /* 통제관리값2 > 0: 미할인 1:할인*/
+              ) AS hisisHLM
+    FROM (
+        SELECT ROWNUM AS RNUM, lst.*
+        FROM (
+        
+		<include refid="goodsHMS.modelHMSBaseCondition"/>
+				
+			) lst
+		WHERE 	ROWNUM &lt;= #{lastItemNo} 
+		
+		) l
+	    LEFT JOIN PR_GOODS_ARTC_CD ECARTC ON (ECARTC.ARTC_CD = l.ITEM_CD)
+	    LEFT JOIN HI_SC130T MGMT ON (MGMT.PRD_ID = l.PRD_ID AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN MGMT.EFF_STRT_DT AND MGMT.EFF_END_DT AND MGMT.PRD_OPER_STS_CD IN ('X','Y','Z'))
+	    LEFT JOIN HI_SC013M PRC ON (PRC.PRD_ID = l.PRD_ID AND PRC.PRD_GRD_CD = 'A' AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN PRC.EFF_STRT_DT AND PRC.EFF_END_DT)
+	    LEFT JOIN HI_SC018M DC1 ON (DC1.PRD_ID = l.PRD_ID AND DC1.SPCL_MG_CD = '01' AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN DC1.EFF_STRT_DT AND DC1.EFF_END_DT)
+	    LEFT JOIN HI_SC018M DC6 ON (DC6.PRD_ID = l.PRD_ID AND DC6.SPCL_MG_CD = '06' AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN DC6.EFF_STRT_DT AND DC6.EFF_END_DT)
+	    LEFT JOIN HI_SC083T DC_P ON (DC_P.ITEM_PRD_ID = l.PRD_ID AND DC_P.ITEM_PRD_CF_CD = '2'  AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN DC_P.EFF_STRT_DT AND DC_P.EFF_END_DT)
+	    LEFT JOIN HI_SC083T DC_A ON (DC_A.ITEM_PRD_ID = l.PRD_ID AND DC_A.ITEM_PRD_CF_CD = '1'  AND TO_CHAR (SYSDATE, 'YYYYMMDD') BETWEEN DC_A.EFF_STRT_DT AND DC_A.EFF_END_DT)
+	    WHERE  RNUM &gt;= #{firstItemNo}
+	) list
+	LEFT JOIN (SELECT POLC_VAL_CONT FROM ET_STORE_POLC_BASE WHERE POLC_CD = 'STR17' AND SYSDATE BETWEEN APLY_STRT_DTIME AND APLY_END_DTIME) POLC ON (1=1)
+	ORDER BY RNUM
+  </select>

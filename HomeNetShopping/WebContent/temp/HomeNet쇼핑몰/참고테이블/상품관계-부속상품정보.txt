@@ -1,4 +1,55 @@
 #. 상품관계-부속상품정보
+
+<sql id="firstAccessriesListCondition">
+  	FROM
+		( SELECT ROWNUM AS RNUM , 
+			a.goodsRelaSubGoodsNo
+			, a.goodsRelaUse
+			, a.goodsPriority
+			, a.goodsModelName
+			, a.goodsArticleCode
+			, a.goodsArticleName
+			, a.goodsAccessriesType
+			, a.goodsName
+			FROM (
+					SELECT 
+						A.GOODS_NO AS goodsRelaSubGoodsNo   
+						,'Y' AS goodsRelaUse          
+						,'999' AS goodsPriority     
+						,A.MDL_NM AS goodsModelName
+						,B.ARTC_CD AS goodsArticleCode
+						,B.ARTC_FULL_NM AS goodsArticleName
+						,A.ATTCHD_GOODS_TP_CD AS goodsAccessriesType
+						,A.GOODS_NM AS goodsName
+					FROM PR_GOODS_BASE A, PR_GOODS_ARTC_CD B
+					WHERE A.ARTC_CD = B.ARTC_CD
+					AND A.GOODS_TP_CD = '04'
+					AND A.GOODS_ID IN 
+					(
+					SELECT CPS_PRD_ID FROM HI_SC023M
+					WHERE REP_PRD_ID = #{prdId}
+					)
+				) a
+			
+  </sql>
+
+<select id="getFirstAccessriesList" resultType="ehimart.app.domain.bo.goods.model.GoodsRelaBase">
+    	
+   	/* 파일명[파일설명] : Goods.xml[품목코드에따른 부속상품조회목록]
+	  SQL ID : getFirstAccessriesList
+	   업무파트: 상품
+	   작성자 :	 evelyn	
+	   작성일시 : 2015.04.22
+	*/ 
+    	
+		SELECT 
+			list.*
+		<include refid="goodsHMS.firstAccessriesListCondition"/>
+				WHERE 	ROWNUM &lt;= #{lastItemNo}
+			) list
+		WHERE 	RNUM &gt;= #{firstItemNo}
+  </select>
+
 <update id="createAccessriesGoodsRelaInfoHMS" >
         MERGE INTO PR_GOODS_REL_INFO A
         USING ( SELECT #{goodsRelaMainGoodsNo} STD_GOODS_NO, #{goodsRelaSubGoodsNo} TGT_GOODS_NO FROM DUAL ) B

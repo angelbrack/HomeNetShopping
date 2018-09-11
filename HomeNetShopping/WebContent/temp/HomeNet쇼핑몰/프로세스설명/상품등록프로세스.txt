@@ -1,5 +1,16 @@
+/05_BO/WebContent/js/popup/goods.popup.js : 상품팝업관련
+- 모델명 조회 팝업 modelListPopup : /goods/modelSearchPopup.lecs -> 
+/goods/popup/model.search.popup.jsp
+/goods/listModelSearch.Grid.lecs : 모델목록을 조회한다.
+-> getModelBaseList : 
+	PaginatedList<HisisGoodsBase> modelList =
+            baseDao.getPaginatedList("goodsHMS.getModelHMSlList", "goodsHMS.totalModelHMS", searchParam);
+
 // 1. 상품 생성
 - 01: 일반상품, 04:부속품 , 05: 렌탈상품, 06: 모바일상품 일때 판매기간설정(SALE_STRT_DTIME, SALE_END_DTIME)
+- 일반상품 모델명 검색팝업요청 : /05_BO/WebContent/js/goods/goodsHMSReg.js -> openModelSearchPopup  
+모델명 검색시에 
+
 baseDao.update("goodsHMS.createGoodsHMSBase", goodsBase);
 
 // 2. 웹 전시카테고리 등록

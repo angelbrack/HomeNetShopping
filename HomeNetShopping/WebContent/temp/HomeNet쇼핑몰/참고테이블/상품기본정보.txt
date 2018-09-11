@@ -3,11 +3,15 @@ HCodeConstants
 GoodsConstants
 GoodsHMSController
 - /goods/listCateSearch.Grid.lecs : 전시 카테고리를 조회한다.
+- /goods/listFirstAccessriesSearch.Grid.lecs : 품목코드에 따른 부속상품을 조회한다.
 - /goods/createGoods.lecs" : 상품 등록 (일반상품, 사은품, 경품, 모바일개통 , 렌탈상품, 부속품)
 GoodsHMSManageBizImpl
 - getDispCateList(searchParam);
 PaginatedList<DisplayGoodsInfoBase> cateList =
                 baseDao.getPaginatedList("goodsHMS.getDisplayCateInfo", "goodsHMS.totalDisplayCateInfo", sarchParam);
+- getFirstAccessriesList(GoodsBaseSearchParam sarchParam) : 품목코드에 따른 부속상품을 조회한다.
+PaginatedList<GoodsBase> accessriesList =
+                baseDao.getPaginatedList("goodsHMS.getFirstAccessriesList", "goodsHMS.totalFirstAccessriesList", sarchParam);
 - createGoods : 상품생성
 
 /05_BO/WebContent/WEB-INF/jsp/goods/goods.edit.general.ehimart.base.tab.general.jsp
