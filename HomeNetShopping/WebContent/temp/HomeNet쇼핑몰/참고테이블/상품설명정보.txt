@@ -7,12 +7,12 @@ INSERT INTO /* 파일명[파일설명] : goodsHMS.xml[상품설명정보 등록]
                     */ 
              PR_GOODS_DESC_INFO
               (   
-              	DPML_NO
-				,GOODS_NO
-				,DTL_DESC_TP_CD
-				,DTL_DESC_SN
-				,DTL_DESC_SCT_CD
-				,DTL_DESC_CONT
+              	DPML_NO						전시몰번호(EC1, MC1)
+				,GOODS_NO					상품번호
+				,DTL_DESC_TP_CD				상세설명유형코드(01 , 02 MD골지, 03 메모)
+				,DTL_DESC_SN				상세설명일련번호
+				,DTL_DESC_SCT_CD			상세설명구분코드(01 HTML, 02 TXT)
+				,DTL_DESC_CONT				HTML상세설명 
 				,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
                   )   
 	        VALUES

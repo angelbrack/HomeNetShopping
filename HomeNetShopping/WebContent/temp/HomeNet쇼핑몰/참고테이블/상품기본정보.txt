@@ -1,93 +1,120 @@
 #. 상품기본정보
 HCodeConstants
 GoodsConstants
+GoodsHMSController
+- /goods/listCateSearch.Grid.lecs : 전시 카테고리를 조회한다.
+- /goods/createGoods.lecs" : 상품 등록 (일반상품, 사은품, 경품, 모바일개통 , 렌탈상품, 부속품)
 GoodsHMSManageBizImpl
+- getDispCateList(searchParam);
+PaginatedList<DisplayGoodsInfoBase> cateList =
+                baseDao.getPaginatedList("goodsHMS.getDisplayCateInfo", "goodsHMS.totalDisplayCateInfo", sarchParam);
 - createGoods : 상품생성
+
+/05_BO/WebContent/WEB-INF/jsp/goods/goods.edit.general.ehimart.base.tab.general.jsp
+-   <page:applyDecorator page="/WEB-INF/jsp/goods/include/inc01.goods.register.general.ehimart.top.general.jsp" name="include"/> 
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc02.goods.register.general.ehimart.dispset.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc02.goods.register.general.ehimart.sub.general.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc03.goods.register.general.ehimart.base.general.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc04.goods.register.general.ehimart.detail.artc.top.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc04.goods.register.general.ehimart.detail.artc.main.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc05.goods.register.general.ehimart.price.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc06.goods.register.general.ehimart.inventory.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc07.goods.register.general.ehimart.delivery.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc08.goods.register.general.ehimart.seo.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc09.goods.register.general.ehimart.description.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc10.goods.register.general.ehimart.md.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc11.goods.register.general.ehimart.attach.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc12.goods.register.general.ehimart.images.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc13.goods.register.general.ehimart.etc.jsp" name="include"/>
+	<page:applyDecorator page="/WEB-INF/jsp/goods/include/inc14.goods.register.general.ehimart.layer.jsp" name="include"/>
+/05_BO/WebContent/js/goods/newGoodsRegisterHMSValidation.js
+- saveGoods
+
 PR_GOODS_BASE (
       GOODS_NO															#{goodsNo}			   									상품번호                                                        
-      ,GOODS_ID                                                 		,#{goodsId}          								상품아이디                                    
-			,MDL_NM                                                   ,#{goodsModelName}      						모델명                                 
-			,ARTC_CD                                                  ,#{goodsArticleCode}   							품목코드                                  
-			,BRND_NO                                                  ,#{goodsBrandNo}    								브랜드번호                                     
-			,BRND_CRTT_SCT_CD                                         ,#{goodsBrandChar}    							브랜드특성코드 (01: NB, 02: NPB, 03:PB)                                  
-			,WEB_SALE_PSB_YN                                          ,#{goodsIsECDisplay}      					전시EC매장노출여부                               
-			,MBL_SALE_PSB_YN                                          ,#{goodsIsMCDisplay}      					전시MC매장노출여부                               
-			,GOODS_TP_CD                                              ,#{goodsTypeCode}        						상품유형코드(01: 일반상품, 02: 경품, 03: 사은품, 04:부속품 , 05: 렌탈상품, 06: 모바일상품)                                
-			,GOODS_CMPS_CD                                            ,#{goodsCompositionCode}  					상품구성코드  (01 일반상품, 02 패키지, 03 옵션 선택 상품 정보, 04 다중선택형)                            
+      ,GOODS_ID                                                 		,#{goodsId}          									상품아이디                                    
+			,MDL_NM                                                   ,#{goodsModelName}      									모델명                                 
+			,ARTC_CD                                                  ,#{goodsArticleCode}   									품목코드                                  
+			,BRND_NO                                                  ,#{goodsBrandNo}    										브랜드번호                                     
+			,BRND_CRTT_SCT_CD                                         ,#{goodsBrandChar}    									브랜드특성코드 (01: NB, 02: NPB, 03:PB)                                  
+			,WEB_SALE_PSB_YN                                          ,#{goodsIsECDisplay}      								전시EC매장노출여부  - WEB                             
+			,MBL_SALE_PSB_YN                                          ,#{goodsIsMCDisplay}      								전시MC매장노출여부  - 모바일                              
+			,GOODS_TP_CD                                              ,#{goodsTypeCode}        									상품유형코드(01: 일반상품, 02: 경품, 03: 사은품, 04:부속품 , 05: 렌탈상품, 06: 모바일상품)                                
+			,GOODS_CMPS_CD                                            ,#{goodsCompositionCode}  								상품구성코드  (01 일반상품, 02 패키지, 03 옵션 선택 상품 정보, 04 다중선택형)                            
 			,GOODS_NM                                                 ,REPLACE(REPLACE(#{goodsName},CHR(39),'‘'),CHR(34),'＂')   상품명
-			,ORPL_NM                                                  ,#{goodsOriginCountry}     					원산지명                              
-			,MFCP_NM                                                  ,#{goodsMakerName}    							제조사명                                   
-			,IMPR_NM                                                  ,#{goodsImportador}       					수입자명                               
-			,SFT_CERT_TGT_YN                                          ,#{goodsIsSafetyCertification}   		안전인증대상여부                        
-			,BYR_AGE_LMT_CD                                           ,#{goodsBuyerAgeLimitCode}  				구임자나이제한코드                             
-			,RSV_GOODS_YN                                             ,#{goodsIsReservation}         			예약판매여부                          
-			,QTY_LMT_GOODS_YN                                         ,#{goodsIsRestrictedSales}    			한정판매수량상품여부                           
-			,RGN_LMT_GOODS_YN                                         ,#{goodsIsRestrictedArea}        		지역한정상품여부                        
-			,BRGN_GOODS_YN                                            ,#{goodsIsBargain}         					흥정가능여부                              
-			,SMP_YN                                                   ,#{goodsIsSmartPic}              		스마트픽가능여부                        
-			,EVLM_ORD_PSB_YN                                          ,#{goodsIsOrderMass}    						대량주문가능여부                                 
-			,SALE_STAT_CD                                             ,#{goodsSalesCode}                	판매상태코드(01 판매중, 02 품절, 03 판매종료)                       
-			,SALE_STRT_DTIME                                          ,#{goodsSalesStartDate}      				판매시작일자                            
-			,SALE_END_DTIME                                           ,#{goodsSalesEndDate}               판매종료일자                    
-			,NGS_MRK_END_DT                                           ,#{goodsNewEndDate}                 신상품표시종료일자                     
-			,GOODS_PR_CONT                                            ,#{goodsPromotoTxt}            			상품홍보문구                          
-			,ADTN_IMG_CNT                                             ,#{goodsAccessoriesCount}           부가이미지 수                   
-			,ASSOC_SCH_KWD_NM                                         ,#{goodsAssocSearchKwd}   					연관검색키워드명                               
-			,SCH_EXP_YN                                               ,#{goodsIsSearch}             			통합검색노출여부                           
-			,SCH_KWD_NM                                               ,#{goodsSEOKeyword}            			seo키워드                          
-			,SCH_KWD_DESC                                             ,#{goodsSEODetail}                  seo상세설명                     
-			,MDL_LNCH_DT                                              ,#{goodsLaunchDate}                 출시일자                     
-			,MGMT_STAT_CD                                             ,#{goodsDiscontinueCode}            단종관리상태코드(01:정상 , 02:단종예정 , 03: 단종 , 04:단종예정, 05:폐종)                     
-			,MGMT_STAT_DT                                             ,#{goodsDiscontinueDate}            단종관리일자                     
-			,TDF_SCT_CD                                               ,#{goodsTaxDutyFreeSectionCode}  		과면세구분코드(01:과세 , 02:면세 , 03: 영세 , 04:해당없음)                        
-			,PNT_RSRV_YN                                              ,#{goodsIsLPoint}         					L포인트적립여부                               
-			,CLM_DSCNT_PSB_YN                                         ,#{goodsIsAskDiscount}              청구할인가능여부                     
-			,STAFF_DSCNT_PSB_YN                                       ,#{goodsIsStaffUse}                	임직원할인가능여부                      
-			,INV_MGMT_YN                                              ,#{goodsIsInventory}            		재고관리여부                         
-			,MAX_PUR_QTY_LMT_YN                                       ,#{goodsIsBuyLimit}    							구매수량제한여부                                  
-			,MIN_LMT_QTY                                              ,#{goodsBuyMin}             				최소구매제한수량                             
-			,MAX_LMT_QTY                                              ,#{goodsBuyMax}           					최대구매제한수량                               
-			,SHOP_INV_OWN_YN                                          ,#{goodsIsShopInvOwn}               매장재고보유여부                     
-			,INDIV_GOODS_SALE_PSB_YN                                  ,#{goodsIsSalesPiece}    						개별상품판매가능여부                                
-			,EVT_CPN_USE_PSB_YN                                       ,#{goodsIsEventCouponUse}           이벤트쿠폰사용가능여부                     
-			,PAY_MEAN_LMT_YN                                          ,#{goodsIsPayMeanLmt}             	결제수단제한여부                       
-			,DLV_TP_CD                                                ,#{goodsDeliveryTypeCode}           배송처리유형코드(01:하이마트물류 , 02:일반판매)                     
-			,DLV_MEAN_CD                                              ,#{goodsDeliveryMeansCode}          배송수단코드(01:직배 , 02:택배)                     
-			,EXCH_RTGS_LMT_TXT_CD                                     ,#{goodsExchangeLMTCD}              교환반품안내문구 BO                     
-			,EXCH_RTGS_GD_TXT_CD                                      ,#{goodsExchangeTxt}              	교환반품안내문구 FRONT                       
-			,EXCH_RTGS_PSB_YN                                         ,#{goodsIsExchange}     						교환반품가능여부                                 
-			,INST_GOODS_YN                                            ,#{goodsIsInstall}        					설치여부                               
-			,ATTCHD_GOODS_EXIT_YN                                     ,#{goodsIsAccessries}       				부속상품존재여부                             
-			,ATTCHD_GOODS_TP_CD                                       ,#{goodsAccessriesType}        			부속상품유형(01_연동기프트, 02_자재, 03_구성품)                          
-			,OMNI_CHL_GOODS_YN                                        ,#{goodsIsOmni}                 		옴니상품여부                         
-			,OMNI_CHL_GOODS_STRT_DT                                   ,#{goodsOmniStartDate}            	옴니상품시작일자                       
-			,OMNI_CHL_GOODS_END_DT                                    ,#{goodsOmniEndDate}                옴니상품종료일자                     
-			,CMCM_CD                                                  ,#{goodsMobileOperatiorCode}        모바일상품통신사코드                     
-			,RLS_PRC                                                  ,#{goodsMobilePrice}               	모바일출고가                      
-			,STD_PRC                                                  ,#{goodsHisisBasicPrice}  					하이시스 기준가                               
-			,MIN_PRC                                                  ,#{goodsHisisLimitPrice}           	하이시스 하한가                      
-			,MRGN_GRADE_CD                                            ,#{goodsHisisMarginGrade}           하이시스 마진등급                     
-			,RGF_AMT                                                  ,#{goodsRentRegPrice}          			임대상품 등록비                          
-			,INST_CST_AMT                                             ,#{goodsRentInstallPrice}     			임대상품 설치비                           
-			,MM_RNTL_AMT                                              ,#{goodsRentPrice}       						임대상품 임대비                                
-			,RNTL_TERM_MM_CNT                                         ,#{goodsRentMonth}                	임대상품 임대기간개월수                       
-			,STAFF_DSCNT_PRC                                          ,#{goodsStaffDiscount}        			임직원할인금액                           
-			,WEB_MAST_DISP_NO                                         ,#{goodsWebDispNo}                 	웹대표전시번호                      
-			,MBL_MAST_DISP_NO                                         ,#{goodsMobileDispNo}               모바일대표전시번호                     
-			,SUP_CORP_NO                                              ,#{goodsSupplyComponyCode}       		공급사코드                        
-			,CMCM_OPNN_YN                                             ,#{goodsIsMobile}       						모바일공기계판매여부                                 
+			,ORPL_NM                                                  ,#{goodsOriginCountry}     								원산지명                              
+			,MFCP_NM                                                  ,#{goodsMakerName}    									제조사명                                   
+			,IMPR_NM                                                  ,#{goodsImportador}       								수입자명                               
+			,SFT_CERT_TGT_YN                                          ,#{goodsIsSafetyCertification}   							안전인증대상여부                        
+			,BYR_AGE_LMT_CD                                           ,#{goodsBuyerAgeLimitCode}  								구임자나이제한코드                             
+			,RSV_GOODS_YN                                             ,#{goodsIsReservation}         							예약판매여부                          
+			,QTY_LMT_GOODS_YN                                         ,#{goodsIsRestrictedSales}    							한정판매수량상품여부                           
+			,RGN_LMT_GOODS_YN                                         ,#{goodsIsRestrictedArea}        							지역한정상품여부                        
+			,BRGN_GOODS_YN                                            ,#{goodsIsBargain}         								흥정가능여부                              
+			,SMP_YN                                                   ,#{goodsIsSmartPic}              							스마트픽가능여부                        
+			,EVLM_ORD_PSB_YN                                          ,#{goodsIsOrderMass}    									대량주문가능여부                                 
+			,SALE_STAT_CD                                             ,#{goodsSalesCode}                						판매상태코드(01 판매중, 02 품절, 03 판매종료)                       
+			,SALE_STRT_DTIME                                          ,#{goodsSalesStartDate}      								판매시작일자                            
+			,SALE_END_DTIME                                           ,#{goodsSalesEndDate}               						판매종료일자                    
+			,NGS_MRK_END_DT                                           ,#{goodsNewEndDate}                 						신상품표시종료일자                     
+			,GOODS_PR_CONT                                            ,#{goodsPromotoTxt}            							상품홍보문구                          
+			,ADTN_IMG_CNT                                             ,#{goodsAccessoriesCount}           						부가이미지 수                   
+			,ASSOC_SCH_KWD_NM                                         ,#{goodsAssocSearchKwd}   								연관검색키워드명                               
+			,SCH_EXP_YN                                               ,#{goodsIsSearch}             							통합검색노출여부                           
+			,SCH_KWD_NM                                               ,#{goodsSEOKeyword}            							seo키워드                          
+			,SCH_KWD_DESC                                             ,#{goodsSEODetail}                  						seo상세설명                     
+			,MDL_LNCH_DT                                              ,#{goodsLaunchDate}                 						출시일자                     
+			,MGMT_STAT_CD                                             ,#{goodsDiscontinueCode}            						단종관리상태코드(01:정상 , 02:단종예정 , 03: 단종 , 04:단종예정, 05:폐종)                     
+			,MGMT_STAT_DT                                             ,#{goodsDiscontinueDate}            						단종관리일자                     
+			,TDF_SCT_CD                                               ,#{goodsTaxDutyFreeSectionCode}  							과면세구분코드(01:과세 , 02:면세 , 03: 영세 , 04:해당없음)                        
+			,PNT_RSRV_YN                                              ,#{goodsIsLPoint}         								L포인트적립여부                               
+			,CLM_DSCNT_PSB_YN                                         ,#{goodsIsAskDiscount}             					 	청구할인가능여부                     
+			,STAFF_DSCNT_PSB_YN                                       ,#{goodsIsStaffUse}                						임직원할인가능여부                      
+			,INV_MGMT_YN                                              ,#{goodsIsInventory}            							재고관리여부                         
+			,MAX_PUR_QTY_LMT_YN                                       ,#{goodsIsBuyLimit}    									구매수량제한여부                                  
+			,MIN_LMT_QTY                                              ,#{goodsBuyMin}             								최소구매제한수량                             
+			,MAX_LMT_QTY                                              ,#{goodsBuyMax}           								최대구매제한수량                               
+			,SHOP_INV_OWN_YN                                          ,#{goodsIsShopInvOwn}               						매장재고보유여부                     
+			,INDIV_GOODS_SALE_PSB_YN                                  ,#{goodsIsSalesPiece}    									개별상품판매가능여부                                
+			,EVT_CPN_USE_PSB_YN                                       ,#{goodsIsEventCouponUse}           						이벤트쿠폰사용가능여부                     
+			,PAY_MEAN_LMT_YN                                          ,#{goodsIsPayMeanLmt}             						결제수단제한여부                       
+			,DLV_TP_CD                                                ,#{goodsDeliveryTypeCode}           						배송처리유형코드(01:하이마트물류 , 02:일반판매)                     
+			,DLV_MEAN_CD                                              ,#{goodsDeliveryMeansCode}          						배송수단코드(01:직배 , 02:택배)                     
+			,EXCH_RTGS_LMT_TXT_CD                                     ,#{goodsExchangeLMTCD}              						교환반품안내문구 BO                     
+			,EXCH_RTGS_GD_TXT_CD                                      ,#{goodsExchangeTxt}              						교환반품안내문구 FRONT                       
+			,EXCH_RTGS_PSB_YN                                         ,#{goodsIsExchange}     									교환반품가능여부                                 
+			,INST_GOODS_YN                                            ,#{goodsIsInstall}        								설치여부                               
+			,ATTCHD_GOODS_EXIT_YN                                     ,#{goodsIsAccessries}       								부속상품존재여부                             
+			,ATTCHD_GOODS_TP_CD                                       ,#{goodsAccessriesType}        							부속상품유형(01_연동기프트, 02_자재, 03_구성품)                          
+			,OMNI_CHL_GOODS_YN                                        ,#{goodsIsOmni}                 							옴니상품여부                         
+			,OMNI_CHL_GOODS_STRT_DT                                   ,#{goodsOmniStartDate}            						옴니상품시작일자                       
+			,OMNI_CHL_GOODS_END_DT                                    ,#{goodsOmniEndDate}                						옴니상품종료일자                     
+			,CMCM_CD                                                  ,#{goodsMobileOperatiorCode}        						모바일상품통신사코드                     
+			,RLS_PRC                                                  ,#{goodsMobilePrice}               						모바일출고가                      
+			,STD_PRC                                                  ,#{goodsHisisBasicPrice}  								하이시스 기준가                               
+			,MIN_PRC                                                  ,#{goodsHisisLimitPrice}           						하이시스 하한가                      
+			,MRGN_GRADE_CD                                            ,#{goodsHisisMarginGrade}           						하이시스 마진등급                     
+			,RGF_AMT                                                  ,#{goodsRentRegPrice}          							임대상품 등록비                          
+			,INST_CST_AMT                                             ,#{goodsRentInstallPrice}     							임대상품 설치비                           
+			,MM_RNTL_AMT                                              ,#{goodsRentPrice}       									임대상품 임대비                                
+			,RNTL_TERM_MM_CNT                                         ,#{goodsRentMonth}                						임대상품 임대기간개월수                       
+			,STAFF_DSCNT_PRC                                          ,#{goodsStaffDiscount}        							임직원할인금액                           
+			,WEB_MAST_DISP_NO                                         ,#{goodsWebDispNo}                 						웹대표전시번호                      
+			,MBL_MAST_DISP_NO                                         ,#{goodsMobileDispNo}               						모바일대표전시번호                     
+			,SUP_CORP_NO                                              ,#{goodsSupplyComponyCode}       							공급사코드                        
+			,CMCM_OPNN_YN                                             ,#{goodsIsMobile}       									모바일공기계판매여부                                 
 			                                                                                                                   
-			,DLV_STRT_FCST_DT                                         ,#{goodsDeliveryStratDate}     			상품 배송시작일                          
-			,SD_WCBL_COMM_YN                                          ,#{goodsIsBluetooth}         				근거리무선통신여부(블루투스)                            
-			,DEAL_GOODS_YN                                            ,#{goodsIsBigDeal}            			대박딜상품여부                           
-			,HLM_MBR_DSCNT_YN                                         ,#{goodsIsHLMdiscount}         			HLM 등급할인 가능여부                          
-			,HIMART_SVMN_RSRV_YN                                      ,#{goodsIsHimartSave}     					하이마트 적립금적립여부                               
+			,DLV_STRT_FCST_DT                                         ,#{goodsDeliveryStratDate}     							상품 배송시작일                          
+			,SD_WCBL_COMM_YN                                          ,#{goodsIsBluetooth}         								근거리무선통신여부(블루투스)                            
+			,DEAL_GOODS_YN                                            ,#{goodsIsBigDeal}            							대박딜상품여부                           
+			,HLM_MBR_DSCNT_YN                                         ,#{goodsIsHLMdiscount}         							HLM 등급할인 가능여부                          
+			,HIMART_SVMN_RSRV_YN                                      ,#{goodsIsHimartSave}     								하이마트 적립금적립여부                               
 			                                                                                                                   
-			,DLV_SUP_CORP_NO                                          ,#{goodsDLVCorpNo}              		MD공지MC                         
-			,GEN_GOODS_DLV_YN                                         ,#{goodsIsGENDlvYn}        					일반상품배송여부                              
-			,BADN_JDGM_MDTY_YN                                        ,#{goodsIsBadnYn}                   불량판정필수여부                     
-			,ADJ_PUR_PRC                                              ,#{goodsHisisADJ}	   								정산매입가(사입가)                                    
-			,RLS_PRC_IMMED_PAY_PSB_YN                                 ,#{goodsIsOneSale}                  모바일완납가능여부                     
+			,DLV_SUP_CORP_NO                                          ,#{goodsDLVCorpNo}              							MD공지MC                         
+			,GEN_GOODS_DLV_YN                                         ,#{goodsIsGENDlvYn}        								일반상품배송여부                              
+			,BADN_JDGM_MDTY_YN                                        ,#{goodsIsBadnYn}                   						불량판정필수여부                     
+			,ADJ_PUR_PRC                                              ,#{goodsHisisADJ}	   										정산매입가(사입가)                                    
+			,RLS_PRC_IMMED_PAY_PSB_YN                                 ,#{goodsIsOneSale}                  						모바일완납가능여부                     
 			                                                                                                                   
 			,MD_NTC_EXP_STRT_DTIME                                    ,#{goodsMDStartDate}	   						상품MD공지시작일                                
 			,MD_NTC_EXP_END_DTIME                                     ,#{goodsMDEndDate}                  상품MD공지종료일                     

@@ -1,0 +1,63 @@
+#. 패키지상품가격정보 PR_PKG_GOODS_PRC_HIST
+<update id="createPkgPriceHMS">
+    	MERGE INTO PR_PKG_GOODS_PRC_HIST A
+        USING ( SELECT 
+        				#{goodsRelaHistoryMainGoodsNo} STD_GOODS_NO,
+        				#{goodsRelaHistorySubGoodsNo} TGT_GOODS_NO,
+        				#{goodsRelaHistoryStartDate} HIST_STRT_DTIME
+     				 FROM DUAL ) B
+        	ON (
+        		A.STD_GOODS_NO = B.STD_GOODS_NO
+        		AND A.TGT_GOODS_NO = B.TGT_GOODS_NO
+        		AND A.HIST_STRT_DTIME = B.HIST_STRT_DTIME
+        		)
+        WHEN MATCHED THEN
+        UPDATE  SET  /* 파일명[파일설명] : goodsHMS.xml[예약판매정보 수정]
+        			  SQL ID : updatePkgPriceHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.05.27
+                    */ 
+            <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+            ,HIST_END_DTIME = #{goodsRelaHistoryEndDate}
+			,SALE_PRC = #{goodsRelaHistorySalePrice}
+			,DSCNT_TP_CD = #{goodsRelaHistoryDiscountTypeCode}
+			,DSCNT_RT = #{goodsRelaHistoryDiscountRate}
+			,STN_MRGN_YN = #{goodsMarginHistoryYn}
+        
+        WHEN NOT MATCHED THEN
+        
+        INSERT /* 파일명[파일설명] : goodsHMS.xml[예약판매정보 등록]
+                      SQL ID : createPkgPriceHMS
+                      업무파트: 상품
+                      작성자 :  evelyn    
+                      작성일시 : 2015.05.27
+                    */ 
+              (   
+              		STD_GOODS_NO
+					,TGT_GOODS_NO
+					,HIST_STRT_DTIME
+					,HIST_END_DTIME
+					,USE_YN
+					,SALE_PRC
+					,DSCNT_TP_CD
+					,DSCNT_RT
+					,ADJ_PUR_PRC
+					,STN_MRGN_YN
+					,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+					 )   
+        	VALUES
+        	( 
+        	#{goodsRelaHistoryMainGoodsNo}
+        	,#{goodsRelaHistorySubGoodsNo}
+        	,#{goodsRelaHistoryStartDate}
+        	,#{goodsRelaHistoryEndDate}
+        	,#{goodsRelaHistoryIsUse}
+        	,#{goodsRelaHistorySalePrice}
+        	,#{goodsRelaHistoryDiscountTypeCode}
+        	,#{goodsRelaHistoryDiscountRate}
+        	,#{goodsHisisADJ}
+        	,#{goodsMarginHistoryYn}
+        	,<include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>  
+        	 )
+    </update>

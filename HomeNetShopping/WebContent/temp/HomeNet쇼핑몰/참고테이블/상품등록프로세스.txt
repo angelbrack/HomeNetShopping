@@ -1,0 +1,42 @@
+// 1. 상품 생성
+- 01: 일반상품, 04:부속품 , 05: 렌탈상품, 06: 모바일상품 일때 판매기간설정(SALE_STRT_DTIME, SALE_END_DTIME)
+baseDao.update("goodsHMS.createGoodsHMSBase", goodsBase);
+
+// 2. 웹 전시카테고리 등록
+List<DisplayGoodsInfoBase> ecCateGrid = goodsBase.getEcCateGridInfoList();
+if (ecCateGrid != null && ecCateGrid.size() > 0) {
+    for (DisplayGoodsInfoBase ecCateGridObject : ecCateGrid) {
+        ecCateGridObject.setDisplayGoodsInfoGoodsNo(goodsBase.getGoodsNo());
+        baseDao.update("goodsHMS.createDisplayGoodsInfoHMS", ecCateGridObject);
+    }
+}
+
+// 3. 모바일 전시카테고리 등록
+List<DisplayGoodsInfoBase> mcCateGrid = goodsBase.getMcCateGridInfoList();
+if (mcCateGrid != null && mcCateGrid.size() > 0) {
+    for (DisplayGoodsInfoBase mcCateGridObject : mcCateGrid) {
+        mcCateGridObject.setDisplayGoodsInfoGoodsNo(goodsBase.getGoodsNo());
+        baseDao.update("goodsHMS.createDisplayGoodsInfoHMS", mcCateGridObject);
+    }
+}
+
+// 4.1 부속상품 등록
+- 대상상품번호 와 정산대상상품번호는 동일
+- 구성수량은 1개로 등록
+
+if ("01".equals(goodsBase.getGoodsTypeCode())) { // 일반상품
+
+    if ("Y".equals(goodsBase.getGoodsIsAccessries())) {
+        // 부속상품 등록
+        List<GoodsRelaBase> accessriesGrid = goodsBase.getAccessriesGridInfoList();
+        if (accessriesGrid != null && accessriesGrid.size() > 0) {
+            for (GoodsRelaBase accGridObject : accessriesGrid) {
+                accGridObject.setGoodsRelaMainGoodsNo(goodsBase.getGoodsNo());
+                accGridObject.setGoodsRelaGoodsCount("1");
+
+                baseDao.create("goodsHMS.createAccessriesGoodsRelaInfoHMS", accGridObject);
+            }
+        }
+    }
+
+}

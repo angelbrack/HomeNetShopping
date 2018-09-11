@@ -1,4 +1,76 @@
 #. 전시카테고리
+
+<sql id="displayCateInfoCondition">
+  	FROM
+		( SELECT ROWNUM AS RNUM , 
+			a.*
+			FROM (
+					
+					SELECT 
+					  K.USE_YN AS displayGoodsInfoIsUse
+					  ,K.DISP_PRIO_RNK AS displayGoodsInfoRank
+					  ,K.DISP_NO AS displayGoodsInfoDisplayNo
+					  ,K.GOODS_NO AS displayGoodsInfoGoodsNo					  
+					  	<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(cateDisplayCode)">
+							<if test="cateDisplayCode == 'EC1'">
+					  		,NVL( (SELECT 'Y' FROM PR_GOODS_BASE 
+					  					WHERE WEB_MAST_DISP_NO = K.DISP_NO 
+					  					AND GOODS_NO = K.GOODS_NO
+					  					AND ROWNUM = 1) ,'N') as displayIsMain
+					    	</if>
+					    	<if test="cateDisplayCode == 'MC1'">
+					  		,NVL( (SELECT 'Y' FROM PR_GOODS_BASE 
+					  					WHERE MBL_MAST_DISP_NO = K.DISP_NO 
+					  					AND GOODS_NO = K.GOODS_NO
+					  					AND ROWNUM = 1) ,'N') as displayIsMain
+					    	</if>
+				    	</if>
+					  ,SUBSTR( L.DISP_NM,2,LENGTH(L.DISP_NM)) displayCateName
+					FROM PR_DISP_GOODS_INFO K , -- 전시카테고리
+					(
+				      SELECT 
+				        DISP_NO,SYS_CONNECT_BY_PATH(DISP_NM,'>') DISP_NM
+				      FROM PR_DISP_SHOP_BASE -- 전시기본정보
+				      CONNECT BY PRIOR DISP_NO = UPR_DISP_NO
+				      START WITH UPR_DISP_NO IS NULL
+				      ORDER SIBLINGS BY DISP_NO
+				    ) L
+				    , PR_DISP_SHOP_BASE B -- 전시기본정보
+					
+					WHERE K.DISP_NO = L.DISP_NO
+					AND K.DISP_NO = B.DISP_NO
+					AND K.GOODS_NO = #{cateGoodsNo}
+					<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(cateDisplayCode)">
+						<if test="cateDisplayCode == 'EC1'">
+				  		AND B.DPML_NO = 'EC1'
+				    	</if>
+				    	<if test="cateDisplayCode == 'MC1'">
+				  		AND B.DPML_NO = 'MC1'
+				    	</if>
+			    	</if>
+					
+					ORDER BY K.DISP_PRIO_RNK ASC
+						
+				) a
+			
+  </sql>
+<select id="getDisplayCateInfo" resultType="ehimart.app.domain.bo.goods.model.DisplayGoodsInfoBase">
+    	
+   	/* 파일명[파일설명] : Goods.xml[전시카테고리조회목록]
+	  SQL ID : getDisplayCateInfo
+	   업무파트: 상품
+	   작성자 :	 evelyn	
+	   작성일시 : 2015.04.21
+	*/ 
+    	
+		SELECT 
+			list.*
+		<include refid="goodsHMS.displayCateInfoCondition"/>
+				WHERE 	ROWNUM &lt;= #{lastItemNo}
+			) list
+		WHERE 	RNUM &gt;= #{firstItemNo}
+  </select>
+
 <select id="getGoodsCateConrList" resultType="ehimart.app.domain.bo.goods.model.DisplayCateBase">
     	SELECT 
     	/* 파일명[파일설명] : Goods.xml[상품 전시카테고리 조회 - 코너]
@@ -47,6 +119,155 @@ PR_DISP_SHOP_BASE
 	DISP_NO				전시번호
 	UPR_DISP_NO			상위 전시번호
 	DISP_NM				전시명
+	
+<insert id="createDisplayShop">
+  
+  		<!--  <selectKey keyProperty="displayNo" resultType="String" order="BEFORE">
+      
+            SELECT PR_DISP_SHOP_BASE_SQ01.NEXTVAL FROM DUAL
+        
+    </selectKey> -->
+    
+        INSERT INTO /* 파일명[파일설명] : DisplayMgmt.xml[전시매장 등록]
+                      SQL ID : createDisplayShop
+                      업무파트: 전시
+                      작성자 :  김수원    
+                      작성일시 : 2015.04.13 수정 (aki)
+                    */
+        PR_DISP_SHOP_BASE
+        (
+            DISP_NO,								전시번호 #{displayNo},
+            DPML_NO,					            	전시몰번호 #{displayMallNo},
+            DISP_NM,                                전시명 REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            DISP_GNB_NM,                            전시 GNB명 REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            GNB_EXP_METH_CD,                        전시 GNB노출방식(01 이미지, 02 TXT) #{gnbExposeMethodCode},
+            DISP_TIT_NM,                            전시 제목명 REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            DISP_TIT_EXP_METH_CD,                   전시제목노출방식(01 이미지, 02 TXT) #{displayTitleExposeMethodCode},
+            SHOP_TP_CD,                             매장유형코드(01 카테고리매장, 02 비정형매장) #{shopTypeCode},
+            SHOP_DESC_CONT,                         매장설명내용 #{shopDescContent},
+            
+    <if test="depthNo &gt; 1">
+      
+                UPR_DISP_NO,                        상위전시번호 #{upperDisplayNo},
+            
+    </if>
+    
+            DPTH_NO,                                깊이번호 #{depthNo},
+            DISP_PRIO_RNK,                          전시우선순위 #{displayPriorRank},
+            USE_YN,                                 사용여부 #{useYn},
+            DISP_YN,                                전시여부 #{displayYn},
+        <!--     ptnr_oppb_yn, -->                  <!-- 'Y', -->
+            TLWT_LF_YN,                             최하위리프여부 #{lowestLeafYn},
+            PRT_TP_CD,                              출력유형코드(01 템플릿지정, 02 URL이동, 03 비정형매장이동, 04 카테고리매장이동, 05 기획전이동, 06 연결없음) #{printTypeCode},
+            LST_SORT_CD,                            리스트정렬코드(01 신상품순, 02 인기상품순, 03 낮은가격순, 04 높은가격순, 05 상품평순) #{listSortCode},
+            MOV_FRME_CD,                            이동프레임코드(01 blank_새창, 02 parent_부모창, 03 self_내부링크, 04 top_상위) #{moveFrameCode},
+            LNK_URL_ADDR,                           연결 url주소 #{linkUrlAddress},
+            LNK_SPDP_HH_NO,                         연결 기획전 전시번호 #{linkSpecialDisplayNo},
+            DISP_LRG_NO,                            전시대번호 #{displayLargeNo}
+            DISP_MID_NO,                            전시중번호 #{displayMiddleNo}
+            DISP_SML_NO,                            전시소번호 #{displaySmallNo}
+            DISP_THN_NO,                            전시세번호 #{displayXSmallNo}
+            MENU_USE_YN,                            메뉴사용여부 #{menuUseYn},
+            TMPL_NO,                                템플릿번호 #{templateNo},
+            PPP_SN,                                 팝업일련번호 #{pppSn},
+           <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+      <!--       mdm_by_lnk_shop_url_addr -->
+        )   
+        VALUES
+        (
+            #{displayNo},
+            #{displayMallNo},
+            REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            #{gnbExposeMethodCode},
+            REPLACE(REPLACE(#{displayName},CHR(39),'‘'),CHR(34),'＂'),
+            #{displayTitleExposeMethodCode},
+            #{shopTypeCode},
+            #{shopDescContent},
+            
+    <if test="depthNo &gt; 1">
+      
+                #{upperDisplayNo},
+            
+    </if>
+    
+            #{depthNo},
+            #{displayPriorRank},
+            #{useYn},
+            #{displayYn},
+    <!--         'Y', -->
+            #{lowestLeafYn},
+            #{printTypeCode},
+            #{listSortCode},
+            #{moveFrameCode},
+            #{linkUrlAddress},
+            #{linkSpecialDisplayNo},
+            
+    <if test="depthNo == 1">
+      
+                #{displayNo},
+            
+    </if>
+    <if test="depthNo != 1">
+      
+                #{displayLargeNo},
+            
+    </if>
+    <if test="depthNo == 2">
+      
+                #{displayNo},
+            
+    </if>
+    <if test="depthNo != 2">
+      
+                #{displayMiddleNo},
+            
+    </if>
+    <if test="depthNo == 3">
+      
+                #{displayNo},
+            
+    </if>
+    <if test="depthNo != 3">
+      
+                #{displaySmallNo},
+            
+    </if>
+    <if test="depthNo == 4">
+      
+                #{displayNo},
+            
+    </if>
+    
+    <if test="depthNo != 4">
+      
+                #{displayXSmallNo},
+            
+    </if>
+   <!--  <if test="depthNo != 4">
+      
+                #{displayXSmallNo},
+            
+    </if>
+    <if test="depthNo == 5">
+      
+                #{displayNo},
+            
+    </if>
+    <if test="depthNo != 5">
+      
+                #{displayXxSmallNo},
+            
+    </if> -->
+    
+            #{menuUseYn},
+            #{templateNo},
+            #{pppSn},
+         <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+         <!--    #{mediumByLinkShopUrlAddress} -->
+        )
+    
+  </insert>
 
 <insert id="createDispCate">
 	
