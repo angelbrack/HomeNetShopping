@@ -92,13 +92,18 @@
         <div class="login-box-body">
             <p class="login-box-msg">Sign in to start your session</p>
             <div class="radio">
-                <label>
-                    <input type="radio" name="mbrDc" id="mbrDcK" value="K">고대인
+            	<label>
+                    <input type="radio" name="mbrDc" id="mbrDc01" value="01" checked="checked">관리자
                 </label>
                 <label>
-                    <input type="radio" name="mbrDc" id="mbrDcG" value="G" checked="checked">일반관리자
+                    <input type="radio" name="mbrDc" id="mbrDc02" value="02">본부
                 </label>
-            
+                <label>
+                    <input type="radio" name="mbrDc" id="mbrDc03" value="03">대리점
+                </label>
+            	<label>
+                    <input type="radio" name="mbrDc" id="mbrDc04" value="04">공급업체
+                </label>
                 
             </div>
 

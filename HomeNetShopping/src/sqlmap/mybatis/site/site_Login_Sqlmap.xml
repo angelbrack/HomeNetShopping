@@ -5,50 +5,20 @@
     <select id="selectLogin_S01" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
         /* homenet.shop.login.service.LoginService.selectLogin_S01 */
 		SELECT 
-		        nw101tl.user_no AS userNo
-		      , nw101tl.login_id AS loginId
-		      , NVL(nw101tl.pwd_fail_tms,0) AS pwdFailTms
-		      , CASE WHEN TO_CHAR(SYSDATE-90, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.pwd_chng_dttm THEN 'N' ELSE 'Y' END AS pwdChgYn
-		      , CASE WHEN TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.optr_expy_dttm THEN 'Y' ELSE 'N' END AS optrExpireYn
-		      , nw101tl.optr_auth_cd AS optrAuthCd
-		      , nw100tl.user_nm AS userNm
+		        A.user_no AS userNo
+		      , A.login_id AS loginId
+		      , A.login_pwd AS loginPwd
+		      , NVL(A.pwd_fail_tms,0) AS pwdFailTms
+		      , CASE WHEN TO_CHAR(SYSDATE-90, 'yyyyMMddHH24miss') <![CDATA[ > ]]> A.pwd_chng_dttm THEN 'N' ELSE 'Y' END AS pwdChgYn
+		      , CASE WHEN TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') <![CDATA[ > ]]> A.optr_expy_dttm THEN 'Y' ELSE 'N' END AS optrExpireYn
+		      , A.optr_auth_cd AS optrAuthCd
+		      , A.user_nm AS userNm
 		      , TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') AS loginTime
 		    FROM 
-		        NWRK101TL nw101tl
-		      , NWRK100TL nw100tl
-		   WHERE nw101tl.login_id = #{loginId}
-		     AND nw101tl.mbr_dc = 'G'
-		     AND nw101tl.optr_auth_cd = '01'
-		     AND nw101tl.scde_yn = 'N'
-		     AND nw101tl.login_pwd = CRYPTMD5(#{loginPwd})
-		     AND nw101tl.user_no = nw100tl.user_no  
-    </select>
-    
-    <select id="selectLogin_S02" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
-        /* homenet.shop.login.service.LoginService.selectLogin_S02 */
-		SELECT 
-		        nw101tl.user_no AS userNo
-		      , nw101tl.login_id AS loginId
-		      , nw101tl.pwd_fail_tms AS pwdFailTms
-		      , CASE WHEN TO_CHAR(SYSDATE-90, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.pwd_chng_dttm THEN 'N' ELSE 'Y' END AS pwdChgYn
-		      , CASE WHEN TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') <![CDATA[ > ]]> nw101tl.optr_expy_dttm THEN 'Y' ELSE 'N' END AS optrExpireYn
-		      , nw101tl.optr_auth_cd AS optrAuthCd
-		      , wrk002.WRK002_KOR_NM AS userNm
-		      , TO_CHAR(SYSDATE, 'yyyyMMddHH24miss') AS loginTime
-		    FROM 
-		        NWRK101TL nw101tl
-		      , NWRK100TL nw100tl
-		      , WRK002VW wrk002
-		   WHERE nw101tl.login_id = #{loginId}
-		     AND nw101tl.mbr_dc = 'K'
-		     <if test='optrAuthCd != null and optrAuthCd != ""'>
-		        AND nw101tl.optr_auth_cd = '01'
-		     </if>
-		     AND wrk002.wrk002_join_dept = 'Y'
-		     AND nw101tl.login_id = wrk002.wrk002_one_id
-		     AND nw101tl.user_no = nw100tl.user_no  
-		     AND nw101tl.scde_yn = 'N'
-		     AND wrk002.wrk002_encode_pw = CRYPTMD5(#{loginPwd})
+		        TB_USER A
+		   WHERE A.login_id = #{loginId}
+		     AND A.mbr_dc = #{mbrDc	}
+		     AND A.scde_yn = 'N'
     </select>
 
     <select id="selectLogin_S03" parameterType="string" resultType="homenet.shop.login.service.RoleVO">
@@ -66,12 +36,12 @@
 
     <insert id="insertLogin_I01" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.insertLogin_I01 */
-		INSERT INTO NWRK151TL (
+		INSERT INTO TB_ADMIN_CONN_LOG (
 		    user_no, cnnt_log_no, mbl_yn
 		  , cnnt_y, cnnt_m, cnnt_d, cnnt_tmhh, cnnt_dttm
 		  , cnip, cnnt_info, os_cd
 		) VALUES (
-		    #{userNo}, SQ_NWRK151TL1.NEXTVAL, #{mblYn}
+		    #{userNo}, SQ_TB_ADMIN_CONN_LOG1.NEXTVAL, #{mblYn}
 		  , TO_CHAR(sysdate, 'yyyy'), TO_CHAR(sysdate, 'MM'), TO_CHAR(sysdate, 'dd'), TO_CHAR(sysdate, 'HH24'), TO_CHAR(sysdate, 'yyyyMMddHH24miss')
 		  , #{remoteAddr}, #{cnntInfo}, #{osCd}
 		)
@@ -117,13 +87,13 @@
 
     <select id="selectLogin_S06" parameterType="homenet.shop.login.service.UserLoginVO" resultType="java.lang.String">
         /* homenet.shop.login.service.LoginService.selectLogin_S06 */
-		SELECT SQ_NWRK100TL1.NEXTVAL FROM DUAL
+		SELECT SQ_TB_USER1.NEXTVAL FROM DUAL
     </select>
     
 
     <insert id="insertLogin_I02" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.insertLogin_I02 */
-		INSERT INTO nwrk100tl (
+		INSERT INTO TB_USER (
 		        user_no, user_nm
 		      , rps_stno
 		      , wrt_pn_no, wrt_pn_ip, wrt_dttm
@@ -155,7 +125,7 @@
     
     <update id="updateLogin_U01" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.updateLogin_U01 */
-		UPDATE NWRK100TL
+		UPDATE TB_USER
 		SET user_nm = #{userNm}
 		  , rps_stno = #{rpsStno}
 		  , updt_pn_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N') 
@@ -185,7 +155,7 @@
 		      , nwrk110.del_yn AS nwrk200tlDelYn
 		    FROM 
 		        NWRK101TL nwrk101
-		    INNER JOIN NWRK100TL nwrk100
+		    INNER JOIN TB_USER nwrk100
 		        ON nwrk101.user_no = nwrk100.user_no
 		    LEFT OUTER JOIN NWRK110TL nwrk110
 		        ON nwrk100.etr_no = nwrk110.etr_no 

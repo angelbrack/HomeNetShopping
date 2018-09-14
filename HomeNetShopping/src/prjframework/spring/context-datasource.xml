@@ -39,8 +39,8 @@
         <!-- <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/> -->
         <property name="driverClassName" value="core.log.jdbc.driver.OracleDriver"/>
         <property name="url" value="jdbc:oracle:thin:@1.234.205.38:1521:orcl"/>
-        <property name="username" value="korea_prj"/>
-        <property name="password" value="korea_prj"/>
+        <property name="username" value="gn"/>
+        <property name="password" value="gn"/>
     </bean>
     
     <!-- <bean id="SMSDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

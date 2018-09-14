@@ -19,9 +19,7 @@ public interface LoginService {
 	//public void updateLoginFailCnt(UserLoginVO vo) throws Exception;
 	
 	
-	public UserLoginVO selectAdmLoginGInfo(UserLoginVO vo) throws Exception;
-	
-	public UserLoginVO selectAdmLoginKInfo(UserLoginVO vo) throws Exception;
+	public UserLoginVO selectAdmLoginInfo(UserLoginVO vo) throws Exception;
 	
 	public EgovMap selectScafLoginKInfo(UserLoginVO vo) throws Exception ;
 	

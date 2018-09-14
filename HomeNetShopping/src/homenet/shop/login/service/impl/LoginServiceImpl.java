@@ -37,11 +37,7 @@ public class LoginServiceImpl implements LoginService {
 	@Resource(name = "prjframeworkCmmnFileService")
 	private PrjframeworkCmmnFileService prjframeworkCmmnFileService;
 	
-	public UserLoginVO selectAdmLoginKInfo(UserLoginVO vo) throws Exception {
-		return (UserLoginVO) mybatisDataAccessDAO.select("homenet.shop.login.service.LoginService.selectLogin_S02", vo);
-	}
-	
-	public UserLoginVO selectAdmLoginGInfo(UserLoginVO vo) throws Exception {
+	public UserLoginVO selectAdmLoginInfo(UserLoginVO vo) throws Exception {
 		return (UserLoginVO) mybatisDataAccessDAO.select("homenet.shop.login.service.LoginService.selectLogin_S01", vo);
 	}
 	
