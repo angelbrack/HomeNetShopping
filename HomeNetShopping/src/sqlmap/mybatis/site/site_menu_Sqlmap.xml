@@ -68,26 +68,26 @@
 	
 	<insert id="createMenu" parameterType="MenuVO">
 		/* site.menu.service.MenuService.createMenu */
-		<selectKey keyProperty="seqMenuNo" resultType="string"> 
-			SELECT SQ_OPTR_MENU.NEXTVAL FROM DUAL
+		<selectKey keyProperty="seqMenuNo" resultType="String" order="BEFORE">
+			SELECT TO_CHAR(SQ_OPTR_MENU.NEXTVAL) FROM DUAL
 		</selectKey> 
 		
-			/* createMenu*/
-			INSERT INTO TB_OPTR_MENU_INFO    
-				(MENU_NO, HGRK_MENU_NO, MENU_NM, OPTR_PGM_NO, 
-				SORT_OR, USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
-				UPDT_PN_NO, UPDT_PN_IP, UPDT_DTTM) 
-			SELECT #{seqMenuNo}, #{hgrkMenuNo}, #{menuNm}, #{optrPgmNo},
-				NVL((SELECT MAX(SORT_OR) + 1 FROM TB_OPTR_MENU_INFO WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1), #{useYn}, #{loginUserNo}, #{remoteAddr},
-				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
-			FROM TB_OPTR_MENU_INFO
-			WHERE MENU_NO = #{hgrkMenuNo}
+		/* createMenu*/
+		INSERT INTO TB_OPTR_MENU_INFO    
+			(MENU_NO, HGRK_MENU_NO, MENU_NM, OPTR_PGM_NO, 
+			SORT_OR, USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
+			UPDT_PN_NO, UPDT_PN_IP, UPDT_DTTM) 
+		SELECT #{seqMenuNo}, #{hgrkMenuNo}, #{menuNm}, #{optrPgmNo},
+			NVL((SELECT MAX(SORT_OR) + 1 FROM TB_OPTR_MENU_INFO WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1), #{useYn}, #{loginUserNo}, #{remoteAddr},
+			TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+		FROM TB_OPTR_MENU_INFO
+		WHERE MENU_NO = #{hgrkMenuNo}
 	</insert>
 	
 	<insert id="createMenu2" parameterType="MenuVO">
 		/* site.menu.service.MenuService.createMenu2 */
-		<selectKey keyProperty="seqMenuNo" resultType="string"> 
-			SELECT SQ_OPTR_MENU.NEXTVAL FROM DUAL
+		<selectKey keyProperty="seqMenuNo" resultType="String"  order="BEFORE">
+			SELECT TO_CHAR(SQ_OPTR_MENU.NEXTVAL) FROM DUAL
 		</selectKey> 
 		
 		/* createMenu2*/

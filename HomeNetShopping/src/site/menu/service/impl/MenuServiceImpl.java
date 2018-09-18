@@ -35,15 +35,21 @@ public class MenuServiceImpl extends AbstractServiceImpl implements MenuService 
 
 	// 메뉴목록 생성
 	public String createMenu(MenuVO menuVO) {
-		String newMenuNo;
-		newMenuNo = (String) mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu",menuVO);
+		String newMenuNo = null;
+		mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu",menuVO);
+		
+		newMenuNo = menuVO.getMenuNo();
+		
 		return newMenuNo; 
 	}
 	
 	// 메뉴목록 생성
 	public String createMenu2(MenuVO menuVO) {
-		String newMenuNo;
-		newMenuNo = (String) mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu2",menuVO);
+		String newMenuNo = null;
+		mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu2",menuVO);
+		
+		newMenuNo = menuVO.getMenuNo();
+		
 		return newMenuNo; 
 	}
 

@@ -19,7 +19,7 @@
 			
 	<insert id="insertRole" parameterType="userRoleVO">
 		/* site.userRole.service.UserRoleService.insertRole*/
-		<selectKey keyProperty="optrAuthNo" resultType="string"> 
+		<selectKey keyProperty="optrAuthNo" resultType="string"  order="BEFORE">
 			SELECT SQ_OPTR_AUTH.NEXTVAL FROM DUAL
 		</selectKey> 	
 		INSERT INTO TB_OPTR_AUTH (

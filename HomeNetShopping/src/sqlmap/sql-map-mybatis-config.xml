@@ -25,5 +25,8 @@
 		<typeAlias alias="authSearchVO" 			type="site.auth.service.AuthSearchVO"						/>
 		<typeAlias alias="authVO" 					type="site.auth.service.AuthVO"								/>
     	
+    	<!-- 브랜드 -->
+    	<typeAlias alias="brndBaseVO" 				type="homenet.shop.brand.service.BrndBaseVO"				/>
+    	<typeAlias alias="brndImgInfoVO" 			type="homenet.shop.brand.service.BrndImgInfoVO"				/>
     </typeAliases>
 </configuration>

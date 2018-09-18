@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="homenet.shop.brand.service.BrandService">
+	
+	<!-- 브랜드 정보 List -->
+	<resultMap id="brandList" type="brndBaseVO"> 
+		<result property="brndNo" 		 		 		column="BRND_NO" 				/> <!-- 브랜드번호 				-->
+		<result property="brndNm" 		 		 		column="BRND_NM" 				/> <!-- 브랜드명 				-->
+		<result property="brndKorNm" 	 		 		column="BRND_KOR_NM" 			/> <!-- 브랜드한글명 				-->
+		<result property="brndEngNm" 	 		 		column="BRND_ENG_NM" 			/> <!-- 브랜드영문명 				-->
+		<result property="brndDescCont" 		 		column="BRND_DESC_CONT" 		/> <!-- 브랜드상세설명 			-->
+		
+		<result property="wrtPnNo"  					column="WRT_PN_NO" 				/> <!-- 작성자번호 				-->
+		<result property="wrtPnIp"  					column="WRT_PN_IP" 				/> <!-- 작성자IP 				-->
+		<result property="wrtDttm"  					column="WRT_DTTM" 				/> <!-- 작성일시 				-->
+		<result property="updtPnNo"  					column="UPDT_PN_NO" 			/> <!-- 수정자번호 				--> 
+		<result property="updtPnIp"  					column="UPDT_PN_IP" 			/> <!-- 수정자IP 				-->   
+		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				--> 
+	</resultMap>
+	
+	<!-- 브랜드 상세정보 -->
+	<resultMap id="brandInfo" type="brndBaseVO" extends="brandList">
+		<collection  column="{brndNo=BRND_NO}" property="BrndImgInfoList"  	ofType="homenet.shop.brand.service.BrndImgInfoVO" select="selectBrandImgList" />	<!-- 브랜드 이미지 정보 리스트 -->
+	</resultMap>
+	
+	<!-- 브랜드 이미지 정보 List -->
+	<resultMap id="brandImgList" type="brndImgInfoVO"> 
+		<result property="imgNo" 		 		 		column="IMG_NO" 				/> <!-- 이미지번호 				-->
+		<result property="brndNo" 		 		 		column="BRND_NO" 				/> <!-- 브랜드번호 				-->
+		<result property="imgNm" 		 		 		column="IMG_NM" 				/> <!-- 이미지명 				-->
+		<result property="imgPathNm" 	 		 		column="IMG_PATH_NM" 			/> <!-- 이미지경로명 				-->
+		<result property="imgFileNm" 	 		 		column="IMG_FILE_NM" 			/> <!-- 파일명 					-->
+		
+		<result property="wrtPnNo"  					column="WRT_PN_NO" 				/> <!-- 작성자번호 				-->
+		<result property="wrtPnIp"  					column="WRT_PN_IP" 				/> <!-- 작성자IP 				-->
+		<result property="wrtDttm"  					column="WRT_DTTM" 				/> <!-- 작성일시 				-->
+		<result property="updtPnNo"  					column="UPDT_PN_NO" 			/> <!-- 수정자번호 				--> 
+		<result property="updtPnIp"  					column="UPDT_PN_IP" 			/> <!-- 수정자IP 				-->   
+		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				--> 
+	</resultMap>
+	
+	<!-- 브랜드 정보 검색조건 -->
+	<sql id="searchBrand">
+		<where>
+			<if test='searchWord != null and searchWord != ""'>
+				<choose>
+					<when test='searchKey == "000"'>
+						AND A.BRND_NM LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "001"'>
+						AND A.BRND_DESC_CONT LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "002"'>
+						AND ( A.BRND_NM LIKE '%'||#{searchWord }||'%'
+								OR A.BRND_NM LIKE '%'||#{searchWord }||'%' )
+					</when>
+					<otherwise>
+						AND ( A.BRND_NM LIKE '%'||#{searchWord }||'%'
+								OR A.BRND_NM LIKE '%'||#{searchWord }||'%' )
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 브랜드 정보 ORDER -->
+	<sql id="orderBrand">
+		<choose>
+			<when test='orderCol == "wrtDttm" '>
+			ORDER BY A.WRT_DTTM
+			</when>
+			<when test='orderCol == "updtDttm" '>
+			ORDER BY A.UPDT_DTTM
+			</when>
+			<otherwise>
+			ORDER BY A.WRT_DTTM
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='orderSort == "desc" '>
+			DESC
+			</when>
+			<when test='orderSort == "asc" '>
+			ASC
+			</when>
+			<otherwise>
+			DESC
+			</otherwise>
+		</choose> 
+	</sql>
+	
+	<select id="selectBrandList" parameterType="brndBaseVO" resultMap="brandList">
+		/* homenet.shop.brand.service.BrandService.selectBrandList 브랜드 정보 조회*/
+		SELECT 
+			  Z.*
+		FROM (
+			SELECT 
+				  ROWNUM RNUM
+				, X.*
+				, COUNT(0) OVER () AS TOTAL_COUNT   
+			FROM (
+				SELECT
+					  A.BRND_NO
+					, A.BRND_NM
+					, A.BRND_KOR_NM
+					, A.BRND_ENG_NM
+					, A.BRND_DESC_CONT
+					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+				FROM TB_BRND_BASE A
+				<include refid="searchBrand" />
+			    <include refid="orderBrand" />			
+	   		) X
+	   	)Z	
+	   	<if test='recordCountPerPage != null and recordCountPerPage != 0'>
+	   	<![CDATA[	   	
+	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
+		]]>
+		</if>
+	</select>
+	
+	<select id="selectBrandInfo" parameterType="brndBaseVO" resultMap="brandInfo">
+		/* homenet.shop.brand.service.BrandService.selectBrandList 브랜드 상세정보 조회*/
+		SELECT
+			  A.BRND_NO
+			, A.BRND_NM
+			, A.BRND_KOR_NM
+			, A.BRND_ENG_NM
+			, A.BRND_DESC_CONT
+			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+		FROM TB_BRND_BASE A
+		WHERE A.BRND_NO = #{brndNo	}
+	</select>
+	
+	<select id="selectBrandImgList" parameterType="brndImgInfoVO" resultMap="brandImgList">
+		/* homenet.shop.brand.service.BrandService.selectBrandImgList 브랜드 이미지 정보 조회*/
+		SELECT 
+			  Z.*
+		FROM (
+			SELECT 
+				  ROWNUM RNUM
+				, X.*
+				, COUNT(0) OVER () AS TOTAL_COUNT   
+			FROM (
+				SELECT
+					  A.IMG_NO
+					, A.BRND_NO
+					, A.IMG_NM
+					, A.IMG_PATH_NM
+					, A.IMG_FILE_NM
+					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+				FROM TB_BRND_BASE A
+				WHERE A.BRND_NO = #{brndNo	}		
+	   		) X
+	   	)Z	
+	   	<if test='recordCountPerPage != null and recordCountPerPage != 0'>
+	   	<![CDATA[	   	
+	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
+		]]>
+		</if>
+	</select>
+	
+</mapper>
