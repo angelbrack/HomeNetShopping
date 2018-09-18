@@ -1,0 +1,29 @@
+CREATE OR REPLACE FUNCTION FN_COMM_NM(V_GRP_CD_ID VARCHAR2, V_CD_ID VARCHAR2) RETURN VARCHAR2 IS
+
+V_RETURN TB_COMM_CD.CD_NM%type;
+/******************************************************************************
+   NAME:       FN_COMM_NM
+   PURPOSE:   공통코드 가져오기
+
+   REVISIONS:
+   Ver        Date        Author           Description
+   ---------  ----------  ---------------  ------------------------------------
+   1.0        2018-09-18          1. Created this function.
+
+******************************************************************************/
+BEGIN
+
+   SELECT CD_NM
+   INTO V_RETURN
+   FROM TB_COMM_CD
+   WHERE GRP_CD_ID = V_GRP_CD_ID
+     AND CD_ID = V_CD_ID;
+
+   RETURN V_RETURN;
+
+   EXCEPTION
+     WHEN NO_DATA_FOUND THEN
+     RETURN NULL;
+
+END FN_COMM_NM;
+/

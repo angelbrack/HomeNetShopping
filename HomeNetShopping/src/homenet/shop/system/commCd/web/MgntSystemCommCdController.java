@@ -25,6 +25,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import prjframework.common.annotation.ValidSaveToken;
 import prjframework.common.util.PageMove;
 import prjframework.common.util.SessionUtil;
+import prjframework.common.util.WebUtil;
 import site.code.service.CodeService;
 import site.code.service.CodeVO;
 
@@ -125,7 +126,9 @@ public class MgntSystemCommCdController {
 		/** 관리자 로그인 체크 end */
 		
 		codeVO.setWrtPnNo(userNo);
+		codeVO.setWrtPnIp(WebUtil.getRemoteAddr(request));
 		codeVO.setUpdtPnNo(userNo);
+		codeVO.setUpdtPnIp(WebUtil.getRemoteAddr(request));
 
 		//VO Valid check
 		if(bindingResult.hasErrors()) {

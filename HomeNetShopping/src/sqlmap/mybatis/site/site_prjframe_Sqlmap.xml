@@ -5,13 +5,13 @@
 	<select id="selectTopMenuList" parameterType="dataMap" resultType="dataMap">
 		/** site.home.menu.service.SiteHomeMenuService.selectTopMenuList **/
 		SELECT DISTINCT A.SORT_OR ORD, A.MENU_NO, A.MENU_NM, 'Y' ROLYN
-		  FROM NWRK253TL A
+		  FROM TB_OPTR_MENU_INFO A
 		 WHERE A.USE_YN = 'Y'
-		   AND A.HGRK_MENU_NO = (SELECT MENU_NO FROM NWRK253TL
+		   AND A.HGRK_MENU_NO = (SELECT MENU_NO FROM TB_OPTR_MENU_INFO
                                   WHERE HGRK_MENU_NO = 0)
 		START WITH OPTR_PGM_NO IN (
 		    SELECT B.OPTR_PGM_NO
-		    FROM NWRK252TL B
+		    FROM TB_OPTR_PGM_AUTH B
 		    WHERE B.OPTR_PGM_NO = A.OPTR_PGM_NO
 		    AND B.OPTR_AUTH_NO = #{optrAuthNo}
 		)
@@ -39,20 +39,20 @@
 		              , level as lvl
 		              , rownum as row_or
 		           FROM
-		                NWRK253TL A
+		                TB_OPTR_MENU_INFO A
 		start with MENU_NO = #{hgrkMenuNo}
 		connect by prior MENU_NO = HGRK_MENU_NO
 		ORDER SIBLINGS BY A.SORT_OR
 		) A
-		LEFT OUTER JOIN NWRK250TL C ON C.OPTR_PGM_NO = A.OPTR_PGM_NO
+		LEFT OUTER JOIN TB_OPTR_PGM_INFO C ON C.OPTR_PGM_NO = A.OPTR_PGM_NO
 		WHERE use_yn = 'Y'
 		  and EXISTS (
 		            SELECT 'X'
 		                FROM 
 		                    (
 		                    SELECT menu_no, menu_nm
-		                        FROM NWRK253TL
-		                    start with menu_no IN (select menu_no from NWRK252TL WHERE NWRK252TL.OPTR_PGM_NO = NWRK253TL.OPTR_PGM_NO AND NWRK252TL.OPTR_AUTH_NO = '0')
+		                        FROM TB_OPTR_MENU_INFO
+		                    start with menu_no IN (select menu_no from TB_OPTR_PGM_AUTH WHERE TB_OPTR_PGM_AUTH.OPTR_PGM_NO = TB_OPTR_MENU_INFO.OPTR_PGM_NO AND TB_OPTR_PGM_AUTH.OPTR_AUTH_NO = '0')
 		                    connect by prior HGRK_MENU_NO = MENU_NO
 		                    ) X
 		               WHERE x.menu_no = a.menu_no
@@ -65,13 +65,13 @@
     	/** site.home.menu.service.SiteHomeMenuService.selectCheckAuthList **/
 		SELECT '1' INFO_TP, /** 프로그램 기본 정보 조회 **/
 		    A.OPTR_PGM_NO, A.OPTR_PGM_ID, A.OPTR_PGM_URL_V, A.OPTR_PGM_GRP_NO, A.OPTR_PGM_NM
-		FROM NWRK250TL A
+		FROM TB_OPTR_PGM_INFO A
 		WHERE A.OPTR_PGM_URL_V LIKE #{requestUri}||'%'
 		    AND ROWNUM = 1
 		UNION ALL
 		SELECT '2' INFO_TP, /** 사용자 권한 조회 **/
 		    A.OPTR_PGM_NO, A.OPTR_PGM_ID, A.OPTR_PGM_URL_V, A.OPTR_PGM_GRP_NO, A.OPTR_PGM_NM
-		FROM NWRK250TL A, NWRK252TL B
+		FROM TB_OPTR_PGM_INFO A, TB_OPTR_PGM_AUTH B
 		WHERE A.OPTR_PGM_URL_V LIKE #{requestUri}||'%'
 		    AND A.OPTR_PGM_NO = B.OPTR_PGM_NO    
 		    AND B.OPTR_AUTH_NO = #{optrAuthNo}
@@ -93,7 +93,7 @@
 	<select id="selectMainEduUserList" resultType="dataMap">
 		/** site.home.menu.service.SiteHomeMenuService.selectMainEduUserList **/
 		SELECT FN_COMM_NM('560', EDU_OPTR_APPR_STAT_CD) AS EDU_OPTR_APPR_STAT_NM, EDU_OPTR_APPR_STAT_CD, COUNT(1) CNT
-		  FROM NWRK101TL
+		  FROM TB_USER
 		 WHERE EDU_OPTR_APPR_STAT_CD IS NOT NULL
 		   AND SUBSTR(EDU_OPTR_APPR_DTM, 1, 4) = TO_CHAR(SYSDATE, 'YYYY')
 		 GROUP BY EDU_OPTR_APPR_STAT_CD
@@ -103,15 +103,15 @@
 	<select id="selectMainUserList" resultType="dataMap">
 		/** site.home.menu.service.SiteHomeMenuService.selectMainUserList **/
 		SELECT '총인원' GBN, COUNT(1) CNT
-           FROM NWRK100TL
+           FROM TB_USER
          UNION ALL
          SELECT '종사자' GBN, COUNT(1) CNT
-           FROM NWRK100TL A, NWRK101TL B
+           FROM TB_USER A, TB_USER B
           WHERE A.USER_NO = B.USER_NO
             AND B.MBR_YN = 'Y'
          UNION ALL  
          SELECT '교육기간 담당자' GBN, COUNT(1) CNT
-           FROM NWRK101TL
+           FROM TB_USER
           WHERE EDU_OPTR_APPR_STAT_CD = '2'
 	</select>
 </mapper>

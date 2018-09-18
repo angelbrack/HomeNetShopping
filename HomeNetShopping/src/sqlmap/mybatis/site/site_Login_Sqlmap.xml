@@ -27,7 +27,7 @@
 		        B.OPTR_AUTH_NO AS optrAuthNo
 		      , B.OPTR_AUTH_NM AS optrAuthNm
 		      , B.USER_AUTH_CD AS userAuthCd
-		  FROM NWRK254TL A, NWRK251TL B, NWRK101TL C
+		  FROM TB_OPTR_PRSN_AUTH A, TB_OPTR_AUTH B, TB_USER C
 		 WHERE A.USER_NO = C.USER_NO
 		   AND A.OPTR_AUTH_NO = B.OPTR_AUTH_NO         
 		   AND C.USER_NO = #{userNo}
@@ -53,7 +53,7 @@
 		        wrk002_one_id
 		      , wrk002_kor_nm
 		      , wrk002_std_id
-		      , (SELECT user_no FROM NWRK101TL nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
+		      , (SELECT user_no FROM TB_USER nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
 		    FROM WRK002VW
 		   WHERE wrk002_one_id = #{loginId}
 		     AND (wrk002_encode_pw = CRYPTMD5(#{loginPwd}) OR wrk002_encode_pw = CRYPTMD5(#{loginPwd}))
@@ -66,7 +66,7 @@
 		        wrk002_one_id
 		      , wrk002_kor_nm
 		      , wrk002_std_id
-		      , (SELECT user_no FROM NWRK101TL nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
+		      , (SELECT user_no FROM TB_USER nw101 WHERE nw101.login_id = WRK002VW.wrk002_one_id AND nw101.mbr_dc = 'K' AND nw101.SCDE_YN = 'N') AS user_no
 		    FROM WRK002VW
 		   WHERE wrk002_one_id = #{loginId}
 		     AND wrk002_join_dept = 'Y'
@@ -78,7 +78,7 @@
     <select id="selectLogin_S05" parameterType="homenet.shop.login.service.UserLoginVO" resultType="java.lang.Integer">
         /* homenet.shop.login.service.LoginService.selectLogin_S05 */
 		SELECT COUNT(user_no)
-		    FROM NWRK101TL
+		    FROM TB_USER
 		   WHERE login_id = #{loginId}
 		     AND MBR_DC = 'K'
 		     AND SCDE_YN = 'N'
@@ -108,7 +108,7 @@
 
     <insert id="insertLogin_I03" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.insertLogin_I03 */
-		INSERT INTO NWRK101TL (
+		INSERT INTO TB_USER (
 		        user_no, login_id
 		      , tmp_pwd_yn, mbr_dc
 		      , optr_auth_cd, scde_yn
@@ -128,10 +128,10 @@
 		UPDATE TB_USER
 		SET user_nm = #{userNm}
 		  , rps_stno = #{rpsStno}
-		  , updt_pn_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N') 
+		  , updt_pn_no = (SELECT user_no FROM TB_USER WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N') 
 		  , updt_pn_ip = #{remoteAddr}
 		  , updt_dttm = TO_CHAR(SYSDATE, 'yyyyMMddHH24miss')
-		WHERE user_no = (SELECT user_no FROM NWRK101TL WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N')
+		WHERE user_no = (SELECT user_no FROM TB_USER WHERE login_id = #{loginId} AND MBR_DC = 'K' AND SCDE_YN = 'N')
     </update>
 
     <select id="selectLogin_S07" parameterType="homenet.shop.login.service.UserLoginVO" resultType="homenet.shop.login.service.UserLoginVO">
@@ -154,7 +154,7 @@
 		      , nwrk110.biz_jang_no AS bizJangNo
 		      , nwrk110.del_yn AS nwrk200tlDelYn
 		    FROM 
-		        NWRK101TL nwrk101
+		        TB_USER nwrk101
 		    INNER JOIN TB_USER nwrk100
 		        ON nwrk101.user_no = nwrk100.user_no
 		    LEFT OUTER JOIN NWRK110TL nwrk110
@@ -180,7 +180,7 @@
 
     <update id="updateLogin_U02" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.updateLogin_U01 */
-		UPDATE NWRK101TL
+		UPDATE TB_USER
 		    SET pwd_fail_tms = NVL(pwd_fail_tms, 0)+1
 		WHERE login_id = #{loginId}
 		  AND mbr_dc = #{loginDiv}
@@ -188,7 +188,7 @@
     
     <update id="updateLogin_U03" parameterType="homenet.shop.login.service.UserLoginVO" >
         /* homenet.shop.login.service.LoginService.updateLogin_U01 */
-		UPDATE NWRK101TL
+		UPDATE TB_USER
 		    SET pwd_fail_tms = 0
 		WHERE user_no = #{userNo}
     </update>

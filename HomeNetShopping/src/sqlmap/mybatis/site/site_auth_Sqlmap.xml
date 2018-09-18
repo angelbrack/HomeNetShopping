@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.auth.service.AuthService">
+
+    <resultMap type="dataMap" id="userSearchMap">
+        <result column="LOGIN_ID"           property="loginId"/>
+        <result column="USER_NM"            property="userNm"/>
+        <result column="CD_INS_NM"          property="cdInsNm" />
+        <result column="OPTR_AUTH_LIST"     property="optrAuthList" jdbcType="CLOB"  javaType="java.lang.String"/>
+        <result column="USER_NO"            property="userNo"/>
+        <result column="USER_AUTH_NM"       property="userAuthNm"/>
+        <result column="BLNG_NM"            property="blngNm"/>
+    </resultMap>
+
+	<select id="site.auth.service.AuthService.selectUserList" parameterType="authSearchVO" resultType="dataMap">
+		/* site.auth.service.AuthService.selectUserList */
+		SELECT 
+			  Z.LOGIN_ID
+			, Z.USER_NM  
+			, JOIN_STR(CURSOR(SELECT BB.OPTR_AUTH_NM as OPTR_AUTH_LIST
+			                      FROM TB_OPTR_PRSN_AUTH AA, TB_OPTR_AUTH BB
+			                     WHERE AA.OPTR_AUTH_NO = BB.OPTR_AUTH_NO
+						           AND AA.USER_NO = Z.USER_NO
+		                 ), ','
+		          ) AS  OPTR_AUTH_LIST
+		    , Z.USER_NO
+		    , FN_COMM_NM('USER_AUTH_CD' , Z.OPTR_AUTH_CD) AS USER_AUTH_NM
+		    , FN_COMM_NM('MBR_DC' , Z.MBR_DC) AS MBR_DC_NM
+		    , Z.OPTR_EXPY_DTTM
+			, Z.PWD_FAIL_TMS
+			, Z.PWD_CHNG_DTTM
+		    , (
+		    	SELECT 
+		    		MAX(X.CNNT_DTTM) 
+		    	FROM TB_ADMIN_CONN_LOG X 
+		    	WHERE X.USER_NO = Z.USER_NO
+		    ) AS LAST_LOGIN_DTTM
+		FROM (
+			SELECT X.*, ROWNUM RO
+			FROM (
+				SELECT	
+					  A.LOGIN_ID
+					, A.USER_NM			        
+			        , A.USER_NO
+			        , A.OPTR_AUTH_CD
+			        , A.MBR_DC
+			        , A.OPTR_EXPY_DTTM
+			        , A.PWD_FAIL_TMS
+			        , A.PWD_CHNG_DTTM
+				FROM	TB_USER A
+				<where>
+					<if test='searchOptrAuthNo != null and searchOptrAuthNo != "" '>
+						AND A.OPTR_AUTH_CD = #{searchOptrAuthNo	}
+					</if>
+					<if test='searchMbrDc != null and searchMbrDc != "" '>
+						AND A.MBR_DC = #searchMbrDc#
+					</if>
+					<if test='searchWord != null and searchWord != "" '>
+						<if test='searchKey eq "userNm" '>
+							AND UPPER(A.USER_NM) LIKE UPPER('%' || #{searchWord	} ||'%')
+						</if>
+						<if test='searchKey eq "userId" '>
+							AND UPPER(A.LOGIN_ID) LIKE UPPER('%' || #{searchWord } ||'%')
+						</if>
+					</if>
+				</where>
+				ORDER BY A.USER_NM
+			) X
+		) Z
+		WHERE RO BETWEEN #{firstIndex } + 1 AND #{firstIndex } + #{recordCountPerPage }
+	</select>
+
+	<select id="site.auth.service.AuthService.selectUserListTotCnt" parameterType="authSearchVO" resultType="int">
+		/* site.auth.service.AuthService.selectUserListTotCnt */
+		SELECT	
+			COUNT(A.USER_NO) AS COUNT
+		FROM	TB_USER A
+		<where>
+			<if test='searchOptrAuthNo != null and searchOptrAuthNo != "" '>
+				AND A.OPTR_AUTH_CD = #{searchOptrAuthNo	}
+			</if>
+			<if test='searchMbrDc != null and searchMbrDc != "" '>
+				AND A.MBR_DC = #searchMbrDc#
+			</if>
+			<if test='searchWord != null and searchWord != "" '>
+				<if test='searchKey eq "userNm" '>
+					AND UPPER(A.USER_NM) LIKE UPPER('%' || #{searchWord	} ||'%')
+				</if>
+				<if test='searchKey eq "userId" '>
+					AND UPPER(A.LOGIN_ID) LIKE UPPER('%' || #{searchWord } ||'%')
+				</if>
+			</if>
+		</where>
+	</select>
+
+
+	<select id="site.auth.service.AuthService.getAuthRoleList" parameterType="authSearchVO" resultType="dataMap">
+		/* site.auth.service.AuthService.getAuthRoleList */
+		SELECT	
+			  A.OPTR_AUTH_NO
+			, A.OPTR_AUTH_NM
+			, A.USE_YN
+			, A.USER_AUTH_CD
+		FROM	TB_OPTR_AUTH A
+		ORDER BY A.OPTR_AUTH_NM ASC
+	</select>
+
+	<select id="site.auth.service.AuthService.selectUserInfo" parameterType="authSearchVO" resultType="dataMap" >
+		/* site.auth.service.AuthService.selectUserInfo */
+		SELECT  
+			  A.USER_NO
+            , A.LOGIN_ID
+            , A.USER_NM
+            , TO_CHAR(TO_DATE(A.OPTR_EXPY_DTTM, 'YYYYMMDDHH24MISS'), 'YYYY.MM.DD') OPTR_EXPY_DTTM
+            , A.OPTR_AUTH_CD
+            , FN_COMM_NM('MBR_DC', b.MBR_DC) AS MBR_NM
+            , A.MBR_DC
+        FROM    TB_USER A
+		WHERE	A.USER_NO = #{searchUserNo }
+	</select>
+
+	<select id="site.auth.service.AuthService.selectAuthRole" parameterType="authSearchVO" resultType="dataMap">
+		/* site.auth.service.AuthService.selectAuthRole */
+		SELECT	
+			  A.OPTR_AUTH_NO
+   			, A.OPTR_AUTH_NM
+           	, B.USER_NO
+			, A.USER_AUTH_CD
+		FROM	TB_OPTR_AUTH A 
+			LEFT OUTER JOIN TB_OPTR_PRSN_AUTH B ON A.OPTR_AUTH_NO = B.OPTR_AUTH_NO AND B.USER_NO = #{searchUserNo }
+	</select>
+
+    <delete id="site.auth.service.AuthService.deleteUserAuth" parameterType="authVO">
+    	/* site.auth.service.AuthService.deleteUserAuth */
+        DELETE FROM TB_OPTR_PRSN_AUTH WHERE USER_NO = #userNo#
+    </delete>
+
+    <insert id="site.auth.service.AuthService.insertUserAuth" parameterType="authVO">
+    	/* site.auth.service.AuthService.insertUserAuth */
+        INSERT INTO TB_OPTR_PRSN_AUTH (
+			  USER_NO
+			, OPTR_AUTH_NO
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{userNo }
+			, #{optrAuthNoEach }
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+    </insert>
+
+    <update id="site.auth.service.AuthService.updateUserInfo" parameterType="authVO">
+    	/* site.auth.service.AuthService.updateUserInfo */
+		UPDATE TB_USER SET	
+			  OPTR_AUTH_CD 		= #{optrAuthCd }
+			, OPTR_EXPY_DTTM 	= REPLACE(#{optrExpyDttm }, '.') || '235959'
+			<include refid="homenet.shop.comm.common.service.CommonService.updateCommon" />
+		WHERE
+			USER_NO = #{userNo }
+    </update>
+
+</mapper>

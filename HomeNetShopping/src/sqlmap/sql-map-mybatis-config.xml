@@ -19,7 +19,11 @@
 		<typeAlias  alias="indvInfoVO" 				type="site.common.service.impl.IndvInfoVO"					/>
 
 		<!-- 게시판 -->
-		<typeAlias 	alias="boardVO" 				type="homenet.shop.brd.common.service.BoardVO"					/>
+		<typeAlias 	alias="boardVO" 				type="homenet.shop.brd.common.service.BoardVO"				/>
+		
+		<!-- 권한 -->
+		<typeAlias alias="authSearchVO" 			type="site.auth.service.AuthSearchVO"						/>
+		<typeAlias alias="authVO" 					type="site.auth.service.AuthVO"								/>
     	
     </typeAliases>
 </configuration>

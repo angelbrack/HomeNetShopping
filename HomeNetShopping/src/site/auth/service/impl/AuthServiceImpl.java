@@ -24,30 +24,30 @@ public class AuthServiceImpl extends AbstractServiceImpl implements AuthService 
 	// 사용자 권한 목록 조회
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> selectUserList(AuthSearchVO searchVo) throws Exception {
-		return mybatisDataAccessDAO.list("AuthService.selectUserList", searchVo) ;
+		return mybatisDataAccessDAO.list("site.auth.service.AuthService.selectUserList", searchVo) ;
 	}
 	
 	// 사용자 권한 목록 전체 건수 조회
 	public int selectUserListTotCnt(AuthSearchVO searchVo) throws Exception {
-		return (Integer) mybatisDataAccessDAO.select("AuthService.selectUserListTotCnt", searchVo);
+		return (Integer) mybatisDataAccessDAO.select("site.auth.service.AuthService.selectUserListTotCnt", searchVo);
 	}
 	
 	// 사용자 정보 조회
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> selectUserInfo(AuthSearchVO searchVo) throws Exception {
-		return (Map<String, Object>) mybatisDataAccessDAO.selectByPk("AuthService.selectUserInfo", searchVo) ;
+		return (Map<String, Object>) mybatisDataAccessDAO.selectByPk("site.auth.service.AuthService.selectUserInfo", searchVo) ;
 	}
 	
 	// 권한 전체 조회
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getAuthRoleList(AuthSearchVO vo) throws Exception {
-		return mybatisDataAccessDAO.list("AuthService.getAuthRoleList", vo) ;
+		return mybatisDataAccessDAO.list("site.auth.service.AuthService.getAuthRoleList", vo) ;
 	}
 	
 	// 사용자 권한 조회
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> selectAuthRole(AuthSearchVO searchVo) throws Exception {
-		return mybatisDataAccessDAO.list("AuthService.selectAuthRole", searchVo) ;
+		return mybatisDataAccessDAO.list("site.auth.service.AuthService.selectAuthRole", searchVo) ;
 	}
 
 	// 사용자 승인상태 조회
@@ -57,7 +57,7 @@ public class AuthServiceImpl extends AbstractServiceImpl implements AuthService 
 		// 프로퍼티에서 코드값을 가지고 와서 세팅
 		searchVo.setSearchCdId("160");
 		
-		return mybatisDataAccessDAO.list("AuthService.selectUserOptrApprStatCd", searchVo) ;
+		return mybatisDataAccessDAO.list("site.auth.service.AuthService.selectUserOptrApprStatCd", searchVo) ;
 	}
 
 	// 사용자 정보 수정
@@ -67,7 +67,7 @@ public class AuthServiceImpl extends AbstractServiceImpl implements AuthService 
 		String resultString = null;
 		
 		// 권한 삭제
-		mybatisDataAccessDAO.delete("AuthService.deleteUserAuth",authVO);	
+		mybatisDataAccessDAO.delete("site.auth.service.AuthService.deleteUserAuth",authVO);	
 		
 		// 권한 추가
 		// optrAuthNo 만큼 루프 돌면서 신규 권한 저장
@@ -79,7 +79,7 @@ public class AuthServiceImpl extends AbstractServiceImpl implements AuthService 
     		for (int i = 0; i < optrAuthNosCount; i++) {
     			authVO.setOptrAuthNoEach(optrAuthNos[i]);
     			
-    			resultString = (String) mybatisDataAccessDAO.insert("AuthService.insertUserAuth", authVO);
+    			resultString = (String) mybatisDataAccessDAO.insert("site.auth.service.AuthService.insertUserAuth", authVO);
     			
     			if (StringUtils.isEmpty(resultString)) {
     				resultCount += 1;    				
@@ -89,7 +89,7 @@ public class AuthServiceImpl extends AbstractServiceImpl implements AuthService 
     	}
 		
 		// 사용자정보 저장
-		resultCount += mybatisDataAccessDAO.update("AuthService.updateUserInfo",authVO);	
+		resultCount += mybatisDataAccessDAO.update("site.auth.service.AuthService.updateUserInfo",authVO);	
 		
 		return resultCount;
 	}

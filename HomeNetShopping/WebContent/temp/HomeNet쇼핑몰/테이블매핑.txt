@@ -16,6 +16,8 @@ NWRK254TL		: TB_OPTR_PRSN_AUTH						운영자개인권한
 NWRK110TL		: TB_COMPANY							기업정보
 
 NWRK100TL		: TB_USER								회원정보
+NWRK101TL		: TB_USER
+
 NWRK102TL		: TB_USER_TEL							사용자전화번호
 NWRK103TL		: TB_USER_CTPLC							사용자연락처
 NWRK150TL		: TB_USER_CONN_LOG						사용자 접속로그

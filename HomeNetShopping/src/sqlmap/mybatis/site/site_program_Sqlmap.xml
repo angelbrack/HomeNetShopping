@@ -13,14 +13,14 @@
 								WRT_DTTM,
 								OPTR_PGM_GRP_NO,
 								MENU_USE_YN 
-						FROM	NWRK250TL
+						FROM	TB_OPTR_PGM_INFO
 						<where>
 							<if test='(searchKey != null and searchKey != "") and (searchWord != null and searchWord != "") '>
 								AND DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
 							</if>
 							<if test='(searchOptrAuthNo != null and searchOptrAuthNo != "") '>
 								AND OPTR_PGM_NO NOT IN (SELECT OPTR_PGM_NO
-					                          FROM NWRK252TL
+					                          FROM TB_OPTR_PGM_AUTH
 					                          WHERE OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))	
 							</if>
 							<if test='(searchMenuUseYn != null and searchMenuUseYn != "") and searchMenuUseYn eq "0" '>
@@ -38,7 +38,7 @@
 					  </isNotEmpty>
 					  <isNotEmpty prepend="AND" property="searchOptrAuthNo">
 					  OPTR_PGM_NO NOT IN (SELECT OPTR_PGM_NO
-					                          FROM NWRK252TL
+					                          FROM TB_OPTR_PGM_AUTH
 					                          WHERE OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))				  
 					  </isNotEmpty>
 					  <isNotEmpty property="searchMenuUseYn">
@@ -59,14 +59,14 @@
 	<select id="selectProgramListTotCnt" parameterType="programVO" resultType="int">
 		/* site.program.service.ProgramService.selectProgramListTotCnt */
 		SELECT	COUNT(*)
-		FROM	NWRK250TL
+		FROM	TB_OPTR_PGM_INFO
 		<where>
 			<if test='(searchKey != null and searchKey != "") and (searchWord != null and searchWord != "") '>
 				AND DECODE(#{searchKey},'2',OPTR_PGM_ID,'3',OPTR_PGM_URL_V, OPTR_PGM_NM) LIKE '%'||#{searchWord}||'%'
 			</if>
 			<if test='(searchOptrAuthNo != null and searchOptrAuthNo != "") '>
 				AND OPTR_PGM_NO NOT IN (SELECT	OPTR_PGM_NO
-		    	                    FROM	NWRK252TL
+		    	                    FROM	TB_OPTR_PGM_AUTH
 		        	                WHERE	OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))		
 			</if>
 			<if test='(searchMenuUseYn != null and searchMenuUseYn != "") and searchMenuUseYn eq "0" '>
@@ -84,7 +84,7 @@
 		</isNotEmpty>
 		<isNotEmpty prepend="AND" property="searchOptrAuthNo">
 			OPTR_PGM_NO NOT IN (SELECT	OPTR_PGM_NO
-		    	                    FROM	NWRK252TL
+		    	                    FROM	TB_OPTR_PGM_AUTH
 		        	                WHERE	OPTR_AUTH_NO = TO_NUMBER(#{searchOptrAuthNo}))				  
 		</isNotEmpty>
 		<isNotEmpty property="searchMenuUseYn">
@@ -104,7 +104,7 @@
 	
 	<insert id="insertProgramHandle" parameterType="programVO">
 		/* site.program.service.ProgramService.insertProgramHandle */
-		INSERT INTO NWRK250TL (
+		INSERT INTO TB_OPTR_PGM_INFO (
 		   OPTR_PGM_NO, OPTR_PGM_ID, OPTR_PGM_URL_V, 
 		   OPTR_PGM_GRP_NO, OPTR_PGM_NM,
 		   MENU_USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
@@ -119,7 +119,7 @@
 	
 	<update id="updateProgramHandle" parameterType="programVO">
 		/* site.program.service.ProgramService.updateProgramHandle */
-		UPDATE NWRK250TL
+		UPDATE TB_OPTR_PGM_INFO
 		SET    OPTR_PGM_NM 	   	= #{optrPgmNm},
 			   OPTR_PGM_ID     	= #{optrPgmId},
 		       OPTR_PGM_URL_V   = #{optrPgmUrlV},
@@ -141,20 +141,20 @@
 			MENU_USE_YN,
 			OPTR_PGM_NM
 		FROM 
-			NWRK250TL A
+			TB_OPTR_PGM_INFO A
 		WHERE 
 			A.OPTR_PGM_NO = #{optrPgmNo}
 	</select>
 	
 	<delete id="deleteProgram" parameterType="programVO">
 		/* site.program.service.ProgramService.deleteProgram */
-		DELETE FROM NWRK250TL
+		DELETE FROM TB_OPTR_PGM_INFO
 		WHERE OPTR_PGM_NO = #{optrPgmNo}
 	</delete>
 	
 	<delete id="deleteProgramAuth" parameterType="programVO">
 		/* site.program.service.ProgramService.deleteProgramAuth */
-		DELETE FROM NWRK252TL
+		DELETE FROM TB_OPTR_PGM_AUTH
 		WHERE OPTR_PGM_NO = #{optrPgmNo}
 	</delete>
 </mapper>

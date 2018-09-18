@@ -23,9 +23,9 @@
 		              , A.OPTR_PGM_NO
 		              , A.MENU_NM
 		              , A.USE_YN
-		              , (SELECT X.OPTR_PGM_NM FROM NWRK250TL X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
+		              , (SELECT X.OPTR_PGM_NM FROM TB_OPTR_PGM_INFO X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
 		           FROM
-		                NWRK253TL A
+		                TB_OPTR_MENU_INFO A
 		           	<where>
 						<if test='(useYn != null and useYn != "") '>
 							AND A.USE_YN = #{useYn}
@@ -44,7 +44,7 @@
 	<update id="update" parameterType="MenuVO">
 		/* site.menu.service.MenuService.update */
 		UPDATE 
-			NWRK253TL
+			TB_OPTR_MENU_INFO
 		SET
 			MENU_NM 	= #{menuNm},
 			OPTR_PGM_NO	= #{optrPgmNo},
@@ -60,7 +60,7 @@
 	<delete id="deleteMenu" parameterType="MenuVO">
 		/* site.menu.service.MenuService.deleteMenu */
 		DELETE 
-			NWRK253TL
+			TB_OPTR_MENU_INFO
 		WHERE 
 			MENU_NO = #{menuNo}
 	</delete>
@@ -73,14 +73,14 @@
 		</selectKey> 
 		
 			/* createMenu*/
-			INSERT INTO NWRK253TL    
+			INSERT INTO TB_OPTR_MENU_INFO    
 				(MENU_NO, HGRK_MENU_NO, MENU_NM, OPTR_PGM_NO, 
 				SORT_OR, USE_YN, WRT_PN_NO, WRT_PN_IP, WRT_DTTM, 
 				UPDT_PN_NO, UPDT_PN_IP, UPDT_DTTM) 
 			SELECT #{seqMenuNo}, #{hgrkMenuNo}, #{menuNm}, #{optrPgmNo},
-				NVL((SELECT MAX(SORT_OR) + 1 FROM NWRK253TL WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1), #{useYn}, #{loginUserNo}, #{remoteAddr},
+				NVL((SELECT MAX(SORT_OR) + 1 FROM TB_OPTR_MENU_INFO WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1), #{useYn}, #{loginUserNo}, #{remoteAddr},
 				TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
-			FROM NWRK253TL
+			FROM TB_OPTR_MENU_INFO
 			WHERE MENU_NO = #{hgrkMenuNo}
 	</insert>
 	
@@ -91,7 +91,7 @@
 		</selectKey> 
 		
 		/* createMenu2*/
-		INSERT INTO NWRK253TL	
+		INSERT INTO TB_OPTR_MENU_INFO	
 				(MENU_NO,
 				HGRK_MENU_NO,
 				MENU_NM,
@@ -108,7 +108,7 @@
 				#{hgrkMenuNo},
 				#{menuNm},
 				#{optrPgmNo},
-				NVL((SELECT MAX(SORT_OR) + 1 FROM NWRK253TL WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1),
+				NVL((SELECT MAX(SORT_OR) + 1 FROM TB_OPTR_MENU_INFO WHERE HGRK_MENU_NO = #{hgrkMenuNo}), 1),
 				#{useYn},
 				#{loginUserNo},
 				#{remoteAddr},
@@ -136,8 +136,8 @@
 								A.OPTR_PGM_NO,
 								A.MENU_NM,
 								A.USE_YN,
-								(SELECT X.OPTR_PGM_NM FROM NWRK250TL X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
-						FROM	NWRK253TL A
+								(SELECT X.OPTR_PGM_NM FROM TB_OPTR_PGM_INFO X WHERE X.OPTR_PGM_NO = A.OPTR_PGM_NO) AS OPTR_PGM_NM
+						FROM	TB_OPTR_MENU_INFO A
 						)Z
 				WHERE	MENU_NO = #{menuNo}
 				START WITH Z.HGRK_MENU_NO = 0

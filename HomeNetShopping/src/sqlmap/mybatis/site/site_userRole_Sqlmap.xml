@@ -13,7 +13,7 @@
 		        T.UPDT_PN_NO,
 				T.UPDT_DTTM,
 				FN_COMM_NM('550', T.USER_AUTH_CD) USER_AUTH_NM
-		FROM	NWRK251TL T
+		FROM	TB_OPTR_AUTH T
 		ORDER BY T.OPTR_AUTH_NO ASC
 	</select>
 			
@@ -22,7 +22,7 @@
 		<selectKey keyProperty="optrAuthNo" resultType="string"> 
 			SELECT SQ_OPTR_AUTH.NEXTVAL FROM DUAL
 		</selectKey> 	
-		INSERT INTO NWRK251TL (
+		INSERT INTO TB_OPTR_AUTH (
 		   OPTR_AUTH_NO, USE_YN, OPTR_AUTH_NM, 
 		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,
 		   UPDT_DTTM, USER_AUTH_CD) 
@@ -35,7 +35,7 @@
 	
 	<insert id="insertRoleSub" parameterType="hmap">
 		/* site.userRole.service.UserRoleService.insertRoleSub*/
-		INSERT INTO NWRK251TL_SUB (
+		INSERT INTO TB_OPTR_AUTH_SUB (
 		   GLB_TP_CD, OPTR_AUTH_NO, OPTR_AUTH_NM, 
 		   WRT_PN_NO, WRT_DTTM, UPDT_PN_NO, UPDT_DTTM) 
 		VALUES (
@@ -46,7 +46,7 @@
 	
 	<update id="updateRole" parameterType="userRoleVO">
 		/* site.userRole.service.UserRoleService.updateRole*/
-		UPDATE NWRK251TL
+		UPDATE TB_OPTR_AUTH
 		SET    OPTR_AUTH_NM 	= #{optrAuthNm},
 			   USE_YN       	= #{useYn},
 		       UPDT_PN_NO  		= #{loginUserNo},
@@ -58,7 +58,7 @@
 	
 	<update id="updateRoleSub" parameterType="hmap">
 		/* site.userRole.service.UserRoleService.updateRoleSub*/
-		UPDATE NWRK251TL_SUB
+		UPDATE TB_OPTR_AUTH_SUB
 		SET OPTR_AUTH_NM 	= #{optrAuthNm}
 		    , UPDT_PN_NO 	= #{loginUserNo}
 		    , UPDT_DTTM 	= TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
@@ -94,14 +94,14 @@
 		   T.USE_YN AS useYn, 
 		   T.USER_AUTH_CD AS optrAuthCd,
 		   JOIN_STR(CURSOR(SELECT B.MENU_NO
-		                   FROM NWRK252TL A, NWRK253TL B 
+		                   FROM TB_OPTR_PGM_AUTH A, TB_OPTR_MENU_INFO B 
 		                    WHERE A.OPTR_AUTH_NO = T.OPTR_AUTH_NO 
 		                    AND A.OPTR_PGM_NO = B.OPTR_PGM_NO
 		                    AND B.HGRK_MENU_NO NOT IN ('0', '1', '2')
 		                 ), ','
 		          ) AS optrMenuNos, 
 		   T.OPTR_AUTH_NM AS optrAuthNm
-		FROM NWRK251TL T
+		FROM TB_OPTR_AUTH T
 		WHERE T.OPTR_AUTH_NO = #{optrAuthNo}
 
 	</select>
@@ -114,19 +114,19 @@
 		    FROM TB_COMM_CD A
 		    WHERE A.CD_ID = '916'
 		    AND A.USE_YN = 'Y'
-		) X LEFT OUTER JOIN NWRK251TL_SUB Y
+		) X LEFT OUTER JOIN TB_OPTR_AUTH_SUB Y
 		ON X.CD_INS_V = Y.GLB_TP_CD
 		AND Y.OPTR_AUTH_NO = #{optrAuthNo}
 	</select>
 	
 	<delete id="deleteRoleProgramInfo" parameterType="userRoleVO">
-		DELETE FROM NWRK252TL
+		DELETE FROM TB_OPTR_PGM_AUTH
 		WHERE OPTR_AUTH_NO = #{optrAuthNo}  	
 	</delete>
 	
 	<insert id="insertRoleProgramInfo" parameterType="userRoleVO">
 		/* site.userRole.service.UserRoleService.insertRoleProgramInfo */
-		INSERT INTO NWRK252TL (
+		INSERT INTO TB_OPTR_PGM_AUTH (
 		   OPTR_PGM_NO, OPTR_AUTH_NO, 
 		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,UPDT_DTTM) 
 		SELECT X.OPTR_PGM_NO, #{optrAuthNo}, 
@@ -153,7 +153,7 @@
 		    , A.WR_AUTH_YN, A.DEL_AUTH_YN, A.READ_AUTH_YN
 		FROM
 			TB_OPTR_PGM_AUTH A
-		    , NWRK251TL B
+		    , TB_OPTR_AUTH B
 		    , TB_OPTR_PGM C
 		    , TB_OPTR_PGM_SUB D
 		WHERE

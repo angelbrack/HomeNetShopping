@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="korea.wrk.comm.common.service.CommonService">
+<mapper namespace="homenet.shop.comm.common.service.CommonService">
 	<!-- 공통 조회 컬럼 -->
 	<sql id="selectCommonCol">
 		, A.WRT_PN_NO    

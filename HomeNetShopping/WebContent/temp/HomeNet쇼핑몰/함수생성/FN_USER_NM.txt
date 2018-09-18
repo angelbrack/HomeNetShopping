@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION "FN_USER_NM" (p_id in VARCHAR2)
+RETURN VARCHAR2 IS
+ v_username VARCHAR2(256);
+BEGIN
+SELECT A.USER_NM
+  INTO v_username
+  FROM TB_USER A
+ WHERE A.USER_NO = p_id;
+
+    RETURN v_username;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      v_username := '';
+      RETURN v_username;
+    WHEN OTHERS THEN
+      v_username := '';
+      RETURN v_username;
+END;
+/
