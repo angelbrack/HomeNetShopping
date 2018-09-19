@@ -24,7 +24,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -92,15 +91,23 @@ public class FileUploadServlet extends HttpServlet {
 			log.error("conf error");
 		}
 
-		String pathkey = request.getParameter("pathkey");
-		String addSavePath = request.getParameter("addSavePath");
+		String pathkey 		= request.getParameter("pathkey");
+		String filePath 	= request.getParameter("filePath");
+		String addSavePath 	= request.getParameter("addSavePath");
 
 		String realFileName = request.getParameter("realFileName");
 		if(StringUtils.isNotEmpty(realFileName)) {
 			realFileName = 	URLDecoder.decode(realFileName, "UTF-8");
 		}
 
-		String savePath = request.getSession().getServletContext().getRealPath("/") + getTransPathKey(conf, pathkey, "N");
+		//String savePath = request.getSession().getServletContext().getRealPath("/") + getTransPathKey(conf, pathkey, "N");
+		String savePath = "";
+		if ( pathkey != null && !"".equals(pathkey) ) {
+			savePath = request.getSession().getServletContext().getRealPath("/") + getTransPathKey(conf, pathkey, "N");
+		} else {
+			savePath = request.getSession().getServletContext().getRealPath("/") + filePath;
+		}
+		
 		if(addSavePath != null && !addSavePath.equals("")) {
 			savePath = savePath + "/" + addSavePath;
 		}
@@ -118,14 +125,6 @@ public class FileUploadServlet extends HttpServlet {
 			getfile = getfile.replaceAll("../", "");
 			getfile = getfile.replaceAll("&", "");
 
-			if("STUDY.TASK".equals(pathkey)) {
-				if(!"".equals(strCrsKey)) {
-					mkList = strCrsKey.split(",");
-					if(mkList != null && mkList.length == 3) {
-						bChk = true;
-					}
-				}
-			}
 			if(bChk) {
 				savePath = savePath + "/" + mkList[1] + "/" + mkList[0] + "/" + mkList[2];
 			}
@@ -516,20 +515,13 @@ public class FileUploadServlet extends HttpServlet {
 					log.error("checkAuth false");
 				}
 			}
-			if("STUDY.TASK".equals(pathKey)) {
-				if(!"".equals(strCrsKey)) {
-					mkList = strCrsKey.split(",");
-					if(mkList != null && mkList.length == 3) {
-						bChk = true;
-					}
-				}
-			}
-
+			
 			String savePath = "";
 			String saveFileName = null;
 			String realFileName = null;
 			String useRealName = null;
 			String fileExt = null;
+			String filePath = null;
 			String errorMsg = null;
 
 			List<FileItem> items = uploadHandler.parseRequest(request);
@@ -537,16 +529,20 @@ public class FileUploadServlet extends HttpServlet {
 				if(!item.isFormField()) {
 					if(bChk) {
 						savePath = request.getSession().getServletContext().getRealPath("/") + getTransPathKey(conf, pathKey, "Y") + "/" + mkList[1] + "/" + mkList[0] + "/" + mkList[2];
+						filePath = getTransPathKey(conf, pathKey, "Y") + "/" + mkList[1] + "/" + mkList[0] + "/" + mkList[2];
 					} else {
 						savePath = request.getSession().getServletContext().getRealPath("/") + getTransPathKey(conf, pathKey, "Y");
+						filePath = getTransPathKey(conf, pathKey, "Y");
 					}
 					
 					if(addSavePath != null && !addSavePath.equals("")) {
 						savePath = savePath + "/" + addSavePath;
+						filePath = filePath + "/" + addSavePath;
 					}
 
 					if(savePath.indexOf("../") > 0) {
 						savePath = savePath.replaceAll("../", "");
+						filePath = filePath + "/" + addSavePath;
 					}
 					realFileName = item.getName();  // 원래 파일명을 가져온다
 
@@ -584,11 +580,12 @@ public class FileUploadServlet extends HttpServlet {
 						item.write(savFile); // 실제파일 저장
 
 						JSONObject jsono = new JSONObject();
-						jsono.put("fileInfo", URLEncoder.encode(realFileName + "|" + saveFileName + "|" + fileExt + "|" + item.getSize(), "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~"));
+						jsono.put("fileInfo", URLEncoder.encode(realFileName + "|" + saveFileName + "|" + fileExt + "|" + item.getSize() + "|" + filePath, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~"));
 						jsono.put("realFileName", URLEncoder.encode(realFileName, "UTF-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~"));
 						jsono.put("fileName", saveFileName);
 						jsono.put("fileSize", item.getSize());
 						jsono.put("fileType", fileExt);
+						jsono.put("filePath", filePath);
 						json.add(jsono);
 					} else {
 						JSONObject jsono = new JSONObject();

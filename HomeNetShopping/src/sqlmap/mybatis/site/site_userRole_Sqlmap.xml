@@ -128,14 +128,15 @@
 		/* site.userRole.service.UserRoleService.insertRoleProgramInfo */
 		INSERT INTO TB_OPTR_PGM_AUTH (
 		   OPTR_PGM_NO, OPTR_AUTH_NO, 
-		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,UPDT_DTTM) 
+		   WRT_PN_NO, WRT_PN_IP, WRT_DTTM, UPDT_PN_NO, UPDT_PN_IP,UPDT_DTTM
+		) 
 		SELECT X.OPTR_PGM_NO, #{optrAuthNo}, 
 		   #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'), #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')  
-		FROM NWRK250TL X
+		FROM TB_OPTR_PGM_INFO X
 		WHERE X.OPTR_PGM_GRP_NO IN (
-		    SELECT DISTINCT OPTR_PGM_GRP_NO FROM NWRK250TL A
-		    <foreach collection="optrPgmNos" item="item" index="index" separator="," open="WHERE OPTR_PGM_NO IN (" close=")">
-		    	#{item[index]}
+		    SELECT DISTINCT OPTR_PGM_GRP_NO FROM TB_OPTR_PGM_INFO A
+		    <foreach collection="optrPgmNos" item="item" index="idx" separator="," open="WHERE OPTR_PGM_NO IN (" close=")">
+		    	#{item }
 		    </foreach>
 		    <!-- WHERE OPTR_PGM_NO
 		    <iterate property="optrPgmNos" conjunction="," open="(" close=")" prepend="IN" >

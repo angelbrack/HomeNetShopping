@@ -5,9 +5,13 @@
 		<div class="con_right_c">
 			<form name="formInit" id="formInit" method="post" action="">
 				<input type="hidden" id="currentPage" 			name="currentPage" 			value="<c:out value="${searchVO.currentPage 		}" />" 		/>
+				
+				<input type="hidden" id="brndNo" 				name="brndNo" 				value="" 														/>
 			</form>
 			<form name="form1" id="form1" method="post" action="">
-			
+				<input type="hidden" id="cmd"					name="cmd"					value=""														/> <!-- 등록/수정 구분 		-->
+				<input type="hidden" id="currentPage" 			name="currentPage" 			value="<c:out value="${searchVO.currentPage 		}" />" 		/> <!-- 페이지 번호 			-->
+				<input type="hidden" id="brndNo" 				name="brndNo" 				value="" 														/> <!-- 브랜드번호	 		-->
 			<!--contents-->
 			<div class="con_top">
 				<div class="tit">
@@ -37,14 +41,13 @@
                             <td class="tit"><label for="searchWord">검색어</label></td>
                             <td>
                                 <select style="width:120px;height:22px;" name="searchKey" id="searchKey">
-                                    <option value="000" <c:if test="${empty searchVO.searchKey or searchVO.searchKey eq '000'}">selected="selected"</c:if>>회사명</option>
-                                    <option value="001" <c:if test="${searchVO.searchKey eq '000'}">selected="selected"</c:if>>브랜드명</option>
-                                    <option value="002" <c:if test="${searchVO.searchKey eq '001'}">selected="selected"</c:if>>브랜드상세설명</option>
+                                    <option value="000" <c:if test="${empty searchVO.searchKey or searchVO.searchKey eq '000'}">selected="selected"</c:if>>브랜드명</option>
+                                    <option value="001" <c:if test="${searchVO.searchKey eq '001'}">selected="selected"</c:if>>브랜드상세설명</option>
                                 </select>
-                                <input type="text" name="searchWord" id="searchWord" maxlength="100" style="width:400px;height:18px;" class="txtbox1" title="" value="${searchVO.searchWord }" class="txtbox1" onkeypress="if(event.keyCode==13) {recuRecruitList.fnSearch();}" escapeXml="false" />
+                                <input type="text" name="searchWord" id="searchWord" maxlength="100" style="width:400px;height:18px;" class="txtbox1" title="" value="${searchVO.searchWord }" class="txtbox1" onkeypress="if(event.keyCode==13) {brandList.fnSearch();}" escapeXml="false" />
                             </td>
                             <td class="ar">
-                                <a href="#none" onclick="recuRecruitList.fnSearch();" class="btn_search3 ml5 mr20">검색</a>
+                                <a href="#none" onclick="brandList.fnSearch();" class="btn_search3 ml5 mr20">검색</a>
                             </td>
                         </tr>
 						<tr> 
@@ -89,12 +92,26 @@
 					</thead>
 					<tbody>
 			<c:choose>
-				<c:when test="${fn:length(resultNotiList) > 0 or fn:length(resultList) > 0}">
-					<c:forEach items="${resultList}" var="item" varStatus="status">
+				<c:when test="${fn:length(list) > 0 }">
+					<c:forEach items="${list}" var="item" varStatus="status">
 						<tr>
 							<td><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.currentPage-1) * searchVO.recordCountPerPage + status.count)}"/></td>
-							<td><c:out value="${item.tgtDcNm }"/></td>
-							
+							<td>
+								<a href="#none" onClick="brandList.fnEdit('U', '<c:out value="${item.brndNo }"/>');">
+								<c:out value="${item.brndNm }"/>
+								</a>	
+							</td>
+							<td><c:out value="${item.brndKorNm }"/></td>
+							<td><c:out value="${item.brndEngNm }"/></td>
+							<td><c:out value="${item.brndDescCont }"/></td>
+							<td>
+                                <fmt:parseDate value="${item.wrtDttm}" var="wrtDttm" pattern="yyyyMMddHHmmss"/>
+                                <fmt:formatDate value="${wrtDttm}" pattern="yyyy.MM.dd"/>
+                            </td>
+                            <td>
+                                <fmt:parseDate value="${item.updtDttm}" var="updtDttm" pattern="yyyyMMddHHmmss"/>
+                                <fmt:formatDate value="${updtDttm}" pattern="yyyy.MM.dd"/>
+                            </td>
 						</tr>
 					</c:forEach>
 				</c:when>
@@ -109,11 +126,11 @@
 			</div>
 			
 			<div class="con_paging mt30">
-				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="recuRecruitList.fnListPage" rowControl="true" jsRowFunction="recuRecruitList.fnListPerLine" />
+				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="brandList.fnListPage" rowControl="true" jsRowFunction="brandList.fnListPerLine" />
 		   	</div>
 			
 			<div class="con_btn mt30">
-				<a href="#none" onclick="recuRecruitList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
+				<a href="#none" onclick="brandList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
 			</div>
 			</form>
 		</div>

@@ -112,7 +112,7 @@
 		VALUES (
 		   #{optrPgmNo}, #{optrPgmId}, #{optrPgmUrlV},
 		   #{optrPgmGrpNo}, #{optrPgmNm},
-		   #{menuUseYn}, #{loginUserNo#, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
+		   #{menuUseYn}, #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
 		   #{loginUserNo}, #{remoteAddr}, TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
 		)
 	</insert>

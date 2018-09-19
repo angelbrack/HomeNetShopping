@@ -34,4 +34,84 @@ public interface BrandService {
 	 * 개정이력 : 없음
 	 */
 	List<BrndImgInfoVO> selectBrandImgList(BrndImgInfoVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드번호 생성
+	 * @param  : BrndBaseVO 등록 정보
+	 * 
+	 * @return : Integer 브랜드번호
+	 */
+	Integer selectBrandNoPk(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 저장
+	 * @param  : BrndBaseVO 등록 정보
+	 * 
+	 * @return : Integer 브랜드 저장 결과
+	 */
+	Integer saveBrand(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 삭제
+	 * @param  : BrndBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 브랜드 삭제 결과
+	 */
+	Integer deleteBrand(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 등록
+	 * @param  : BrndBaseVO 등록 정보
+	 * 
+	 * @return : Integer 브랜드 등록 결과
+	 */
+	Integer insertBrandBase(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 수정
+	 * @param  : BrndBaseVO 수정 정보
+	 * 
+	 * @return : Integer 브랜드 수정 결과
+	 */
+	Integer updateBrandBase(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 삭제
+	 * @param  : BrndBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 브랜드 삭제 결과
+	 */
+	Integer deleteBrandBase(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 이미지 저장
+	 * @param  : BrndBaseVO 등록 정보
+	 * 
+	 * @return : Integer 브랜드 이미지 저장 결과
+	 */
+	Integer saveBrandImgInfo(BrndBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 이미지 등록
+	 * @param  : BrndBaseVO 등록 정보
+	 * 
+	 * @return : Integer 브랜드 등록 결과
+	 */
+	Integer insertBrandImgInfo(BrndImgInfoVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 이미지 수정
+	 * @param  : BrndBaseVO 수정 정보
+	 * 
+	 * @return : Integer 브랜드 수정 결과
+	 */
+	Integer updateBrandImgInfo(BrndImgInfoVO paramVO) throws Exception;
+	
+	/*
+	 * 브랜드 이미지 삭제
+	 * @param  : BrndBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 브랜드 삭제 결과
+	 */
+	Integer deleteBrandImgInfo(BrndBaseVO paramVO) throws Exception;
 }

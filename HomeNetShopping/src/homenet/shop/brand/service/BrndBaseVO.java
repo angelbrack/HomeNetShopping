@@ -21,7 +21,7 @@ public class BrndBaseVO extends PagerVO {
 	private String  brndEngNm 	    ; // 브랜드영문명
 	private String  brndDescCont    ; // 브랜드상세설명
 	
-	private List<BrndImgInfoVO> BrndImgInfoList;	// 브랜드 이미지 정보 List
+	private List<BrndImgInfoVO> brndImgInfoList;	// 브랜드 이미지 정보 List
 	
 	public Integer getBrndNo() {
 		return brndNo;
@@ -54,10 +54,10 @@ public class BrndBaseVO extends PagerVO {
 		this.brndDescCont = brndDescCont;
 	}
 	public List<BrndImgInfoVO> getBrndImgInfoList() {
-		return BrndImgInfoList;
+		return brndImgInfoList;
 	}
 	public void setBrndImgInfoList(List<BrndImgInfoVO> brndImgInfoList) {
-		BrndImgInfoList = brndImgInfoList;
+		brndImgInfoList = brndImgInfoList;
 	}
 	
 }

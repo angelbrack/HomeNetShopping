@@ -15,12 +15,14 @@
 		<result property="wrtDttm"  					column="WRT_DTTM" 				/> <!-- 작성일시 				-->
 		<result property="updtPnNo"  					column="UPDT_PN_NO" 			/> <!-- 수정자번호 				--> 
 		<result property="updtPnIp"  					column="UPDT_PN_IP" 			/> <!-- 수정자IP 				-->   
-		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				--> 
+		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				-->
+		
+		<result property="totalCount"  					column="TOTAL_COUNT" 			/> <!-- Record Total Count 	-->
 	</resultMap>
 	
 	<!-- 브랜드 상세정보 -->
 	<resultMap id="brandInfo" type="brndBaseVO" extends="brandList">
-		<collection  column="{brndNo=BRND_NO}" property="BrndImgInfoList"  	ofType="homenet.shop.brand.service.BrndImgInfoVO" select="selectBrandImgList" />	<!-- 브랜드 이미지 정보 리스트 -->
+		<collection  column="{brndNo=BRND_NO}" property="brndImgInfoList"  	ofType="homenet.shop.brand.service.BrndImgInfoVO" select="selectBrandImgList" />	<!-- 브랜드 이미지 정보 리스트 -->
 	</resultMap>
 	
 	<!-- 브랜드 이미지 정보 List -->
@@ -36,7 +38,7 @@
 		<result property="wrtDttm"  					column="WRT_DTTM" 				/> <!-- 작성일시 				-->
 		<result property="updtPnNo"  					column="UPDT_PN_NO" 			/> <!-- 수정자번호 				--> 
 		<result property="updtPnIp"  					column="UPDT_PN_IP" 			/> <!-- 수정자IP 				-->   
-		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				--> 
+		<result property="updtDttm"  					column="UPDT_DTTM" 				/> <!-- 수정일시 				-->
 	</resultMap>
 	
 	<!-- 브랜드 정보 검색조건 -->
@@ -148,7 +150,7 @@
 					, A.IMG_PATH_NM
 					, A.IMG_FILE_NM
 					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
-				FROM TB_BRND_BASE A
+				FROM TB_BRND_IMG_INFO A
 				WHERE A.BRND_NO = #{brndNo	}		
 	   		) X
 	   	)Z	
@@ -158,5 +160,87 @@
 		]]>
 		</if>
 	</select>
+	
+	<select id="selectBrandNoPk" parameterType="brndImgInfoVO" resultType="Integer">
+		/* homenet.shop.brand.service.BrandService.selectBrandNoPk, 브랜드번호 생성 */
+		SELECT  SQ_BRND_BASE_01.NEXTVAL AS brndNo FROM DUAL
+	</select>
+	
+	<insert id="insertBrandBase" parameterType="brndBaseVO" >
+		/* homenet.shop.brand.service.BrandService.insertBrand, 브랜드 정보 등록 */
+		INSERT INTO TB_BRND_BASE (
+			  BRND_NO
+			, BRND_NM
+			, BRND_KOR_NM
+			, BRND_ENG_NM
+			, BRND_DESC_CONT
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{brndNo 			}
+			, #{brndNm 			}
+			, #{brndKorNm 		}
+			, #{brndEngNm 		}
+			, #{brndDescCont 	}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+	
+	<update id="updateBrandBase" parameterType="brndBaseVO" >
+		/* homenet.shop.brand.service.BrandService.updateBrandBase, 브랜드 정보 수정 */
+		UPDATE TB_BRND_BASE SET
+			  BRND_NO				= #{brndNo 			}
+			, BRND_NM               = #{brndNm 			}
+			, BRND_KOR_NM           = #{brndKorNm 		}
+			, BRND_ENG_NM           = #{brndEngNm 		}
+			, BRND_DESC_CONT        = #{brndDescCont 	}
+			<include refid="homenet.shop.comm.common.service.CommonService.updateCommon" />
+		WHERE BRND_NO = #{brndNo	}
+	</update>
+	
+	<delete id="deleteBrandBase" parameterType="brndBaseVO" >
+		/* homenet.shop.brand.service.BrandService.deleteBrandBase, 브랜드 정보 삭제 */
+		DELETE FROM TB_BRND_BASE
+		WHERE BRND_NO = #{brndNo	}
+	</delete>
+	
+	<insert id="insertBrandImgInfo" parameterType="brndImgInfoVO" >
+		/* homenet.shop.brand.service.BrandService.insertBrandImgInfo, 브랜드 이미지 정보 등록 */
+		<selectKey keyProperty="imgNo" resultType="Integer" order="BEFORE">
+		    SELECT  SQ_BRND_IMG_INFO_01.NEXTVAL AS imgNo FROM DUAL
+		</selectKey>
+		INSERT INTO TB_BRND_IMG_INFO (
+			  IMG_NO
+			, BRND_NO
+			, IMG_NM
+			, IMG_PATH_NM
+			, IMG_FILE_NM
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{imgNo 			}
+			, #{brndNo 			}
+			, #{imgNm 			}
+			, #{imgPathNm 		}
+			, #{imgFileNm 		}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+	
+	<update id="updateBrandImgInfo" parameterType="brndImgInfoVO" >
+		/* homenet.shop.brand.service.BrandService.updateBrandImgInfo, 브랜드 이미지 정보 수정 */
+		UPDATE TB_BRND_IMG_INFO SET
+			  IMG_NO			= #{imgNo 			}
+			, BRND_NO       	= #{brndNo 			}
+			, IMG_NM        	= #{imgNm 			}
+			, IMG_PATH_NM       = #{imgPathNm 		}
+			, IMG_FILE_NM       = #{imgFileNm 		}
+			<include refid="homenet.shop.comm.common.service.CommonService.updateCommon" />
+		WHERE IMG_NO = #{imgNo	}
+	</update>
+	
+	<delete id="deleteBrandImgInfo" parameterType="brndBaseVO" >
+		/* homenet.shop.brand.service.BrandService.deleteBrandImgInfo, 브랜드 이미지 정보 삭제 */
+		DELETE FROM TB_BRND_IMG_INFO
+		WHERE BRND_NO = #{brndNo	}
+	</delete>
 	
 </mapper>
