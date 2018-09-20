@@ -20,11 +20,12 @@ $(function() {
 	//파일업로드
 	$.fn.fnFileUpload = function(option){
 		var dafaultOption = {
-				path : "SAMPLE.NOTICE",		//기본경로
-				idx : "",					//fileupload index
-				fileCo : 3,					//file upload count
-				addSavePath : "",			//추가 저장 경로
-				callbackFn : null
+				  path 			: "SAMPLE.NOTICE"		//기본경로
+				, idx 			: ""					//fileupload index
+				, fileCo 		: 3						//file upload count
+				, addSavePath 	: ""					//추가 저장 경로
+				, callbackFn 	: null
+				, imgYn			: "N"
 			};
 		$.extend(dafaultOption, option);
 		
@@ -38,9 +39,11 @@ $(function() {
 			uploadingUrl = CTX_PATH + "/user_uploading";
 		}
 		
-		var url = uploadingUrl + "?pathkey=" + dafaultOption.path + "&addSavePath=" + dafaultOption.addSavePath;
-		var idx = dafaultOption.idx;
-		var fileCo = dafaultOption.fileCo;
+		var url 	= uploadingUrl + "?pathkey=" + dafaultOption.path + "&addSavePath=" + dafaultOption.addSavePath;
+		var idx 	= dafaultOption.idx;
+		var fileCo 	= dafaultOption.fileCo;
+		var imgYn	= dafaultOption.imgYn;
+		
 		var upCnt = 1;
 		
 		return this.each(function(i, obj) {
@@ -71,7 +74,7 @@ $(function() {
 		        dataType: 'json',                   
 		        done: function (e, data) {
 		            $.each(data.result, function (index, file) {
-		            	if(index === 0){
+		            	if(index == 0){
 		            		index = "";
 						}
 		                if(file.errorMsg) {
@@ -91,9 +94,20 @@ $(function() {
 		                    var fileHtml = "";
 		                    fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
 		                    fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href='"+url+"&getfile="+file.fileName+"&realFileName="+encodeURI(encodeURIComponent(decodeURI(decodeURIComponent(file.realFileName))))+"' target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(file.realFileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(file.fileInfo)) +"\" ></span>";
-		                    fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this)\">&times;</a> ";
+		                    fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this, '"+imgYn+"', '"+file.fileName.split('.')[0]+"')\">&times;</a> ";
 		                    fileHtml += " </li> ";
 		                    $("#uploaded-files"+idx).append(fileHtml);
+		                    
+		                    if ( imgYn == "Y" ) {
+		                    	var fileImgHtml = "";
+		                    	fileImgHtml += "<span id='spanImg_"+file.fileName.split('.')[0]+"'>";
+		    					fileImgHtml += "<a href='#none' onclick='fnImgPreview(this);'>";
+		    	                fileImgHtml += "<img src='"+decodeURI(decodeURIComponent(file.filePath))+file.fileName+"'>";
+		    	                fileImgHtml += "</a>";
+		    	                fileImgHtml += "</span>";
+		    	                
+		    	                $("#apndImg"+idx).append(fileImgHtml);
+		    				}
 		                    
 		                    upCnt+1;
 		                    if(dafaultOption.callbackFn != undefined && dafaultOption.callbackFn != ""){
@@ -560,7 +574,47 @@ function fnUserFileEdit(path, idx, obj, addSavePath){
 	}
 }
 
-//삭제
-function onFileDelede(obj) {
+// 삭제
+function onFileDelede(obj, imgYn, imgId) {
 	$(obj).parent().remove();
+	
+	if ( imgYn == "Y" ) {
+		$("#spanImg_"+imgId).remove();
+	}
+}
+
+// 이미지 미리보기
+function fnImgPreview(obj) {
+	var imgUrl 				= $(obj).children("img").attr("src");
+	var imgWidth 			= $(obj).children("img").width();
+	var imgNaturalWidth 	= $(obj).children("img").prop("naturalWidth");
+	var imgHeight 			= $(obj).children("img").height();
+	var imgNaturalHeight 	= $(obj).children("img").prop("naturalHeight");
+	
+	var popupWidth			= $("#tpopup").width();
+	var popupHeight			= $("#tpopup").height();
+	
+	if ( imgNaturalWidth > popupWidth ) {
+		imgWidth = popupWidth - 40;
+	} else {
+		imgWidth = imgNaturalWidth;
+	}
+	
+	if ( imgNaturalWidth > popupWidth ) {
+		imgHeight = popupHeight;
+	} else {
+		imgHeight = imgNaturalHeight;
+	}
+	
+	$("#imgShowPreview").css("width", imgWidth+"px");
+	$("#imgShowPreview").css("height", imgHeight+"px");
+	
+	$("#imgShowPreview").attr("src", imgUrl);
+	$("#tpopup").show();
+}
+
+// 이미지 미리보기
+function fnImgPreviewClose() {
+	$("#tpopup").hide();
+	$("#imgShowPreview").attr("src", "");
 }

@@ -22,7 +22,7 @@
 	
 	<!-- 브랜드 상세정보 -->
 	<resultMap id="brandInfo" type="brndBaseVO" extends="brandList">
-		<collection  column="{brndNo=BRND_NO}" property="brndImgInfoList"  	ofType="homenet.shop.brand.service.BrndImgInfoVO" select="selectBrandImgList" />	<!-- 브랜드 이미지 정보 리스트 -->
+		<!-- <collection  column="{brndNo=BRND_NO}" property="brndImgInfoList"  	ofType="homenet.shop.brand.service.BrndImgInfoVO" select="selectBrandImgList" />	브랜드 이미지 정보 리스트 -->
 	</resultMap>
 	
 	<!-- 브랜드 이미지 정보 List -->

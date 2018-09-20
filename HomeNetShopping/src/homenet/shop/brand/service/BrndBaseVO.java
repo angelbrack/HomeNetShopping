@@ -57,7 +57,7 @@ public class BrndBaseVO extends PagerVO {
 		return brndImgInfoList;
 	}
 	public void setBrndImgInfoList(List<BrndImgInfoVO> brndImgInfoList) {
-		brndImgInfoList = brndImgInfoList;
+		this.brndImgInfoList = brndImgInfoList;
 	}
 	
 }

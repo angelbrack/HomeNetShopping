@@ -55,16 +55,18 @@
 							</td>
 						</tr>
 						<tr>
+							<th scope="row"><label for="recuDtlCn">브랜드상세설명</label> </th>
+							<td colspan="3" class="pt10 pb10">
+								<textarea id="brndDescCont" name="brndDescCont" class="textarea richedit" style="width:98%; height:100px;"><c:out value="${info.brndDescCont }" escapeXml="false" /></textarea>
+							</td>
+						</tr>
+						<tr>
 							<th scope="row"><label for="apndFile">첨부파일</label> </th>
 							<td  class="pt10 pb10" colspan="3">
 								<div style="width:700px;padding:0px;" id="apndFile">							 	
 								</div>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="recuDtlCn">브랜드상세설명</label> </th>
-							<td colspan="3" class="pt10 pb10">
-								<textarea id="brndDescCont" name="brndDescCont" class="textarea richedit" style="width:98%; height:100px;"><c:out value="${info.brndDescCont }" escapeXml="false" /></textarea>
+								<div class="imgs_wrap" id="apndImg">
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -85,6 +87,12 @@
 	</div>
 </div>
 
+<div id="thover"></div>
+<div id="tpopup" style="display:none">
+	<img id="imgShowPreview" src="" style="width : 0px; height : 0px;"> 
+    <div id="tclose" onclick="fnImgPreviewClose()">X</div>    
+</div>
+
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/brand/brand.js?20180919100000"></script>
 <script type="text/javascript">
 <!--
@@ -95,9 +103,73 @@ $(document).ready(function() {
 	$("#apndFile").fnFileUpload({
 		  path 		: "BRAND.IMG"		
 		, idx 		: ""				
-		, fileCo 	: 10					
+		, fileCo 	: 10
+		, imgYn		: "Y"
 	});
- 	//fnFileEdit("RECU.REGISTER", "", "<c:out value='${(fileList)}'/>");
+ 	
+	fnBrandFileEdit("<c:out value='${(fileList)}'/>", "", "", "Y");
 });
+
+//파일수정
+function fnBrandFileEdit(obj, idx, addSavePath, imgYn){
+	
+	var upCnt	= 1;
+	
+	if(idx === 0){
+		idx = "";
+	}
+	if(typeof obj === "string" && obj.length > 0) {
+		var fileObj = obj.replaceAll("&#034;", '"').toString();
+		
+		var curUrl = document.location.href;
+		var uploadingUrl = CTX_PATH + "/upload";
+		
+		var url	= "";
+		
+		var jsonFileArray = JSON.parse(fileObj);
+		
+		$.each(jsonFileArray, function(i, jsonObj) {
+			
+			if(jsonObj.imgFileNm != undefined && jsonObj.imgNm != undefined) {
+				var fileHtml 		= "";
+				var fileImgHtml 	= "";
+				var fileName 		= jsonObj.imgNm;
+				var realFileName	= jsonObj.imgFileNm;
+				var fileSize		= 0;
+				var filePath		= jsonObj.imgPathNm;
+				
+				var fileInfo = fileName+"|"+realFileName+"| |"+ fileSize+"|"+filePath;
+				
+				if(fileHtml != "") {
+					fileHtml += "	<br />";
+				}
+				
+				url	= uploadingUrl + "?filePath="+filePath;
+				
+				fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
+                fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(fileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" ></span>";
+                fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this, '"+imgYn+"', '"+realFileName.split('.')[0]+"')\">&times;</a> ";
+                fileHtml += " </li> ";
+				
+				$("#uploaded-files"+idx).append(fileHtml);
+				
+				if ( imgYn == "Y" ) {
+					fileImgHtml += "<span id='spanImg_"+realFileName.split('.')[0]+"'>";
+					fileImgHtml += "<a href='#none' onclick='fnImgPreview(this);'>";
+	                fileImgHtml += "<img src='"+filePath+realFileName+"'>";
+	                fileImgHtml += "</a>";
+	                fileImgHtml += "</span>";
+	                
+	                $("#apndImg"+idx).append(fileImgHtml);
+				}
+				
+				fileYn = "Y";
+				
+				upCnt++;
+			}
+		});
+		
+	}
+}
 //-->
 </script>

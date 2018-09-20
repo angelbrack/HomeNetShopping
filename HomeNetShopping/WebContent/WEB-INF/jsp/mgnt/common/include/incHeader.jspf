@@ -61,6 +61,60 @@
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_file.js" ></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/webutil.js" ></script>
 
+<style type="text/css">
+.imgs_wrap {
+	width : 600px;
+	margin-top : 20px;
+}
+.imgs_wrap span {
+	padding-top  : 10px;
+	padding-left : 10px;
+}
+.imgs_wrap img {
+	max-width : 100px;
+}
+
+#thover{
+  position:fixed;
+  background:#000;
+  width:100%;
+  height:100%;
+  opacity: .6
+}
+ 
+#tpopup{
+  position:absolute;
+  width:800px;
+  height:600px;
+  background:#fff;
+  left:30%;
+  top:20%;
+  border-radius:5px;
+  padding:60px 0;
+  margin-left:-320px; /* width/2 + padding-left */
+  margin-top:-150px; /* height/2 + padding-top */
+  text-align:center;
+  box-shadow:0 0 10px 0 #000;
+}
+#tclose{
+  position:absolute;
+  background:black;
+  color:white;
+  right:-15px;
+  top:-15px;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  font-size:8px;
+  font-weight:bold;
+  font-family:'Arial Black', Arial, sans-serif;
+  cursor:pointer;
+  box-shadow:0 0 10px 0 #000;
+}
+</style>
+
 <script type="text/javascript">
 	//CONTEXT PATH
 	var CTX_PATH	= "<c:out value="${pageContext.request.contextPath}" />";
@@ -72,7 +126,3 @@
 	var imgCalPath = CTX_PATH + "<ctag:conf key="THEME.PATH" />/mgnt/images/btn_cal_01.jpg";
 	
 </script>
-
-
-
-

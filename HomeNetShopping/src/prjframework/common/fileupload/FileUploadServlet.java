@@ -585,7 +585,7 @@ public class FileUploadServlet extends HttpServlet {
 						jsono.put("fileName", saveFileName);
 						jsono.put("fileSize", item.getSize());
 						jsono.put("fileType", fileExt);
-						jsono.put("filePath", filePath);
+						jsono.put("filePath", URLEncoder.encode(filePath, "UTF-8"));
 						json.add(jsono);
 					} else {
 						JSONObject jsono = new JSONObject();
@@ -595,6 +595,7 @@ public class FileUploadServlet extends HttpServlet {
 				}
 			}
 		} catch(FileUploadException e) {
+			e.printStackTrace();
 			log.error("FileUpload error");
 			//writer.write("FileUpload error");
 			if ( writer != null ) {
@@ -602,6 +603,7 @@ public class FileUploadServlet extends HttpServlet {
 				writer.close();
 			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			log.error("FileUpload error");
 			//writer.write("FileUpload error");
 			if ( writer != null ) {

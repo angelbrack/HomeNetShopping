@@ -82,11 +82,11 @@ public class BrandServiceImpl implements BrandService {
 	public Integer saveBrand(BrndBaseVO paramVO) throws Exception {
 		int result	= 0;
 		
-		// 브랜드번호 생성
-		Integer brndNo	= selectBrandNoPk(paramVO);
-		paramVO.setBrndNo(brndNo);
-		
 		if ( "I".equals(paramVO.getCmd()) ) {
+			// 브랜드번호 생성
+			Integer brndNo	= selectBrandNoPk(paramVO);
+			paramVO.setBrndNo(brndNo);
+			
 			result += insertBrandBase(paramVO);
 		} else {
 			result += updateBrandBase(paramVO);

@@ -79,7 +79,7 @@ public class Casting {
 	 * @return String
 	 * @throws Exception
 	 */
-	public static String listToJSonString(List<Object> lt)
+	public static String listToJSonString(List<?> lt)
 	throws Exception
 	{
 		JSONArray jsonArray = new JSONArray();

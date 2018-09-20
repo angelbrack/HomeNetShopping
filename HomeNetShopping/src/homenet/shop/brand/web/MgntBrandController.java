@@ -24,6 +24,7 @@ import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import homenet.shop.brand.service.BrandService;
 import homenet.shop.brand.service.BrndBaseVO;
+import homenet.shop.brand.service.BrndImgInfoVO;
 import prjframework.common.util.Casting;
 import prjframework.common.util.SessionUtil;
 import prjframework.common.util.WebUtil;
@@ -102,8 +103,22 @@ public class MgntBrandController {
 
 		BrndBaseVO info = null;
 	
+		paramVO.setFirstIndex(0);
+		paramVO.setLastIndex(0);
+		paramVO.setRecordCountPerPage(0);
+		
 		if (paramVO.getCmd().equals("U")) {
 			info = brandService.selectBrandInfo(paramVO);
+			
+			BrndImgInfoVO brndImgInfoParamVO = new BrndImgInfoVO();
+			brndImgInfoParamVO.setBrndNo(paramVO.getBrndNo());
+			brndImgInfoParamVO.setFirstIndex(0);
+			brndImgInfoParamVO.setRecordCountPerPage(0);
+			
+			List<BrndImgInfoVO> brndImgInfoList = brandService.selectBrandImgList(brndImgInfoParamVO);
+			if ( brndImgInfoList != null ) {
+				model.addAttribute("fileList", 			Casting.listToJSonString(brndImgInfoList));
+			}
 		}
 
 		model.addAttribute("info", info);
