@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="homenet.shop.display.service.DisplayService">
+	
+	<!-- 전시매장 정보 검색조건 -->
+	<sql id="searchDisplay">
+		<where>
+			<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchShopTpCd)">
+      			AND A.SHOP_TP_CD = #{searchShopTpCd}
+			        
+    		</if>
+    
+			<if test='searchWord != null and searchWord != ""'>
+				<choose>
+					<when test='searchKey == "000"'>
+						AND A.DISP_NM LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "001"'>
+						AND A.DISP_GNB_NM LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "002"'>
+						AND A.DISP_TIT_NM LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "003"'>
+						AND ( A.DISP_NM LIKE '%'||#{searchWord }||'%'
+								OR A.DISP_GNB_NM LIKE '%'||#{searchWord }||'%'
+								OR A.DISP_TIT_NM LIKE '%'||#{searchWord }||'%' 
+							)
+					</when>
+					<otherwise>
+						AND ( A.DISP_NM LIKE '%'||#{searchWord }||'%'
+								OR A.DISP_GNB_NM LIKE '%'||#{searchWord }||'%'
+								OR A.DISP_TIT_NM LIKE '%'||#{searchWord }||'%' 
+							)
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectDisplayList" parameterType="dispShopBaseVO" resultMap="displayList">
+		/* homenet.shop.display.service.DisplayService.selectDisplayList 전시매장 정보 조회*/
+		SELECT 
+			  Z.*
+		FROM (
+			SELECT 
+				  ROWNUM RNUM
+				, X.*
+				, COUNT(0) OVER () AS TOTAL_COUNT   
+			FROM (
+				SELECT
+					  A.DISP_NO
+					, A.UPR_DISP_NO
+					, A.DPML_NO
+					, A.DISP_NM
+					, A.DISP_GNB_NM
+					, A.GNB_EXP_METH_CD
+					, A.DISP_TIT_NM
+					, A.DISP_TIT_EXP_METH_CD
+					, A.SHOP_TP_CD
+					, A.SHOP_DESC_CONT
+					, A.DPTH_NO
+					, A.DISP_PRIO_RNK
+					, A.USE_YN
+					, A.DISP_YN
+					, A.TLWT_LF_YN
+					, A.PRT_TP_CD
+					, A.LST_SORT_CD
+					, A.MOV_FRME_CD
+					, A.LNK_URL_ADDR
+					, A.LNK_SPDP_HH_NO
+					, A.DISP_LRG_NO
+					, A.DISP_MID_NO
+					, A.DISP_SML_NO
+					, A.DISP_THN_NO
+					, A.MENU_USE_YN
+					, A.TMPL_NO
+					, A.PPP_SN
+					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+				FROM TB_BRND_BASE A
+				<include refid="searchDisplay" />		
+	   		) X
+	   	)Z	
+	   	<if test='recordCountPerPage != null and recordCountPerPage != 0'>
+	   	<![CDATA[	   	
+	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
+		]]>
+		</if>
+	</select>
+	
+	<select id="selectDisplayPrimaryKeySequence" resultType="Integer">
+		/* homenet.shop.display.service.DisplayService.selectDisplayPrimaryKeySequence, 전시번호 생성 */															  
+  		SELECT SQ_DISP_SHOP_BASE_01.NEXTVAL FROM DUAL
+  	</select>
+  
+	<insert id="insertDisplayBase" parameterType="dispShopBaseVO" >
+		/* homenet.shop.display.service.DisplayService.insertDisplayBase, 전시매장 정보 등록 */
+		INSERT INTO TB_DISP_SHOP_BASE (
+			  DISP_NO
+			, UPR_DISP_NO
+			, DPML_NO
+			, DISP_NM
+			, DISP_GNB_NM
+			, GNB_EXP_METH_CD
+			, DISP_TIT_NM
+			, DISP_TIT_EXP_METH_CD
+			, SHOP_TP_CD
+			, SHOP_DESC_CONT
+			, DPTH_NO
+			, DISP_PRIO_RNK
+			, USE_YN
+			, DISP_YN
+			, TLWT_LF_YN
+			, PRT_TP_CD
+			, LST_SORT_CD
+			, MOV_FRME_CD
+			, LNK_URL_ADDR
+			, LNK_SPDP_HH_NO
+			, DISP_LRG_NO
+			, DISP_MID_NO
+			, DISP_SML_NO
+			, DISP_THN_NO
+			, MENU_USE_YN
+			, TMPL_NO
+			, PPP_SN
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{dispNo				}
+			, #{uprDispNo       	}
+			, #{dpmlNo          	}
+			, #{dispNm          	}
+			, #{dispGnbNm       	}
+			, #{gnbExpMethCd    	}
+			, #{dispTitNm       	}
+			, #{dispTitExpMethCd	}
+			, #{shopTpCd        	}
+			, #{shopDescCont    	}
+			, #{dpthNo          	}
+			, #{dispPrioRnk     	}
+			, #{useYn           	}
+			, #{dispYn          	}
+			, #{tlwtLfYn        	}
+			, #{prtTpCd         	}
+			, #{lstSortCd       	}
+			, #{movFrmeCd       	}
+			, #{lnkUrlAddr      	}
+			, #{lnkSpdpHhNo     	}
+			, #{dispLrgNo       	}
+			, #{dispMidNo       	}
+			, #{dispSmlNo       	}
+			, #{dispThnNo       	}
+			, #{menuUseYn       	}
+			, #{tmplNo          	}
+			, #{pppSn           	}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+	
+	<update id="updateDisplayBase" parameterType="dispShopBaseVO" >
+		/* homenet.shop.display.service.DisplayService.updateDisplayBase, 전시매장 정보 수정 */
+		UPDATE TB_DISP_SHOP_BASE SET
+			  DISP_NM					= #{dispNm          	}
+			, DISP_GNB_NM               = #{dispGnbNm       	}
+			, GNB_EXP_METH_CD           = #{gnbExpMethCd    	}
+			, DISP_TIT_NM               = #{dispTitNm       	}
+			, DISP_TIT_EXP_METH_CD      = #{dispTitExpMethCd	}
+			, SHOP_TP_CD                = #{shopTpCd        	}
+			, SHOP_DESC_CONT            = #{shopDescCont    	}
+			, DPTH_NO                   = #{dpthNo          	}
+			, DISP_PRIO_RNK             = #{dispPrioRnk     	}
+			, USE_YN                    = #{useYn           	}
+			, DISP_YN                   = #{dispYn          	}
+			, TLWT_LF_YN                = #{tlwtLfYn        	}
+			, PRT_TP_CD                 = #{prtTpCd         	}
+			, LST_SORT_CD               = #{lstSortCd       	}
+			, MOV_FRME_CD               = #{movFrmeCd       	}
+			, LNK_URL_ADDR              = #{lnkUrlAddr      	}
+			, LNK_SPDP_HH_NO            = #{lnkSpdpHhNo     	}
+			, DISP_LRG_NO               = #{dispLrgNo       	}
+			, DISP_MID_NO               = #{dispMidNo       	}
+			, DISP_SML_NO               = #{dispSmlNo       	}
+			, DISP_THN_NO               = #{dispThnNo       	}
+			, MENU_USE_YN               = #{menuUseYn       	}
+			, TMPL_NO                   = #{tmplNo          	}
+			, PPP_SN                    = #{pppSn           	}
+		WHERE DISP_NO = #{dispNo				}
+	</update>
+	
+	<delete id="deleteDisplayBase" parameterType="dispShopBaseVO" >
+		/* homenet.shop.display.service.DisplayService.deleteDisplayBase, 전시매장 정보 수정 */
+		DELETE FROM TB_DISP_SHOP_BASE
+		WHERE DISP_NO = #{dispNo				}
+	</delete>
+	
+</mapper>

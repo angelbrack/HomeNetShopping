@@ -28,5 +28,9 @@
     	<!-- 브랜드 -->
     	<typeAlias alias="brndBaseVO" 				type="homenet.shop.brand.service.BrndBaseVO"				/>
     	<typeAlias alias="brndImgInfoVO" 			type="homenet.shop.brand.service.BrndImgInfoVO"				/>
+    	
+    	<!-- 전시 -->
+    	<typeAlias alias="dispShopBaseVO" 				type="homenet.shop.display.service.DispShopBaseVO"		/>
+    	<typeAlias alias="dispGoodsInfoVO" 				type="homenet.shop.display.service.DispGoodsInfoVO"		/>
     </typeAliases>
 </configuration>
