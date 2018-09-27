@@ -2,6 +2,70 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="homenet.shop.display.service.DisplayService">
 	
+	<!-- 전시매장 정보 List -->
+	<resultMap id="displayList" type="dispShopBaseVO"> 
+		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
+		<result property="uprDispNo" 		 		 	column="UPR_DISP_NO" 				/> <!-- 상위전시번호				-->
+		<result property="dpmlNo" 		 		 		column="DPML_NO" 					/> <!-- 전시몰번호				-->
+		<result property="dispNm" 		 		 		column="DISP_NM" 					/> <!-- 전시명					-->
+		<result property="dispGnbNm" 		 		 	column="DISP_GNB_NM" 				/> <!-- 전시 GNB명				-->
+		<result property="gnbExpMethCd" 		 		 column="GNB_EXP_METH_CD" 			/> <!-- 전시 GNB노출방식			-->
+		<result property="dispTitNm" 		 		 	column="DISP_TIT_NM" 				/> <!-- 전시 제목명				-->
+		<result property="dispTitExpMethCd" 		 	column="DISP_TIT_EXP_METH_CD" 		/> <!-- 전시제목노출방식			-->
+		<result property="shopTpCd" 		 		 	column="SHOP_TP_CD" 				/> <!-- 매장유형코드				-->
+		<result property="shopDescCont" 		 		column="SHOP_DESC_CONT" 			/> <!-- 매장설명내용				-->
+		<result property="dpthNo" 		 		 		column="DPTH_NO" 					/> <!-- 깊이번호				-->
+		<result property="dispPrioRnk" 		 		 	column="DISP_PRIO_RNK" 				/> <!-- 전시우선순위				-->
+		<result property="useYn" 		 		 		column="USE_YN" 					/> <!-- 사용여부				-->
+		<result property="dispYn" 		 		 		column="DISP_YN" 					/> <!-- 전시여부				-->
+		<result property="tlwtLfYn" 		 		 	column="TLWT_LF_YN" 				/> <!-- 최하위리프여부				-->
+		<result property="prtTpCd" 		 		 		column="PRT_TP_CD" 					/> <!-- 출력유형코드				-->
+		<result property="lstSortCd" 		 		 	column="LST_SORT_CD" 				/> <!-- 리스트정렬코드				-->
+		<result property="movFrmeCd" 		 		 	column="MOV_FRME_CD" 				/> <!-- 이동프레임코드				-->
+		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 url주소				-->
+		<result property="lnkSpdpHhNo " 		 		column="LNK_SPDP_HH_NO" 			/> <!-- 연결 기획전 전시번호 			-->
+		<result property="dispLrgNo" 		 		 	column="DISP_LRG_NO" 				/> <!-- 전시대번호				-->
+		<result property="dispMidNo" 		 		 	column="DISP_MID_NO" 				/> <!-- 전시중번호				-->
+		<result property="dispSmlNo" 		 		 	column="DISP_SML_NO" 				/> <!-- 전시소번호				-->
+		<result property="dispThnNo" 		 		 	column="DISP_THN_NO" 				/> <!-- 전시세번호				-->
+		<result property="menuUseYn" 		 		 	column="MENU_USE_YN" 				/> <!-- 메뉴사용여부				-->
+		<result property="tmplNo" 		 		 		column="TMPL_NO" 					/> <!-- 템플릿번호				-->
+		<result property="pppSn" 		 		 		column="PPP_SN" 					/> <!-- 팝업일련번호				-->
+		
+		<result property="wrtPnNo"  					column="WRT_PN_NO" 					/> <!-- 작성자번호 				-->
+		<result property="wrtPnIp"  					column="WRT_PN_IP" 					/> <!-- 작성자IP 				-->
+		<result property="wrtDttm"  					column="WRT_DTTM" 					/> <!-- 작성일시 				-->
+		<result property="updtPnNo"  					column="UPDT_PN_NO" 				/> <!-- 수정자번호 				--> 
+		<result property="updtPnIp"  					column="UPDT_PN_IP" 				/> <!-- 수정자IP 				-->   
+		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
+		
+		<result property="totalCount"  					column="TOTAL_COUNT" 				/> <!-- Record Total Count 	-->
+		
+	</resultMap>
+	
+	<!-- 전시매장 상세정보 -->
+	<resultMap id="displayInfo" type="dispShopBaseVO" extends="displayList">
+	</resultMap>
+	
+	
+	<resultMap id="displayImgInfoList" type="dispImgInfoVO"
+		
+		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
+		<result property="dispImgTpCd" 		 		 	column="DISP_IMG_TP_CD" 			/> <!-- 전시이미지유형코드			-->
+		<result property="imgSn" 		 		 		column="IMG_SN" 					/> <!-- 이미지일련번호				-->
+		<result property="dispShopSctCd" 		 		column="DISP_SHOP_SCT_CD" 			/> <!-- 전시매장구분코드			-->
+		<result property="bnrImgPathNm" 		 		column="BNR_IMG_PATH_NM" 			/> <!-- 새 컬럼2				-->
+		<result property="bnrImgFileNm" 		 		column="BNR_IMG_FILE_NM" 			/> <!-- 배너이미지파일명			-->
+		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 URL주소				-->
+		
+		<result property="wrtPnNo"  					column="WRT_PN_NO" 					/> <!-- 작성자번호 				-->
+		<result property="wrtPnIp"  					column="WRT_PN_IP" 					/> <!-- 작성자IP 				-->
+		<result property="wrtDttm"  					column="WRT_DTTM" 					/> <!-- 작성일시 				-->
+		<result property="updtPnNo"  					column="UPDT_PN_NO" 				/> <!-- 수정자번호 				--> 
+		<result property="updtPnIp"  					column="UPDT_PN_IP" 				/> <!-- 수정자IP 				-->   
+		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
+	</resultMap>
+	
 	<!-- 전시매장 정보 검색조건 -->
 	<sql id="searchDisplay">
 		<where>
@@ -86,6 +150,41 @@
 	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
 		]]>
 		</if>
+	</select>
+	
+	<select id="selectDisplayInfo" parameterType="dispShopBaseVO" resultMap="displayInfo">
+		/* homenet.shop.display.service.DisplayService.selectDisplayInfo 전시매장 정보 상세 조회*/
+		SELECT
+			  A.DISP_NO
+			, A.UPR_DISP_NO
+			, A.DPML_NO
+			, A.DISP_NM
+			, A.DISP_GNB_NM
+			, A.GNB_EXP_METH_CD
+			, A.DISP_TIT_NM
+			, A.DISP_TIT_EXP_METH_CD
+			, A.SHOP_TP_CD
+			, A.SHOP_DESC_CONT
+			, A.DPTH_NO
+			, A.DISP_PRIO_RNK
+			, A.USE_YN
+			, A.DISP_YN
+			, A.TLWT_LF_YN
+			, A.PRT_TP_CD
+			, A.LST_SORT_CD
+			, A.MOV_FRME_CD
+			, A.LNK_URL_ADDR
+			, A.LNK_SPDP_HH_NO
+			, A.DISP_LRG_NO
+			, A.DISP_MID_NO
+			, A.DISP_SML_NO
+			, A.DISP_THN_NO
+			, A.MENU_USE_YN
+			, A.TMPL_NO
+			, A.PPP_SN
+			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+		FROM TB_BRND_BASE A
+		WHERE A.DISP_NO = #{dispNo				}	
 	</select>
 	
 	<select id="selectDisplayPrimaryKeySequence" resultType="Integer">
@@ -189,6 +288,60 @@
 	<delete id="deleteDisplayBase" parameterType="dispShopBaseVO" >
 		/* homenet.shop.display.service.DisplayService.deleteDisplayBase, 전시매장 정보 수정 */
 		DELETE FROM TB_DISP_SHOP_BASE
+		WHERE DISP_NO = #{dispNo				}
+	</delete>
+	
+	<select id="selectDisplayImgInfoList" parameterType="dispShopBaseVO" resultMap="displayImgInfoList">
+		/* homenet.shop.display.service.DisplayService.selectDisplayImgInfoList 전시 이미지 정보 조회*/
+		SELECT
+			  A.DISP_NO         
+			, A.DISP_IMG_TP_CD  
+			, A.IMG_SN    
+			, A.DISP_SHOP_SCT_CD      
+			, A.BNR_IMG_PATH_NM 
+			, A.BNR_IMG_FILE_NM 
+			, A.LNK_URL_ADDR
+			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+		FROM TB_BRND_BASE A
+		WHERE A.DISP_NO = #{dispNo				}	
+	</select>
+	
+	<insert id="insertDisplayImgInfo" parameterType="dispImgInfoVO" >
+		/* homenet.shop.display.service.DisplayService.insertDisplayImgInfo, 전시 이미지 정보 등록 */
+		<selectKey keyProperty="imgSn" resultType="Integer" order="BEFORE">
+            SELECT 
+            	NVL(MAX(IMG_SN),0)+1
+            FROM TB_DISP_IMG_INFO
+            WHERE DISP_NO 		= #{dispNo}
+            AND DISP_IMG_TP_CD 	= #{displayImageTypeCode}
+        
+    	</selectKey>
+    
+        INSERT INTO TB_DISP_IMG_INFO (
+              DISP_NO
+            , DISP_IMG_TP_CD
+            , IMG_SN
+            , DISP_SHOP_SCT_CD
+            , BNR_IMG_PATH_NM
+            , BNR_IMG_FILE_NM
+            , LNK_URL_ADDR
+         	<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />	
+        ) VALUES (
+              
+              #{dispNo       	}
+            , #{dispImgTpCd  	}
+            , #{imgSn        	}
+            , #{dispShopSctCd	}
+            , #{bnrImgPathNm 	}
+            , #{bnrImgFileNm 	}
+            , #{lnkUrlAddr   	}
+            <include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+        )
+	</insert>
+	
+	<delete id="deleteDisplayImgInfo" parameterType="dispShopBaseVO" >
+		/* homenet.shop.display.service.DisplayService.deleteDisplayImgInfo, 전시 이미지 정보 수정 */
+		DELETE FROM TB_DISP_IMG_INFO
 		WHERE DISP_NO = #{dispNo				}
 	</delete>
 	

@@ -9,7 +9,7 @@ import prjframework.common.util.PagerVO;
  * <li>Created by EumJaeDuck, 2018. 9. 21.</li>
  * </ul>
  */
-public class DispGoodsInfoVO  extends PagerVO {
+public class DispGoodsInfoVO extends PagerVO {
 	
 	private static final long serialVersionUID = -8274004534207618049L;
 	

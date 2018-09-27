@@ -31,6 +31,7 @@
     	
     	<!-- 전시 -->
     	<typeAlias alias="dispShopBaseVO" 				type="homenet.shop.display.service.DispShopBaseVO"		/>
+    	<typeAlias alias="dispImgInfoVO" 				type="homenet.shop.display.service.DispImgInfoVO"		/>
     	<typeAlias alias="dispGoodsInfoVO" 				type="homenet.shop.display.service.DispGoodsInfoVO"		/>
     </typeAliases>
 </configuration>

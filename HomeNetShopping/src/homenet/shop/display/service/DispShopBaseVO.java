@@ -1,5 +1,7 @@
 package homenet.shop.display.service;
 
+import java.util.List;
+
 import prjframework.common.util.PagerVO;
 
 /**
@@ -45,6 +47,26 @@ public class DispShopBaseVO  extends PagerVO {
 	private Integer tmplNo                 	; // 템플릿번호
 	private Integer pppSn                  	; // 팝업일련번호
 	
+	private List<DispImgInfoVO> dispImgInfoList;	// 전시  이미지정보 리스트
+	
+	public String getSearchShopTpCd() {
+		return searchShopTpCd;
+	}
+	public void setSearchShopTpCd(String searchShopTpCd) {
+		this.searchShopTpCd = searchShopTpCd;
+	}
+	public String getSearchUseYn() {
+		return searchUseYn;
+	}
+	public void setSearchUseYn(String searchUseYn) {
+		this.searchUseYn = searchUseYn;
+	}
+	public String getSearchDispYn() {
+		return searchDispYn;
+	}
+	public void setSearchDispYn(String searchDispYn) {
+		this.searchDispYn = searchDispYn;
+	}
 	public Integer getDispNo() {
 		return dispNo;
 	}
@@ -207,4 +229,12 @@ public class DispShopBaseVO  extends PagerVO {
 	public void setPppSn(Integer pppSn) {
 		this.pppSn = pppSn;
 	}
+	public List<DispImgInfoVO> getDispImgInfoList() {
+		return dispImgInfoList;
+	}
+	public void setDispImgInfoList(List<DispImgInfoVO> dispImgInfoList) {
+		this.dispImgInfoList = dispImgInfoList;
+	}
+	
+	
 }
