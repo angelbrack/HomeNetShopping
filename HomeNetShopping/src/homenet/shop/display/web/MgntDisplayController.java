@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
-import homenet.shop.brand.service.DispShopBaseVO;
-import homenet.shop.brand.service.BrndImgInfoVO;
 import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
