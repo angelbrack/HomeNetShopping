@@ -294,3 +294,117 @@ PR_DISP_SHOP_BASE
         )
 	
 	</insert>
+	
+===========================================================================================================
+
+shopDescCont
+
+<insert id="createDisplayArticle">
+   INSERT INTO /* 파일명[파일설명] : DisplayMgmt.xml[품목코드매핑정보 ]
+                      SQL ID : createDisplayArticle
+                      업무파트: 전시
+                      작성자 :  aki    
+                      작성일시 : 2015.06.15
+                    */ 
+            PR_CAT_ARTC_REL_INFO
+        (
+           ARTC_CD,
+           DISP_NO,
+   <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>		
+        )
+        VALUES
+        (
+            #{articleCode},
+            #{displayNo},
+      <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        )
+  	
+  
+  </insert>
+  
+  <insert id="createDisplayCornerInfoUsingTemplateNo">
+    
+        INSERT INTO /* 파일명[파일설명] : DisplayMgmt.xml[전시코너정보 생성(전시 템플릿 번호를 이용하여 전시코너연결정보생성 )]
+                      SQL ID : createDisplayCornerInfoUsingTemplateNo
+                      업무파트: 전시
+                      작성자 :  김수원    
+                      작성일시 : 2015.04.26 수정 (aki)
+                    */  
+            PR_DISP_CONR_INFO
+        (
+            DISP_NO,
+            CONR_NO,
+         <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>	
+        )
+        SELECT 
+            #{displayNo}, 
+            m.conr_no,
+        <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+        FROM pr_tmpl_conr_mppg_info m
+        WHERE 1=1
+        AND tmpl_no = #{templateNo}
+        
+    <if test='commonTemplateCornerYn == "N"'>
+      
+        AND conr_no not in(
+                                SELECT conr_no            
+                                FROM pr_tmpl_conr_mppg_info 
+                                WHERE 1=1
+                                AND tmpl_no = #{beforeTemplateNo}          
+                                )
+        
+    </if>
+  </insert>
+  
+ <insert id="createDisplayCornerSetInfoUsingTemplateNo">
+    
+        INSERT INTO /* 파일명[파일설명] : DisplayMgmt.xml[전시코너세트정보 생성(전시 템플릿 번호를 이용하여 전시코너연결정보생성 )]
+                      SQL ID : createDisplayCornerSetInfoUsingTemplateNo
+                      업무파트: 전시
+                      작성자 :  메딕    
+                      작성일시 : 2015.05.04 수정 (aki)
+                    */  
+            PR_CONR_SET_INFO
+        (
+            DISP_NO,            CONR_NO,            SET_NO,            SET_NM,            DISP_PRIO_RNK,            DISP_YN,            SET_DESC_CONT,             TGT_NO,
+            SYS_REGR_ID,            SYS_REG_DTIME,            SYS_MODR_ID,            SYS_MOD_DTIME 
+        )
+        SELECT 
+            #{displayNo},    m.conr_no,     m.set_no,    m.set_nm,       m.disp_prio_rnk,        m.disp_yn,      m.set_desc_cont,    m.tgt_no, 
+            #{registId, jdbcType=VARCHAR}, #{registTime}, #{modifyId, jdbcType=VARCHAR},#{modifyTime}
+       <!-- <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/> -->
+        FROM         
+              (
+              SELECT 
+                row_number() OVER(PARTITION BY conr_no, set_no ORDER BY conr_no, set_no, disp_yn desc, tgt_no ) as rn,  
+                conr_no, set_no, set_nm, disp_prio_rnk, disp_yn, set_desc_cont, tgt_no
+              FROM   PR_CONR_SET_INFO 
+              WHERE CONR_NO in(
+                                        SELECT conr_no 
+                                        FROM PR_CONR_BASE
+                                        where 1=1
+                                          
+                                            AND SET_USE_YN = 'Y' AND DISP_LNK_TP_CD = '10' /* 세트사용하는 1:N 코너 */
+                                            AND conr_no in(
+                                                              SELECT CONR_NO 
+                                                              FROM PR_TMPL_CONR_MPPG_INFO 
+                                                              WHERE 1=1
+                                                               AND tmpl_no = #{templateNo}
+                                                                
+    <if test='commonTemplateCornerYn == "N"'>
+      
+                                                                AND conr_no not in(
+                                                                                        SELECT conr_no            
+                                                                                        FROM pr_tmpl_conr_mppg_info 
+                                                                                        WHERE 1=1
+                                                                                        AND tmpl_no = #{beforeTemplateNo}          
+                                                                                        )
+                                                                
+    </if>
+                                                                       
+                                                              )
+                                        )
+            ) m
+            where rn = 1 /* 전시마다 세트명을 달리 넣는 경우가 있어서 */
+    
+  </insert>

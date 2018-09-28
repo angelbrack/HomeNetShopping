@@ -305,7 +305,7 @@ var displayHandle = {
 		data.useYn					= getCheckedValue("useYn");  				// 사용여부 
 		data.menuUseYn				= getCheckedValue("menuUseYn");  			// 메뉴사용 여부
 		data.prtTpCd				= getSelectedValue("prtTpCd");  			// 출력유형
-		data.tmplNo					= $("#form1 #tmplNo").val();				// 템플릿번호
+		var tmplNo					= $("#form1 #tmplNo").val();				// 템플릿번호					
 		data.lnkUrlAddr				= $("#form1 #lnkUrlAddr").val();			// 대상 URL
 		
 		var lnkSpdpHhNo40			= $("#form1 #lnkSpdpHhNo40").val();			// 카테고리매장번호
@@ -330,7 +330,7 @@ var displayHandle = {
 		}*/
 		
 		if ( data.prtTpCd == "01" ) {
-			if ( data.tmplNo == "" ) {
+			if ( tmplNo == "" ) {
 				alert("전시 템플릿을 선택해주세요.");
 				return false;
 			}
@@ -388,6 +388,12 @@ var displayHandle = {
 			});
 			
 		}
+		
+		if ( tmplNo != "" ) {
+			data.tmplNo = tmplNo;
+		}
+		
+		data.shopTpCd	= "01";	// 01 카테고리매장, 02 비정형매장
 		
 		return true;
 	},
