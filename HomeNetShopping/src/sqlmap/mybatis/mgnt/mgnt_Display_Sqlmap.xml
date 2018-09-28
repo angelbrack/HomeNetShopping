@@ -9,7 +9,7 @@
 		<result property="dpmlNo" 		 		 		column="DPML_NO" 					/> <!-- 전시몰번호				-->
 		<result property="dispNm" 		 		 		column="DISP_NM" 					/> <!-- 전시명					-->
 		<result property="dispGnbNm" 		 		 	column="DISP_GNB_NM" 				/> <!-- 전시 GNB명				-->
-		<result property="gnbExpMethCd" 		 		 column="GNB_EXP_METH_CD" 			/> <!-- 전시 GNB노출방식			-->
+		<result property="gnbExpMethCd" 		 		column="GNB_EXP_METH_CD" 			/> <!-- 전시 GNB노출방식			-->
 		<result property="dispTitNm" 		 		 	column="DISP_TIT_NM" 				/> <!-- 전시 제목명				-->
 		<result property="dispTitExpMethCd" 		 	column="DISP_TIT_EXP_METH_CD" 		/> <!-- 전시제목노출방식			-->
 		<result property="shopTpCd" 		 		 	column="SHOP_TP_CD" 				/> <!-- 매장유형코드				-->
@@ -23,7 +23,7 @@
 		<result property="lstSortCd" 		 		 	column="LST_SORT_CD" 				/> <!-- 리스트정렬코드				-->
 		<result property="movFrmeCd" 		 		 	column="MOV_FRME_CD" 				/> <!-- 이동프레임코드				-->
 		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 url주소				-->
-		<result property="lnkSpdpHhNo " 		 		column="LNK_SPDP_HH_NO" 			/> <!-- 연결 기획전 전시번호 			-->
+		<result property="lnkSpdpHhNo" 		 			column="LNK_SPDP_HH_NO" 			/> <!-- 연결 기획전 전시번호 			-->
 		<result property="dispLrgNo" 		 		 	column="DISP_LRG_NO" 				/> <!-- 전시대번호				-->
 		<result property="dispMidNo" 		 		 	column="DISP_MID_NO" 				/> <!-- 전시중번호				-->
 		<result property="dispSmlNo" 		 		 	column="DISP_SML_NO" 				/> <!-- 전시소번호				-->
@@ -48,7 +48,7 @@
 	</resultMap>
 	
 	
-	<resultMap id="displayImgInfoList" type="dispImgInfoVO"
+	<resultMap id="displayImgInfoList" type="dispImgInfoVO">
 		
 		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
 		<result property="dispImgTpCd" 		 		 	column="DISP_IMG_TP_CD" 			/> <!-- 전시이미지유형코드			-->
@@ -69,9 +69,8 @@
 	<!-- 전시매장 정보 검색조건 -->
 	<sql id="searchDisplay">
 		<where>
-			<if test="@nframework.persistent.mybatis.Expression@isNotEmpty(searchShopTpCd)">
+			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchShopTpCd)">
       			AND A.SHOP_TP_CD = #{searchShopTpCd}
-			        
     		</if>
     
 			<if test='searchWord != null and searchWord != ""'>
@@ -141,7 +140,7 @@
 					, A.TMPL_NO
 					, A.PPP_SN
 					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
-				FROM TB_BRND_BASE A
+				FROM TB_DISP_SHOP_BASE A
 				<include refid="searchDisplay" />		
 	   		) X
 	   	)Z	
@@ -183,7 +182,7 @@
 			, A.TMPL_NO
 			, A.PPP_SN
 			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
-		FROM TB_BRND_BASE A
+		FROM TB_DISP_SHOP_BASE A
 		WHERE A.DISP_NO = #{dispNo				}	
 	</select>
 	
@@ -302,7 +301,7 @@
 			, A.BNR_IMG_FILE_NM 
 			, A.LNK_URL_ADDR
 			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
-		FROM TB_BRND_BASE A
+		FROM TB_DISP_IMG_INFO A
 		WHERE A.DISP_NO = #{dispNo				}	
 	</select>
 	

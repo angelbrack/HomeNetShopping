@@ -1,5 +1,6 @@
 package homenet.shop.display.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
@@ -22,6 +25,8 @@ import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
 import prjframework.common.util.Casting;
+import prjframework.common.util.SessionUtil;
+import prjframework.common.util.WebUtil;
 
 /**
  * <p>전시 관리 Controller</p>
@@ -112,6 +117,92 @@ public class MgntDisplayController {
 
 		model.addAttribute("info", info);
 		return "mgnt/display/displayHandlePopup";
+	}
+	
+	/**
+	  * 목적 		: 전시매장정보 저장 처리
+	  * @param 	: DispShopBaseVO paramVO
+	  * @param  : HttpServletRequest request
+	  * @return : ModelAndView json
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/display/displaySave.json", headers="Accept=application/json" )
+	public ModelAndView recruitSave(ModelMap model, @RequestBody DispShopBaseVO paramVO, HttpServletRequest request) throws Exception {
+		
+		String resultMsg 				= "OK";
+		String completeYn 				= "Y";
+		
+		int result						= 0;
+		
+		paramVO.setWrtPnNo(SessionUtil.getUserNo());
+		paramVO.setUpdtPnNo(SessionUtil.getUserNo());
+		paramVO.setWrtPnIp(WebUtil.getRemoteAddr(request));
+		paramVO.setUpdtPnIp(WebUtil.getRemoteAddr(request));
+		
+		// 저장
+		result = displayService.saveDisplay(paramVO);
+		if("I".equals(paramVO.getCmd())) {
+			if(result > 0) {
+				resultMsg 	= egovMessageSource.getMessage("success.common.insert");
+				completeYn	= "Y";
+			} else {
+				resultMsg 	= egovMessageSource.getMessage("fail.common.insert");
+				completeYn	= "N";
+			}
+		} else {
+			if(result > 0) {
+				resultMsg 	= egovMessageSource.getMessage("success.common.update");
+				completeYn	= "Y";
+			} else {
+				resultMsg 	= egovMessageSource.getMessage("fail.common.update");
+				completeYn	= "N";
+			}
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		resultMap.put("resultMsg", 	resultMsg);
+		resultMap.put("completeYn", completeYn);
+		
+		return new ModelAndView("jsonView", resultMap);
+	}
+	
+	/**
+	  * 목적 		: 전시매장정보 삭제 처리
+	  * @param 	: DispShopBaseVO paramVO
+	  * @param  : HttpServletRequest request
+	  * @return : ModelAndView json
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/display/displayDelete.json", headers="Accept=application/json" )
+	public ModelAndView recruitDelete(ModelMap model, @RequestBody DispShopBaseVO paramVO, HttpServletRequest request) throws Exception {
+		
+		String resultMsg 				= "OK";
+		String completeYn 				= "Y";
+		
+		int result						= 0;
+		
+		paramVO.setWrtPnNo(SessionUtil.getUserNo());
+		paramVO.setUpdtPnNo(SessionUtil.getUserNo());
+		paramVO.setWrtPnIp(WebUtil.getRemoteAddr(request));
+		paramVO.setUpdtPnIp(WebUtil.getRemoteAddr(request));
+		
+		// 삭제
+		result = displayService.deleteDisplayBase(paramVO);
+		if(result > 0) {
+			resultMsg 	= egovMessageSource.getMessage("success.common.delete");
+			completeYn	= "Y";
+		} else {
+			resultMsg 	= egovMessageSource.getMessage("fail.common.delete");
+			completeYn	= "N";
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		resultMap.put("resultMsg", 	resultMsg);
+		resultMap.put("completeYn", completeYn);
+		
+		return new ModelAndView("jsonView", resultMap);
 	}
 
 }

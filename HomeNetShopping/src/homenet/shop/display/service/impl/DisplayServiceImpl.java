@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import homenet.shop.brand.service.BrandService;
+import homenet.shop.brand.service.BrndImgInfoVO;
 import homenet.shop.brand.service.impl.BrandServiceImpl;
 import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
@@ -73,6 +75,17 @@ public class DisplayServiceImpl implements DisplayService {
 		
 		int result	= 0;
 		
+		if ( "I".equals(paramVO.getCmd()) ) {
+			// 브랜드번호 생성
+			Integer dispNo	= selectDisplayPrimaryKeySequence(paramVO);
+			paramVO.setDispNo(dispNo);
+			
+			result += insertDisplayBase(paramVO);
+		} else {
+			result += updateDisplayBase(paramVO);
+		}
+		
+		result += saveDisplayImgInfo(paramVO);
 		
 		return result;
 	}
@@ -103,6 +116,24 @@ public class DisplayServiceImpl implements DisplayService {
 	 * 
 	 * @return : Integer 전시매장 삭제 결과
 	 */
+	public Integer deleteDisplay(DispShopBaseVO paramVO) throws Exception {
+		int result = 0;
+		
+		// 전시 이미지 삭제
+		result += deleteDisplayImgInfo(paramVO);
+		
+		// 전시매장 삭제
+		result += deleteDisplayBase(paramVO);
+		
+		return result;
+	}
+	
+	/*
+	 * 전시매장 삭제
+	 * @param  : DispShopBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 전시매장 삭제 결과
+	 */
 	public Integer deleteDisplayBase(DispShopBaseVO paramVO) throws Exception {
 		return mybatisDataAccessDAO.delete("homenet.shop.display.service.DisplayService.deleteDisplayBase", paramVO);
 	}
@@ -115,6 +146,159 @@ public class DisplayServiceImpl implements DisplayService {
 	 */
 	public List<DispImgInfoVO> selectDisplayImgInfoList(DispShopBaseVO paramVO) throws Exception {
 		return (List<DispImgInfoVO>) mybatisDataAccessDAO.select("homenet.shop.display.service.DisplayService.insertDisplayImgInfo", paramVO);
+	}
+	
+	/*
+	 * 전시 이미지 저장
+	 * @param  : DispShopBaseVO 등록 정보
+	 * 
+	 * @return : Integer 전시 이미지 저장 결과
+	 */
+	public Integer saveDisplayImgInfo(DispShopBaseVO paramVO) throws Exception {
+		int result = 0;
+		
+		String[] arrTitleImgInfo 		= null;
+		String[] arrTitleImgSplitInfo 	= null;
+		
+		String[] arrGnbImgInfo 			= null;
+		String[] arrGnbImgSplitInfo 	= null;
+		
+		String[] arrHeaderImgInfo 		= null;
+		String[] arrHeaderImgSplitInfo 	= null;
+		
+		DispImgInfoVO dispImgInfoVO 	= null;
+		
+		if(paramVO != null) {
+			arrTitleImgInfo 	= paramVO.getAddTitleImgList();
+			arrGnbImgInfo		= paramVO.getAddGnbImgList();
+			arrHeaderImgInfo	= paramVO.getAddHeaderImgList();
+			
+			if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
+				
+				if ( "I".equals(paramVO.getCmd()) ) {
+					for(int i = 0; i < arrTitleImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrTitleImgSplitInfo = StringUtil.split(arrTitleImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("05");		// 05 전시매장대표
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrTitleImgInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrTitleImgInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+					
+					for(int i = 0; i < arrGnbImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrGnbImgSplitInfo = StringUtil.split(arrGnbImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("03");		// 03 전시매장 GNB
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrGnbImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrGnbImgSplitInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+					
+					for(int i = 0; i < arrHeaderImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrHeaderImgSplitInfo = StringUtil.split(arrHeaderImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("04");		// 04 전시매장타이틀
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrHeaderImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrHeaderImgSplitInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+					
+				} else {
+					
+					result += deleteDisplayImgInfo(paramVO);
+					
+					for(int i = 0; i < arrTitleImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrTitleImgSplitInfo = StringUtil.split(arrTitleImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("05");		// 05 전시매장대표
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrTitleImgInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrTitleImgInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+					
+					for(int i = 0; i < arrGnbImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrGnbImgSplitInfo = StringUtil.split(arrGnbImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("03");		// 03 전시매장 GNB
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrGnbImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrGnbImgSplitInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+					
+					for(int i = 0; i < arrHeaderImgInfo.length; i++) {
+						dispImgInfoVO = new DispImgInfoVO();
+						
+						arrHeaderImgSplitInfo = StringUtil.split(arrHeaderImgInfo[i], "|");
+						
+						dispImgInfoVO.setDispNo(paramVO.getDispNo());
+						dispImgInfoVO.setDispImgTpCd("04");		// 04 전시매장타이틀
+						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
+						dispImgInfoVO.setBnrImgFileNm(arrHeaderImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrHeaderImgSplitInfo[4]);
+						
+						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
+						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+						dispImgInfoVO.setWrtPnIp(paramVO.getWrtPnIp());
+						dispImgInfoVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+						
+						result += insertDisplayImgInfo(dispImgInfoVO);
+					}
+				}
+				
+			}
+		}
+		
+		return result;
 	}
 	
 	/*
@@ -133,7 +317,7 @@ public class DisplayServiceImpl implements DisplayService {
 	 * 
 	 * @return : Integer 전시 이미지 삭제 결과
 	 */
-	public Integer deleteDisplayImgInfo(DispImgInfoVO paramVO) throws Exception {
+	public Integer deleteDisplayImgInfo(DispShopBaseVO paramVO) throws Exception {
 		return mybatisDataAccessDAO.delete("homenet.shop.display.service.DisplayService.deleteDisplayImgInfo", paramVO);
 	}
 

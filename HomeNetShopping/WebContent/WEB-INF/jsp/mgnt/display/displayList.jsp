@@ -6,12 +6,12 @@
 			<form name="formInit" id="formInit" method="post" action="">
 				<input type="hidden" id="currentPage" 			name="currentPage" 			value="<c:out value="${searchVO.currentPage 		}" />" 		/>
 				
-				<input type="hidden" id="brndNo" 				name="brndNo" 				value="" 														/>
+				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 														/>
 			</form>
 			<form name="form1" id="form1" method="post" action="">
 				<input type="hidden" id="cmd"					name="cmd"					value=""														/> <!-- 등록/수정 구분 		-->
 				<input type="hidden" id="currentPage" 			name="currentPage" 			value="<c:out value="${searchVO.currentPage 		}" />" 		/> <!-- 페이지 번호 			-->
-				<input type="hidden" id="brndNo" 				name="brndNo" 				value="" 														/> <!-- 브랜드번호	 		-->
+				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 														/> <!-- 브랜드번호	 		-->
 			<!--contents-->
 			<div class="con_top">
 				<div class="tit">
@@ -44,10 +44,10 @@
                                     <option value="000" <c:if test="${empty searchVO.searchKey or searchVO.searchKey eq '000'}">selected="selected"</c:if>>브랜드명</option>
                                     <option value="001" <c:if test="${searchVO.searchKey eq '001'}">selected="selected"</c:if>>브랜드상세설명</option>
                                 </select>
-                                <input type="text" name="searchWord" id="searchWord" maxlength="100" style="width:400px;height:18px;" class="txtbox1" title="" value="${searchVO.searchWord }" class="txtbox1" onkeypress="if(event.keyCode==13) {brandList.fnSearch();}" escapeXml="false" />
+                                <input type="text" name="searchWord" id="searchWord" maxlength="100" style="width:400px;height:18px;" class="txtbox1" title="" value="${searchVO.searchWord }" class="txtbox1" onkeypress="if(event.keyCode==13) {displayList.fnSearch();}" escapeXml="false" />
                             </td>
                             <td class="ar">
-                                <a href="#none" onclick="brandList.fnSearch();" class="btn_search3 ml5 mr20">검색</a>
+                                <a href="#none" onclick="displayList.fnSearch();" class="btn_search3 ml5 mr20">검색</a>
                             </td>
                         </tr>
 						<tr> 
@@ -71,10 +71,19 @@
 					</caption>
 					<colgroup>
 						<col width="4%" />
-						<col width="10%" />
-						<col width="10%" />
+						
+						<col width="5%" />
+						<col width="*" />
 						<col width="10%" />
 						<col width="*%" />
+						<col width="5%" />
+						<col width="5%" />
+						<col width="5%" />
+						<col width="10%" />
+						<col width="5%" />
+						<col width="5%" />
+						<col width="5%" />
+						
 						<col width="10%" />
 						<col width="10%" />
 						
@@ -82,10 +91,18 @@
 					<thead>
 						<tr>
 							<th scope="col">No</th>
-							<th scope="col">브랜드명</th>
-							<th scope="col">브랜드한글명</th>
-							<th scope="col">브랜드영문명</th>
-							<th scope="col">브랜드상세설명</th>
+							<th scope="col">전시번호</th>
+							<th scope="col">전시명</th>
+							<th scope="col">우선순위</th>
+							<th scope="col">전시여부</th>
+							<th scope="col">사용여부</th>
+							<th scope="col">메뉴사용여부</th>
+							<th scope="col">상위전시번호</th>
+							<th scope="col">상위전시명</th>						
+							<th scope="col">깊이번호</th>
+							<th scope="col">Leaf 여부</th>
+							<th scope="col">몰번호</th>
+							
 							<th scope="col">등록일</th>
 							<th scope="col">수정일</th>
 						</tr>
@@ -96,14 +113,24 @@
 					<c:forEach items="${list}" var="item" varStatus="status">
 						<tr>
 							<td><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.currentPage-1) * searchVO.recordCountPerPage + status.count)}"/></td>
+							
+							<td><c:out value="${item.dispNo }"/></td>
 							<td>
-								<a href="#none" onClick="brandList.fnEdit('U', '<c:out value="${item.brndNo }"/>');">
-								<c:out value="${item.brndNm }"/>
+								<a href="#none" onClick="displayList.fnEdit('U', '<c:out value="${item.dispNo }"/>');">
+								<c:out value="${item.dispNm }"/>
 								</a>	
 							</td>
-							<td><c:out value="${item.brndKorNm }"/></td>
-							<td><c:out value="${item.brndEngNm }"/></td>
-							<td><c:out value="${item.brndDescCont }"/></td>
+							<td><c:out value="${item.dispPrioRnk }"/></td>
+							<td><c:out value="${item.dispYn }"/></td>
+							<td><c:out value="${item.useYn }"/></td>
+							<td><c:out value="${item.menuUseYn }"/></td>
+							<td><c:out value="${item.uprDispNo }"/></td>
+							<td><c:out value="${item.useYn }"/></td>
+							<td><c:out value="${item.dpthNo }"/></td>
+							<td><c:out value="${item.tlwtLfYn }"/></td>
+							<td><c:out value="${item.dpmlNo }"/></td>
+							
+							
 							<td>
                                 <fmt:parseDate value="${item.wrtDttm}" var="wrtDttm" pattern="yyyyMMddHHmmss"/>
                                 <fmt:formatDate value="${wrtDttm}" pattern="yyyy.MM.dd"/>
@@ -117,7 +144,7 @@
 				</c:when>
 				<c:otherwise>
 						<tr>
-							<td colspan="7">검색된 데이터가 없습니다.</td>
+							<td colspan="14">검색된 데이터가 없습니다.</td>
 						</tr>
 				</c:otherwise>
 			</c:choose>
@@ -126,23 +153,23 @@
 			</div>
 			
 			<div class="con_paging mt30">
-				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="brandList.fnListPage" rowControl="true" jsRowFunction="brandList.fnListPerLine" />
+				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="displayList.fnListPage" rowControl="true" jsRowFunction="displayList.fnListPerLine" />
 		   	</div>
 			
 			<div class="con_btn mt30">
-				<a href="#none" onclick="brandList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
+				<a href="#none" onclick="displayList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
 			</div>
 			</form>
 		</div>
 	</div>
 </div>
 
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/brand/brand.js?20180918000000"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180928100001"></script>
 <script type="text/javascript">
 <!--
 $(document).ready(function() {
 	// 화면 초기화
-	brandList.init();
+	displayList.init();
 });
 //-->
 </script>

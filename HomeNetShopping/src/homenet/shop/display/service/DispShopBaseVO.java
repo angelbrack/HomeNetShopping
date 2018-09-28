@@ -47,6 +47,10 @@ public class DispShopBaseVO  extends PagerVO {
 	private Integer tmplNo                 	; // 템플릿번호
 	private Integer pppSn                  	; // 팝업일련번호
 	
+	private String[] addTitleImgList		; // 매장 타이틀 이미지
+	private String[] addGnbImgList			; // 매장 메뉴 이미지
+	private String[] addHeaderImgList		; // 매장 부가 이미지
+	
 	private List<DispImgInfoVO> dispImgInfoList;	// 전시  이미지정보 리스트
 	
 	public String getSearchShopTpCd() {
@@ -228,6 +232,24 @@ public class DispShopBaseVO  extends PagerVO {
 	}
 	public void setPppSn(Integer pppSn) {
 		this.pppSn = pppSn;
+	}
+	public String[] getAddTitleImgList() {
+		return addTitleImgList;
+	}
+	public void setAddTitleImgList(String[] addTitleImgList) {
+		this.addTitleImgList = addTitleImgList;
+	}
+	public String[] getAddGnbImgList() {
+		return addGnbImgList;
+	}
+	public void setAddGnbImgList(String[] addGnbImgList) {
+		this.addGnbImgList = addGnbImgList;
+	}
+	public String[] getAddHeaderImgList() {
+		return addHeaderImgList;
+	}
+	public void setAddHeaderImgList(String[] addHeaderImgList) {
+		this.addHeaderImgList = addHeaderImgList;
 	}
 	public List<DispImgInfoVO> getDispImgInfoList() {
 		return dispImgInfoList;

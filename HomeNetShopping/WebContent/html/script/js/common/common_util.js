@@ -1605,3 +1605,14 @@ function validateMultipleEmails(multiEmail) {
     }
     return true;
 }
+
+function getCheckedValue(name) {
+	var value = $("input:radio[name='"+name+"']:checked").val();
+	return value;
+}
+
+function getSelectedValue(name) {
+	//var value = $("select[name='"+name+"']:selected").val();
+	var value = $("select[name='"+name+"']").val();
+	return value;
+}

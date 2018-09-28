@@ -2,6 +2,8 @@ package homenet.shop.display.service;
 
 import java.util.List;
 
+import homenet.shop.brand.service.BrndBaseVO;
+
 /**
  * <p>전시 관리 Service</p>
  *
@@ -65,6 +67,14 @@ public interface DisplayService {
 	 * 
 	 * @return : Integer 전시매장 삭제 결과
 	 */
+	Integer deleteDisplay(DispShopBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 전시매장 삭제
+	 * @param  : DispShopBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 전시매장 삭제 결과
+	 */
 	Integer deleteDisplayBase(DispShopBaseVO paramVO) throws Exception;
 	
 	/**
@@ -74,6 +84,14 @@ public interface DisplayService {
 	 * 개정이력 : 없음
 	 */
 	List<DispImgInfoVO> selectDisplayImgInfoList(DispShopBaseVO paramVO) throws Exception;
+	
+	/*
+	 * 전시 이미지 저장
+	 * @param  : DispShopBaseVO 등록 정보
+	 * 
+	 * @return : Integer 전시 이미지 저장 결과
+	 */
+	Integer saveDisplayImgInfo(DispShopBaseVO paramVO) throws Exception;
 	
 	/*
 	 * 전시 이미지 등록
@@ -89,6 +107,6 @@ public interface DisplayService {
 	 * 
 	 * @return : Integer 전시 이미지 삭제 결과
 	 */
-	Integer deleteDisplayImgInfo(DispImgInfoVO paramVO) throws Exception;
+	Integer deleteDisplayImgInfo(DispShopBaseVO paramVO) throws Exception;
 
 }
