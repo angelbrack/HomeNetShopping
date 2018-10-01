@@ -1,0 +1,80 @@
+<update id="updateGoodsAssessmentSummaryInfo" parameterType="ehimart.app.domain.fo.goods.param.GoodsAssessmentSearchParam">
+		MERGE INTO /*[GoodsAssessmentMapper.xml][updateGoodsAssessmentSummaryInfo][2015.04.27][상품평요약정보 등록/수정]*/
+			PR_GDAS_SUMR_INFO gsi
+		USING (
+			SELECT
+				TRUNC(AVG(gdas.stfd_avg_val), 1) AS stfd_avg_val
+				, TRUNC(AVG(gdas.goods_stfd_val), 1) AS goods_stfd_avg_val
+				, TRUNC(AVG(gdas.prc_stfd_val), 1) AS prc_stfd_avg_val
+				, TRUNC(AVG(gdas.kind_stfd_val), 1) AS kind_stfd_avg_val
+				, TRUNC(AVG(gdas.dlv_stfd_val), 1) AS dlv_stfd_avg_val
+				, COUNT(1) AS gdas_cnt
+				, SUM(
+					CASE 
+						WHEN GDAS.IMG_DISP_YN != 'Y'  OR (GDAS.IMG_FILE_1_NM IS NULL AND GDAS.IMG_FILE_2_NM IS NULL AND GDAS.IMG_FILE_3_NM IS NULL)
+							THEN  0
+						ELSE 1 END
+				) AS IMG_GDAS_CNT
+				, SUM(
+						CASE 
+							WHEN GDAS.MPIC_DISP_YN != 'Y' OR GDAS.MPIC_URL_ADDR IS NULL 
+								THEN 0
+							ELSE 1 END
+				) AS MPIC_GDAS_CNT
+            FROM PR_GDAS_INFO gdas
+            WHERE GDAS.GOODS_NO = #{GOODSNO}
+              AND GDAS.GDAS_TP_CD = '01'
+              AND GDAS.GDAS_DISP_YN = 'Y'
+              AND GDAS.DEL_YN = 'N' 
+		) sumr
+		ON (
+			gsi.goods_no = #{goodsNo}
+		) WHEN MATCHED THEN
+			UPDATE 
+			SET 
+				stfd_avg_val = NVL(sumr.stfd_avg_val, 0)
+				, goods_stfd_avg_val = NVL(sumr.goods_stfd_avg_val, 0)
+				, prc_stfd_avg_val = NVL(sumr.prc_stfd_avg_val, 0)
+				, kind_stfd_avg_val = NVL(sumr.kind_stfd_avg_val, 0)
+				, dlv_stfd_avg_val = NVL(sumr.dlv_stfd_avg_val, 0)
+				, gdas_cnt = NVL(sumr.gdas_cnt, 0)
+				, img_reg_gdas_cnt = NVL(sumr.img_gdas_cnt, 0)
+				, mpic_reg_gdas_cnt = NVL(sumr.mpic_gdas_cnt, 0)
+				, goods_inq_cnt = (SELECT NVL(COUNT(1), 0)
+											FROM PR_GOODS_QUEST_INFO gqi
+											WHERE gqi.goods_no = #{goodsNo}
+												AND gqi.disp_yn = 'Y'
+												AND gqi.del_yn = 'N' )
+				,  <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.UpdateSet"/>
+		WHEN NOT MATCHED THEN 
+			INSERT
+			(
+				goods_no
+				, stfd_avg_val
+				, goods_stfd_avg_val
+				, prc_stfd_avg_val
+				, kind_stfd_avg_val
+				, dlv_stfd_avg_val
+				, gdas_cnt
+				, img_reg_gdas_cnt
+				, mpic_reg_gdas_cnt
+				, goods_inq_cnt
+				,  <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+			) VALUES (
+				#{goodsNo}
+				, NVL(sumr.stfd_avg_val, 0)
+				, NVL(sumr.goods_stfd_avg_val, 0)
+				, NVL(sumr.prc_stfd_avg_val, 0)
+				, NVL(sumr.kind_stfd_avg_val, 0)
+				, NVL(sumr.dlv_stfd_avg_val, 0)
+				, NVL(sumr.gdas_cnt, 0)
+				, NVL(sumr.img_gdas_cnt, 0)
+				, NVL(sumr.mpic_gdas_cnt, 0)
+				, (SELECT NVL(COUNT(1), 0)
+					FROM PR_GOODS_QUEST_INFO gqi
+					WHERE gqi.goods_no = #{goodsNo}
+						AND gqi.disp_yn = 'Y'
+						AND gqi.del_yn = 'N' )
+				, <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+			)
+	</update>

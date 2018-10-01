@@ -1,0 +1,180 @@
+/* 품목군상세정보 */
+DROP TABLE TB_GOODS_ARTC_CD 
+	CASCADE CONSTRAINTS;
+
+/* 품목군상세정보 */
+CREATE TABLE TB_GOODS_ARTC_CD (
+	ARTC_CD VARCHAR2(100) NOT NULL, /* 품목코드 */
+	UPR_ARTC_CD VARCHAR2(100) NOT NULL, /* 상위 품목코드 */
+	ARTC_NM VARCHAR2(100) NOT NULL, /* 품목명 */
+	ONL_BRCH_INV_RT NUMBER(10), /* 재고율 */
+	MAX_LMT_QTY NUMBER(10), /* 최대구매수량 */
+	SIZE_LKTB_FILE_NM VARCHAR2(100), /* 사이즈조견표 파일명 */
+	SIZE_LKTB_PATH_NM VARCHAR2(100), /* 사이즈조견표 파일패스 */
+	WRT_PN_NO NUMBER(10) NOT NULL, /* 작성자번호 */
+	WRT_PN_IP VARCHAR2(20) NOT NULL, /* 작성자IP */
+	WRT_DTTM VARCHAR2(14) NOT NULL, /* 작성일시 */
+	UPDT_PN_NO NUMBER(10) NOT NULL, /* 수정자번호 */
+	UPDT_PN_IP VARCHAR2(20) NOT NULL, /* 수정자IP */
+	UPDT_DTTM VARCHAR2(14) NOT NULL /* 수정일시 */
+);
+
+COMMENT ON TABLE TB_GOODS_ARTC_CD IS '품목군상세정보';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.ARTC_CD IS '품목코드';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.UPR_ARTC_CD IS '상위 품목코드';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.ARTC_NM IS '품목명';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.ONL_BRCH_INV_RT IS '재고율';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.MAX_LMT_QTY IS '최대구매수량';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.SIZE_LKTB_FILE_NM IS '사이즈조견표 파일명';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.SIZE_LKTB_PATH_NM IS '사이즈조견표 파일패스';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.WRT_PN_NO IS '등록자ID';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.WRT_PN_IP IS '작성자IP';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.WRT_DTTM IS '등록일시';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.UPDT_PN_NO IS '수정자ID';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.UPDT_PN_IP IS '수정자IP';
+
+COMMENT ON COLUMN TB_GOODS_ARTC_CD.UPDT_DTTM IS '수정일시';
+
+CREATE UNIQUE INDEX GOODS_ARTC_CD_PK
+	ON TB_GOODS_ARTC_CD (
+		ARTC_CD ASC
+	);
+
+ALTER TABLE TB_GOODS_ARTC_CD
+	ADD
+		CONSTRAINT GOODS_ARTC_CD_PK
+		PRIMARY KEY (
+			ARTC_CD
+		);
+		
+/WEB-INF/jsp/promotion/extraSavingPromotion.edit.jsp
+/WEB-INF/jsp/goods/articleManage.detail.jsp		
+		
+		
+ehimart.webapp.bo.goods.controller.ArticleManageController
+
+/**
+ * 품목군 정보 수정
+ *
+ * @param ArticleBase
+ * @param ModelAndView
+ */
+@RequestMapping("/goods/updateSaving.lecs")
+public ModelAndView updateSavingArticle(HttpServletRequest request, HttpServletResponse response, ArticleBase article) {
+
+    IframeSubmitResult mv = new IframeSubmitResult(request);
+
+    try {
+        if (log.isDebugEnabled()) {
+            log.debug("{}", article);
+        }
+
+        // 사이즈 조견표 이미지파일 업로드
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+        if (multipartRequest.getFile("sizeImgFile") != null) {
+            CommonsMultipartFile sourceFile = (CommonsMultipartFile) multipartRequest.getFile("sizeImgFile");
+
+            String newfileNm = sourceFile.getOriginalFilename();
+
+            if (newfileNm != null && !"".equals(newfileNm)) {
+                UploadedFile file =
+                        FileUploader.upload(request, "sizeImgFile", new ImageFileNameResolver(null,
+                                HFormatUtil.GOODS_ARTC_SIZELOOKTABLE.toString(), newfileNm),
+                                new FileValidator[] {new FileSizeValidator(1024 * 1024 * 1024L)});
+
+                // 업로드 파일 정보 셋팅
+                article.setSizeLookTableFileNm(file.getSourceFileNameOnly());
+                article.setSizeLookTablePathNm(file.getTargetFilePathOnly());
+            } else {
+                article.setSizeLookTableFileNm(article.getSizeLookTableFileNm());
+                article.setSizeLookTablePathNm(article.getSizeLookTablePathNm());
+            }
+
+            log.debug("사이즈 조견표 파일명 :: " + article.getSizeLookTableFileNm());
+            log.debug("사이즈 조견표 패스 :: " + article.getSizeLookTablePathNm());
+        }
+
+        // 시스템 등록자, 시스템 수정자 셋팅
+        // article.setRegrId("Tester");
+        // article.setModrId("Tester");
+
+        // 품목 옵션 정보
+        List<ArticleAttribute> attributeList = new ArrayList<ArticleAttribute>();
+        String optCdList = request.getParameter("optCdList");
+        String crudStateList = request.getParameter("crudStateList");
+
+        String[] optCdArr = optCdList.split(",");
+        String[] crudStateArr = crudStateList.split(",");
+
+        for (int i = 0; i < optCdArr.length; i++) {
+            if (!"D".equals(crudStateArr[i])) {
+                ArticleAttribute attribute = new ArticleAttribute();
+                attribute.setOptCd(optCdArr[i]);
+                attributeList.add(attribute);
+            }
+        }
+        article.setArticleAttributeInfo(attributeList);
+
+        article = articleManageService.updateArticle(article);
+
+        mv.addString("articleCode", String.valueOf(article.getArticleCode()));
+        mv.setMessage(true, MessageUtil.getMessage(LecsMessage.MSG_COM_REGISTER));
+
+    } catch (Exception e) {
+        mv.setFail(e.getMessage());
+        if (log.isErrorEnabled()) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    return mv;
+
+}
+
+ehimart.app.domain.bo.goods.biz.ArticleManageBizImpl
+	
+/*
+ * 품목 정보 수정
+ */
+@Override
+@DefaultErrorMessage(BizMessageCode.MSG_00508_생성중_오류가_발생하였습니다)
+public ArticleBase updateArticle(ArticleBase article) {
+
+    // ArticleBase result = new ArticleBase();
+
+    // 품목 기본정보 수정
+    baseDao.update("article.updateArticleBase", article);
+
+    // 품목 옵션정보 삭제
+    baseDao.delete("article.deleteArticleAttribute", article);
+
+    // 품목 옵션정보 수정
+    if (article.getArticleAttributeInfo() != null && !article.getArticleAttributeInfo().isEmpty()) {
+
+        List<ArticleAttribute> attributeList = article.getArticleAttributeInfo();
+        for (ArticleAttribute attribute : attributeList) {
+
+            if (!attribute.getOptCd().isEmpty()) {
+                attribute.setArticleCode(article.getArticleCode());
+                attribute.setOptCd(attribute.getOptCd());
+
+                baseDao.create("article.insertArticleAttribute", attribute);
+            }
+        }
+    }
+
+    return article;
+}
