@@ -78,3 +78,88 @@
 				, <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
 			)
 	</update>
+	
+	
+<insert id="createGoodsAssessment" parameterType="ehimart.app.domain.fo.goods.param.GoodsAssessmentParam">
+		<selectKey keyProperty="gdasNo" resultType="Long" order="BEFORE">
+			SELECT /*[GoodsAssessmentMapper.xml][createGoodsAssessment][2015.04.22][상품평 등록 > 신규 상품평 번호 조회]*/
+				NVL(MAX(gdas.gdas_no), 0)+1 AS gdas_no
+			FROM PR_GDAS_INFO gdas
+			WHERE gdas.goods_no = #{goodsNo, jdbcType=VARCHAR}
+		</selectKey>
+		INSERT INTO /*[GoodsAssessmentMapper.xml][createGoodsAssessment][2015.04.22][상품평 등록]*/
+			PR_GDAS_INFO (
+			GOODS_NO
+			, GDAS_NO
+			, GDAS_TP_CD
+			, GDAS_MK_DTIME
+			, GDAS_TIT_NM
+			, GDAS_DISP_YN
+			, GDAS_RSLT_CD
+			, PROC_SCT_CD
+			, MBR_NO
+			, STFD_AVG_VAL
+			, GOODS_STFD_VAL
+			, PRC_STFD_VAL
+			, KIND_STFD_VAL
+			, DLV_STFD_VAL
+			, DEL_YN
+			<IF TEST="(IMGFILE1NAME != NULL AND IMGFILE1NAME != '') OR (IMGFILE2NAME != NULL AND IMGFILE2NAME != '') OR (IMGFILE3NAME != NULL AND IMGFILE3NAME != '') OR (MOVINGPICURLADDR != NULL AND MOVINGPICURLADDR != '')">
+				, IMG_REG_DTIME
+			</IF>
+			, IMG_DISP_YN
+			, IMG_PATH_1_NM
+			, IMG_FILE_1_NM
+			, IMG_PATH_2_NM
+			, IMG_FILE_2_NM
+			, IMG_PATH_3_NM
+			, IMG_FILE_3_NM
+			, MPIC_URL_ADDR
+			, MPIC_DISP_YN
+			<if test="movingPicUrlAddr != null and movingPicUrlAddr !=''">
+				, MPIC_REG_DTIME
+			</if>
+			, ord_no
+			, <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertColumns"/>
+		) VALUES(
+			#{goodsNo, jdbcType=VARCHAR}
+			, #{gdasNo, jdbcType=NUMERIC}
+			, #{gdasTypeCode, jdbcType=VARCHAR}
+			, SYSDATE
+			, #{gdasTitleName, jdbcType=VARCHAR}
+			, #{gdasDisplayYn, jdbcType=VARCHAR}
+			, #{gdasResultCode, jdbcType=VARCHAR}
+			, #{processSectionCode, jdbcType=VARCHAR}
+			, #{memberNo, jdbcType=VARCHAR}
+			,  TRUNC((#{goodsSatisfiedVal, jdbcType=NUMERIC} + #{priceSatisfiedVal, jdbcType=NUMERIC} + #{kindSatisfiedVal, jdbcType=NUMERIC} + #{deliverySatisfiedVal, jdbcType=NUMERIC}) / 4, 1)
+			, #{goodsSatisfiedVal, jdbcType=NUMERIC}
+			, #{priceSatisfiedVal, jdbcType=NUMERIC}
+			, #{kindSatisfiedVal, jdbcType=NUMERIC}
+			, #{deliverySatisfiedVal, jdbcType=NUMERIC}
+			, #{deleteYn, jdbcType=VARCHAR}
+			<if test="(imgFile1Name != null and imgFile1Name != '') or (imgFile2Name != null and imgFile2Name != '') or (imgFile3Name != null and imgFile3Name != '') or (movingPicUrlAddr != null and movingPicUrlAddr != '')">
+				, SYSDATE
+			</if>
+			, #{imgDisplayYn, jdbcType=VARCHAR}
+			, #{imgPath1Name, jdbcType=VARCHAR}
+			, #{imgFile1Name, jdbcType=VARCHAR}
+			, #{imgPath2Name, jdbcType=VARCHAR}
+			, #{imgFile2Name, jdbcType=VARCHAR}
+			, #{imgPath3Name, jdbcType=VARCHAR}
+			, #{imgFile3Name, jdbcType=VARCHAR}
+			, #{movingPicUrlAddr, jdbcType=VARCHAR}
+			, #{movingPicDisplayYn, jdbcType=VARCHAR}
+			<if test="movingPicUrlAddr != null and movingPicUrlAddr !=''">
+				, SYSDATE
+			</if>
+			, ( SELECT ord.ord_no
+				FROM OP_ORD_BASE ord
+					, OP_ORD_DTL_INFO dtl
+				WHERE ord.ord_clm_no = dtl.ord_clm_no
+					AND ord.mbr_no = #{memberNo, jdbcType=VARCHAR}
+					AND dtl.goods_no = #{goodsNo, jdbcType=VARCHAR}
+					AND ROWNUM = 1
+			)
+			, <include refid="ehimart.app.domain.base.mapper.MapperDefinitions.InsertValues"/>
+		)
+	</insert>
