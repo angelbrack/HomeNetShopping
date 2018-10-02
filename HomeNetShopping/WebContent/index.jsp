@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page import="prjframework.common.util.WebUtil"%>
+<%@ include file="/WEB-INF/jsp/mgnt/common/include/incHeader.jspf" %>
 <%--
 	String fileName = "고려대관리자 메뉴구조도 - 복사본.xlsx";
 	out.println("fileName_1=["+WebUtil.encodeURIComponent(fileName)+"]");
@@ -26,3 +27,44 @@
 SSO연계 <br/><br/>
 
  <br/>
+
+<a href="#" onclick="fnArtc();">품목조회</a> <br/><br/>
+
+<form name="form1" id="form1" method="post" action="">
+</form>
+
+<script>
+function fnArtc() {
+	/* var frm = document.form1;
+	
+	frm.method = "post";
+	frm.target = "_self";
+	frm.action = "https://msecure.e-himart.co.kr/app/order/get/list/goods/article/ajax";
+	
+	frm.submit(); */
+	
+	var data = {
+			artcDpthNo : '1'
+		}
+		
+	
+	var param	= JSON.stringify(data); 
+	console.log(param);
+	
+	$.ajax({
+		async : false,
+		type: 'POST',
+		url: "https://msecure.e-himart.co.kr/app/order/get/list/goods/article/ajax",
+		data: param,
+		contentType: 'application/json',
+		dataType:"json",
+		success : function (data) {
+			console.log("data=["+data+"]");
+			
+		}, 
+		error: function(data, textStatus, errorThrown) {
+			fnAjaxError(data);
+		}
+	});
+}
+</script>
