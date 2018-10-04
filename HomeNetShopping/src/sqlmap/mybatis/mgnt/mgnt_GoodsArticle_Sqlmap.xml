@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="homenet.shop.article.service.GoodsArtcCdService">
+
+	<insert id="insertGoodsArtcCd" parameterType="goodsArtcCdVO" >
+		/* homenet.shop.article.service.GoodsArtcCdService.insertGoodsArtcCd, 품목 정보 등록 */
+		INSERT INTO TB_GOODS_ARTC_CD (
+			  ARTC_CD
+			, EC_ARTC_CD
+			, UPR_ARTC_CD
+			, ARTC_DPTH_NO
+			, ARTC_NM
+			, ARTC_FULL_NM
+			, ONL_BRCH_INV_RT
+			, MAX_LMT_QTY
+			, GOODS_MRGN_RT
+			, SIZE_LKTB_FILE_NM
+			, SIZE_LKTB_PATH_NM
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{artcCd				}
+			, #{ecArtcCd 			}
+			, #{uprArtcCd 	  		}
+			, #{artcDpthNo 	  		}
+			, #{artcNm    		 	}
+			, #{artcFullNm    		}
+			, #{onlBrchInvRt		}
+			, #{maxLmtQty			}
+			, #{goodsMrgnRt			}
+			, #{sizeLktbFileNm 		}
+			, #{sizeLktbPathNm 		}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+
+</mapper>

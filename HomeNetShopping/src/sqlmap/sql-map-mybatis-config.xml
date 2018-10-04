@@ -33,5 +33,8 @@
     	<typeAlias alias="dispShopBaseVO" 				type="homenet.shop.display.service.DispShopBaseVO"		/>
     	<typeAlias alias="dispImgInfoVO" 				type="homenet.shop.display.service.DispImgInfoVO"		/>
     	<typeAlias alias="dispGoodsInfoVO" 				type="homenet.shop.display.service.DispGoodsInfoVO"		/>
+    	
+    	<!-- 품목 -->
+    	<typeAlias alias="goodsArtcCdVO" 				type="homenet.shop.article.service.GoodsArtcCdVO"		/>
     </typeAliases>
 </configuration>

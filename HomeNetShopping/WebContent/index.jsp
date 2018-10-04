@@ -45,7 +45,7 @@ function fnArtc() {
 	
 	var data = {
 			artcDpthNo : '1'
-		}
+	}
 		
 	
 	var param	= JSON.stringify(data); 
@@ -54,12 +54,20 @@ function fnArtc() {
 	$.ajax({
 		async : false,
 		type: 'POST',
-		url: "https://msecure.e-himart.co.kr/app/order/get/list/goods/article/ajax",
-		data: param,
+		url: CTX_PATH + "/mgnt/article/articleSaveList.json",
+		data: null,
 		contentType: 'application/json',
 		dataType:"json",
 		success : function (data) {
 			console.log("data=["+data+"]");
+			
+			var resultMsg		= data.resultMsg;
+			var completeYn		= data.completeYn;
+			
+			alert(resultMsg);
+			if ( completeYn == "Y" ) {
+				
+			}
 			
 		}, 
 		error: function(data, textStatus, errorThrown) {

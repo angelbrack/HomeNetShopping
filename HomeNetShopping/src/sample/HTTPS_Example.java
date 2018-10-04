@@ -14,7 +14,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 
 //import org.json.simple.JSONObject;
@@ -27,9 +29,11 @@ public class HTTPS_Example {
 		obj.getHttpsConnection();
 	}
 
- public void getHttpsConnection() {
+ public String getHttpsConnection() {
 
   HttpsURLConnection conn = null;
+  String result = "";
+  
   try {
 	  URL url = new URL("https://msecure.e-himart.co.kr/app/order/get/list/goods/article/ajax");
 
@@ -73,7 +77,8 @@ public class HTTPS_Example {
 	  //   conn.connect(); 
 	  //   conn.setInstanceFollowRedirects(true); 
    
-	  String param = "{\"artcDpthNo\":\"1\"}";
+	  //String param = "{\"artcDpthNo\":\"1\"}";
+	  String param = "{\"artcDpthNo\":\"\"}";
    
 	  DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
 	  wr.write(param.getBytes("UTF-8"));
@@ -85,10 +90,7 @@ public class HTTPS_Example {
 	  
 	  // Print response from host 
 	  InputStream in = new BufferedInputStream(conn.getInputStream());
-      String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-      JSONObject jsonObject = new JSONObject(result);
-      System.out.println("result=["+result+"]");
-      System.out.println("jsonObject=["+jsonObject.toString()+"]");
+      result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
 
 	  in.close();
 
@@ -99,6 +101,8 @@ public class HTTPS_Example {
   			conn.disconnect();
   		}
   	}
+  
+  	return result;
  }
 
 }
