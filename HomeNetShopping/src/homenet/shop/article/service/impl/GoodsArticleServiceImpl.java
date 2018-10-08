@@ -30,10 +30,39 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	@Resource(name = "mybatisDataAccessDAO")
 	private MybatisDataAccessDAO mybatisDataAccessDAO;
 
+	/**
+	 * 품목군 정보  조회
+	 * @param  	: GoodsArtcCdVO paramVO 조회조건
+	 * @return 	: List<GoodsArtcCdVO> 품목군 정보 리스트
+	 * 개정이력 	: 없음
+	 */
+	public List<GoodsArtcCdVO> selectGoodsArtcCdList(GoodsArtcCdVO paramVO) throws Exception {
+		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdList", paramVO);
+	}
+	
+	/**
+	 * 품목군 Tree 정보  조회
+	 * @param  	: GoodsArtcCdVO paramVO 조회조건
+	 * @return 	: List<GoodsArtcCdVO> 품목군 Tree 정보 리스트
+	 * 개정이력 	: 없음
+	 */
+	public List<GoodsArtcCdVO> selectGoodsArtcCdTreeList(GoodsArtcCdVO paramVO) throws Exception {
+		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdTreeList", paramVO);
+	}
+	
+	/**
+	 * 품목군 상세 정보  조회
+	 * @param  	: GoodsArtcCdVO paramVO 조회조건
+	 * @return 	: List<GoodsArtcCdVO> 품목군 상세 정보 리스트
+	 * 개정이력 	: 없음
+	 */
+	public GoodsArtcCdVO selectGoodsArtcCdInfo(GoodsArtcCdVO paramVO) throws Exception {
+		return (GoodsArtcCdVO) mybatisDataAccessDAO.select("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdInfo", paramVO);
+	}
+	
 	/*
 	 * 품목군 저장
 	 * @param  : List<GoodsArtcCdVO> 저장 정보
-	 * 
 	 * @return : Integer 품목군 등록 결과
 	 */
 	public Integer saveGoodsArtcCdList(List<GoodsArtcCdVO> list) throws Exception {
@@ -49,11 +78,30 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	/*
 	 * 품목군 등록
 	 * @param  : GoodsArtcCdVO 등록 정보
-	 * 
 	 * @return : Integer 품목군 등록 결과
 	 */
 	public Integer insertGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
 		return (Integer) mybatisDataAccessDAO.insert("homenet.shop.article.service.GoodsArtcCdService.insertGoodsArtcCd", paramVO);
+	}
+	
+	/*
+	 * 품목군 수정
+	 * @param  	: GoodsArtcCdVO 등록 정보
+	 * @return 	: Integer 품목군 등록 결과
+	 * 개정이력 	: 없음
+	 */
+	public Integer updateGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
+		return mybatisDataAccessDAO.update("homenet.shop.article.service.GoodsArtcCdService.updateGoodsArtcCd", paramVO);
+	}
+	
+	/*
+	 * 품목군 삭제
+	 * @param  	: GoodsArtcCdVO 등록 정보
+	 * @return 	: Integer 품목군 등록 결과
+	 * 개정이력 	: 없음
+	 */
+	public Integer deleteGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
+		return mybatisDataAccessDAO.delete("homenet.shop.article.service.GoodsArtcCdService.deleteGoodsArtcCd", paramVO);
 	}
 	
 }

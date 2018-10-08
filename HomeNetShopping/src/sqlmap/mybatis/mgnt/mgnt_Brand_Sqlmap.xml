@@ -3,7 +3,7 @@
 <mapper namespace="homenet.shop.brand.service.BrandService">
 	
 	<!-- 브랜드 정보 List -->
-	<resultMap id="brandList" type="brndBaseVO"> 
+	<resultMap id="brandList" type="brndBaseVO">
 		<result property="brndNo" 		 		 		column="BRND_NO" 				/> <!-- 브랜드번호 				-->
 		<result property="brndNm" 		 		 		column="BRND_NM" 				/> <!-- 브랜드명 				-->
 		<result property="brndKorNm" 	 		 		column="BRND_KOR_NM" 			/> <!-- 브랜드한글명 				-->

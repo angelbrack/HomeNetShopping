@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import homenet.shop.article.service.GoodsArtcCdVO;
 import homenet.shop.article.service.GoodsArticleService;
 import homenet.shop.brand.service.BrndBaseVO;
@@ -52,17 +54,94 @@ public class MgntGoodsArticleController {
 	@Qualifier("goodsArticleService")
 	private GoodsArticleService goodsArticleService;
 	
+	/*
+	 * 품목군 리스트
+	 * 
+	 * @param  : GoodsArtcCdVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/article/initMgntArticle.do")
+	public String initMgntBrand(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		/*PaginationInfo paginationInfo = new PaginationInfo();
+
+		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
+		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
+		paginationInfo.setPageSize(paramVO.getPageSize());
+		
+		paramVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		paramVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		paramVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		int totalCount = 0;
+		List<GoodsArtcCdVO> list = goodsArticleService.selectGoodsArtcCdList(paramVO);
+		
+		if ( list != null && list.size() > 0 ) {
+			totalCount = list.size();
+		}
+		
+		paginationInfo.setTotalRecordCount(totalCount);
+		
+		model.addAttribute("list", 				list);
+		model.addAttribute("totalCount", 		totalCount);
+        model.addAttribute("paginationInfo", 	paginationInfo);*/
+		
+        return "mgnt/article/articleList";
+	}
+	
 	/**
-	  * 목적 		: 브랜드 등록/수정 화면
+	  * 목적 		: 품목군 Tree 리스트
 	  * @param 	: GoodsArtcCdVO paramVO
 	  * @param 	: ModelMap model
 	  * @param  : HttpServletRequest request
 	  * @param  : HttpServletResponse response
-	  * @return : String
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/article/selectGoodsArtcCdTreeList.json", headers="Accept=application/json" )
+	public ModelAndView selectGoodsArtcCdTreeList(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+		
+		List<GoodsArtcCdVO> list = goodsArticleService.selectGoodsArtcCdTreeList(paramVO);
+		
+		model.addAttribute("list", 		list);
+		
+		return new ModelAndView("jsonView", model);
+	}
+	
+	/**
+	  * 목적 		: 품목군 상세 정보
+	  * @param 	: GoodsArtcCdVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/article/selectGoodsArtcCdInfo.json", headers="Accept=application/json" )
+	public ModelAndView selectGoodsArtcCdInfo(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+		
+		GoodsArtcCdVO info = goodsArticleService.selectGoodsArtcCdInfo(paramVO);
+		
+		model.addAttribute("info", 		info);
+		
+		return new ModelAndView("jsonView", model);
+	}
+	
+	/**
+	  * 목적 		: 품목군 초기 등록
+	  * @param 	: GoodsArtcCdVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
 	  * 개정이력 	: 없음
 	  */
 	@RequestMapping(value = "/mgnt/article/articleSaveList.json", headers="Accept=application/json" )
-	public ModelAndView recruitSave(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+	public ModelAndView articleSaveList(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
 
 		String resultMsg 				= "OK";
 		String completeYn 				= "Y";

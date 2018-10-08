@@ -18,6 +18,10 @@ public class GoodsArtcCdVO extends PagerVO {
 	private String  sizeLktbFileNm	; // 사이즈조견표 파일명
 	private String  sizeLktbPathNm	; // 사이즈조견표 파일패스
 	
+	private String  ecArtcNm 		; // 전자상거래품목명
+	private String  uprArtcNm		; // 상위 품목명
+	private Integer childCount		; // 허위 품목 Count 
+	
 	public String getArtcCd() {
 		return artcCd;
 	}
@@ -84,4 +88,23 @@ public class GoodsArtcCdVO extends PagerVO {
 	public void setSizeLktbPathNm(String sizeLktbPathNm) {
 		this.sizeLktbPathNm = sizeLktbPathNm;
 	}
+	public String getEcArtcNm() {
+		return ecArtcNm;
+	}
+	public void setEcArtcNm(String ecArtcNm) {
+		this.ecArtcNm = ecArtcNm;
+	}
+	public String getUprArtcNm() {
+		return uprArtcNm;
+	}
+	public void setUprArtcNm(String uprArtcNm) {
+		this.uprArtcNm = uprArtcNm;
+	}
+	public Integer getchildCount() {
+		return childCount;
+	}
+	public void setchildCount(Integer childCount) {
+		this.childCount = childCount;
+	}
+	
 }
