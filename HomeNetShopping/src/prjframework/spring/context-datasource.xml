@@ -34,11 +34,20 @@
         <property name="password" value="rte01"/>
     </bean>
     -->
+    <!-- 개발DB -->
+    <!-- <bean id="DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="driverClassName" value="core.log.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@1.234.205.38:1521:orcl"/>
+        <property name="username" value="gn"/>
+        <property name="password" value="gn"/>
+    </bean> -->
     
+    <!-- AWS 개발DB -->
     <bean id="DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <!-- <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/> -->
         <property name="driverClassName" value="core.log.jdbc.driver.OracleDriver"/>
-        <property name="url" value="jdbc:oracle:thin:@1.234.205.38:1521:orcl"/>
+        <property name="url" value="jdbc:oracle:thin:@oracle11gr2.cbq7jkvjidzs.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
         <property name="username" value="gn"/>
         <property name="password" value="gn"/>
     </bean>

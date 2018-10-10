@@ -1,4 +1,8 @@
 /* 운영자개인권한 */
+DROP TABLE TB_OPTR_PRSN_AUTH 
+    CASCADE CONSTRAINTS;
+
+/* 운영자개인권한 */
 CREATE TABLE TB_OPTR_PRSN_AUTH (
     USER_NO NUMBER(10) NOT NULL, /* 사용자번호 */
     OPTR_AUTH_NO NUMBER(10) NOT NULL, /* 운영자권한번호 */

@@ -6,3 +6,12 @@ AWS계정이름 : angelbrack
 #. window서버
 암호 : aDF!6P@aMUU?a*6n)q)-8?X5(7W!LJkh
 퍼블릭 DNS: ec2-54-250-247-38.ap-northeast-1.compute.amazonaws.com
+
+
+#. oracle
+엔드포인트 : oracle11gr2.cbq7jkvjidzs.ap-northeast-2.rds.amazonaws.com
+PORT : 1521
+SID : ORCL
+db인스턴스 : oracle11gr2
+master_id : angelbrack
+master_pw : Angelbrack1!
