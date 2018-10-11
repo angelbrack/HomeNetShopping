@@ -27,9 +27,8 @@
 		      , c.optr_pgm_url_v AS optrPgmUrlV
 		      , a.hgrk_menu_no AS hgrkMenuNo
 		      , a.lvl
-		    FROM 
-		        (
-		SELECT
+		FROM (
+				SELECT
 		                A.SORT_OR
 		              , A.MENU_NO
 		              , A.HGRK_MENU_NO
@@ -38,25 +37,30 @@
 		              , A.USE_YN
 		              , level as lvl
 		              , rownum as row_or
-		           FROM
-		                TB_OPTR_MENU_INFO A
-		start with MENU_NO = #{hgrkMenuNo}
-		connect by prior MENU_NO = HGRK_MENU_NO
-		ORDER SIBLINGS BY A.SORT_OR
+		        FROM TB_OPTR_MENU_INFO A
+				START WITH MENU_NO = #{hgrkMenuNo}
+				CONNECT BY PRIOR MENU_NO = HGRK_MENU_NO
+				ORDER SIBLINGS BY A.SORT_OR
 		) A
 		LEFT OUTER JOIN TB_OPTR_PGM_INFO C ON C.OPTR_PGM_NO = A.OPTR_PGM_NO
-		WHERE use_yn = 'Y'
-		  and EXISTS (
-		            SELECT 'X'
-		                FROM 
-		                    (
-		                    SELECT menu_no, menu_nm
-		                        FROM TB_OPTR_MENU_INFO
-		                    start with menu_no IN (select menu_no from TB_OPTR_PGM_AUTH WHERE TB_OPTR_PGM_AUTH.OPTR_PGM_NO = TB_OPTR_MENU_INFO.OPTR_PGM_NO AND TB_OPTR_PGM_AUTH.OPTR_AUTH_NO = '0')
-		                    connect by prior HGRK_MENU_NO = MENU_NO
-		                    ) X
-		               WHERE x.menu_no = a.menu_no
-		             )
+		WHERE USE_YN = 'Y'
+		  AND EXISTS (
+		            SELECT 
+		            	'X'
+		            FROM (
+		                    SELECT 
+		                    	MENU_NO, MENU_NM
+		                    FROM TB_OPTR_MENU_INFO
+		                    START WITH MENU_NO IN (
+		                    	SELECT MENU_NO 
+		                    	FROM TB_OPTR_PGM_AUTH 
+		                    	WHERE TB_OPTR_PGM_AUTH.OPTR_PGM_NO = TB_OPTR_MENU_INFO.OPTR_PGM_NO 
+		                    		AND TB_OPTR_PGM_AUTH.OPTR_AUTH_NO = #{optrAuthNo }
+		                    	)
+		                    CONNECT BY PRIOR HGRK_MENU_NO = MENU_NO
+		             ) X
+		             WHERE X.MENU_NO = A.MENU_NO
+			)
 		ORDER BY row_or
         
 	</select>
