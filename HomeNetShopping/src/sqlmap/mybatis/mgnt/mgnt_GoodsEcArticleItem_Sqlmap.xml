@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="homenet.shop.article.service.GoodsEcArticleItemService">
+
+	<insert id="insertGoodsEcArtcItem" parameterType="goodsEcArtcItemVO" >
+		/* homenet.shop.article.service.GoodsEcArticleItemService.insertGoodsEcArtcItem, 전자상거래품목고시정보 등록 */
+		INSERT INTO TB_GOODS_EC_ARTC_PBLD_INFO (
+			  GOODS_NO
+			, EC_ARTC_CD
+			, ARTC_NM
+			, MDL_NM
+			, RAT_VLTG_VAL
+			, CNSM_POWER_VAL
+			, ENRG_CNSM_EFCNC_GRADE_VAL
+			, SMNS_MDL_LNCH_YM
+			, QUAL_GRTE_STD_CONT
+			, SZ_WDTH_VAL
+			, SZ_LNTH_VAL
+			, SZ_HGT_VAL
+			, WGT_VAL
+			, CLOR_CD
+			, AS_MGR_NM
+			, AS_MGR_PHON_VAL
+			, ITEM_1_VAL
+			, ITEM_2_VAL
+			, ITEM_3_VAL
+			, ITEM_4_VAL
+			, ITEM_5_VAL
+			, ITEM_6_VAL
+			, ITEM_7_VAL
+			, ITEM_8_VAL
+			, ITEM_9_VAL
+			, ITEM_10_VAL
+			, ITEM_11_VAL
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{goodsNo					}
+			, #{ecArtcCd             	}
+			, #{artcNm               	}
+			, #{mdlNm                	}
+			, #{ratVltgVal            	}
+			, #{cnsmPowerVal         	}
+			, #{enrgCnsmEfcncGradeVal	}
+			, #{smnsMdlLnchYm        	}
+			, #{qualGrteStdCont      	}
+			, #{szWdthVal            	}
+			, #{szLnthVal            	}
+			, #{szHgtVal             	}
+			, #{wgtVal               	}
+			, #{clorCd               	}
+			, #{asMgrNm               	}
+			, #{asMgrPhonVal         	}
+			, #{item1Val             	}
+			, #{item2Val             	}
+			, #{item3Val             	}
+			, #{item4Val             	}
+			, #{item5Val             	}
+			, #{item6Val             	}
+			, #{item7Val             	}
+			, #{item8Val             	}
+			, #{item9Val              	}
+			, #{item10Val            	}
+			, #{item11Val            	}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+	
+	<update id="updateGoodsEcArtcItem" parameterType="goodsEcArtcItemVO" >
+		/* homenet.shop.article.service.GoodsEcArticleItemService.updateGoodsEcArtcItem, 전자상거래품목고시정보 수정 */
+		UPDATE TB_GOODS_EC_ARTC_PBLD_INFO SET
+			  ARTC_NM						= #{artcNm               	}	
+			, MDL_NM                        = #{mdlNm                	}
+			, RAT_VLTG_VAL                  = #{ratVltgVal            	}
+			, CNSM_POWER_VAL                = #{cnsmPowerVal         	}
+			, ENRG_CNSM_EFCNC_GRADE_VAL     = #{enrgCnsmEfcncGradeVal	}
+			, SMNS_MDL_LNCH_YM              = #{smnsMdlLnchYm        	}
+			, QUAL_GRTE_STD_CONT            = #{qualGrteStdCont      	}
+			, SZ_WDTH_VAL                   = #{szWdthVal            	}
+			, SZ_LNTH_VAL                   = #{szLnthVal            	}
+			, SZ_HGT_VAL                    = #{szHgtVal             	}
+			, WGT_VAL                       = #{wgtVal               	}
+			, CLOR_CD                       = #{clorCd               	}
+			, AS_MGR_NM                     = #{asMgrNm               	}
+			, AS_MGR_PHON_VAL               = #{asMgrPhonVal         	}
+			, ITEM_1_VAL                    = #{item1Val             	}
+			, ITEM_2_VAL                    = #{item2Val             	}
+			, ITEM_3_VAL                    = #{item3Val             	}
+			, ITEM_4_VAL                    = #{item4Val             	}
+			, ITEM_5_VAL                    = #{item5Val             	}
+			, ITEM_6_VAL                    = #{item6Val             	}
+			, ITEM_7_VAL                    = #{item7Val             	}
+			, ITEM_8_VAL                    = #{item8Val             	}
+			, ITEM_9_VAL                    = #{item9Val              	}
+			, ITEM_10_VAL                   = #{item10Val            	}
+			, ITEM_11_VAL                   = #{item11Val            	}
+			<include refid="homenet.shop.comm.common.service.CommonService.updateCommon" />
+		WHERE GOODS_NO = #{goodsNo	}
+			AND EC_ARTC_CD	= #{ecArtcCd  }
+	</update>
+
+	<delete id="deleteGoodsEcArtcItem" parameterType="goodsEcArtcItemVO" >
+		/* homenet.shop.article.service.GoodsEcArticleItemService.deleteGoodsEcArtcItem, 전자상거래품목고시정보 삭제 */
+		DELETE FROM TB_GOODS_EC_ARTC_PBLD_INFO
+		WHERE GOODS_NO = #{goodsNo	}
+			AND EC_ARTC_CD	= #{ecArtcCd  }
+	</delete>
+</mapper>

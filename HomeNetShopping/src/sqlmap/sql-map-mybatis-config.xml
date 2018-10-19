@@ -36,5 +36,6 @@
     	
     	<!-- 품목 -->
     	<typeAlias alias="goodsArtcCdVO" 				type="homenet.shop.article.service.GoodsArtcCdVO"		/>
+    	<typeAlias alias="goodsEcArtcItemVO" 			type="homenet.shop.article.service.GoodsEcArtcItemVO"	/>
     </typeAliases>
 </configuration>

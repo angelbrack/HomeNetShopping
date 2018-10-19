@@ -37,7 +37,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * 개정이력 	: 없음
 	 */
 	public List<GoodsArtcCdVO> selectGoodsArtcCdList(GoodsArtcCdVO paramVO) throws Exception {
-		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdList", paramVO);
+		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArticleService.selectGoodsArtcCdList", paramVO);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * 개정이력 	: 없음
 	 */
 	public List<GoodsArtcCdVO> selectGoodsArtcCdTreeList(GoodsArtcCdVO paramVO) throws Exception {
-		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdTreeList", paramVO);
+		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.article.service.GoodsArticleService.selectGoodsArtcCdTreeList", paramVO);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * 개정이력 	: 없음
 	 */
 	public GoodsArtcCdVO selectGoodsArtcCdInfo(GoodsArtcCdVO paramVO) throws Exception {
-		return (GoodsArtcCdVO) mybatisDataAccessDAO.select("homenet.shop.article.service.GoodsArtcCdService.selectGoodsArtcCdInfo", paramVO);
+		return (GoodsArtcCdVO) mybatisDataAccessDAO.select("homenet.shop.article.service.GoodsArticleService.selectGoodsArtcCdInfo", paramVO);
 	}
 	
 	/*
@@ -97,7 +97,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * @return : Integer 품목군 등록 결과
 	 */
 	public Integer insertGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
-		return (Integer) mybatisDataAccessDAO.insert("homenet.shop.article.service.GoodsArtcCdService.insertGoodsArtcCd", paramVO);
+		return (Integer) mybatisDataAccessDAO.insert("homenet.shop.article.service.GoodsArticleService.insertGoodsArtcCd", paramVO);
 	}
 	
 	/*
@@ -107,7 +107,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * 개정이력 	: 없음
 	 */
 	public Integer updateGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
-		return mybatisDataAccessDAO.update("homenet.shop.article.service.GoodsArtcCdService.updateGoodsArtcCd", paramVO);
+		return mybatisDataAccessDAO.update("homenet.shop.article.service.GoodsArticleService.updateGoodsArtcCd", paramVO);
 	}
 	
 	/*
@@ -131,7 +131,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 * 개정이력 	: 없음
 	 */
 	public Integer deleteGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
-		return mybatisDataAccessDAO.delete("homenet.shop.article.service.GoodsArtcCdService.deleteGoodsArtcCd", paramVO);
+		return mybatisDataAccessDAO.delete("homenet.shop.article.service.GoodsArticleService.deleteGoodsArtcCd", paramVO);
 	}
 	
 }
