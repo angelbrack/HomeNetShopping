@@ -4,9 +4,9 @@
 
 	<!-- 품목군 정보 List -->
 	<resultMap id="goodsArtcCdList" type="goodsArtcCdVO">
-		<result property="artcCd" 		 		 		column="ARTC_CD" 					/> <!-- 품목코드       			-->
-		<result property="ecArtcCd" 		 		 	column="EC_ARTC_CD" 				/> <!-- 전자상거래품목코드  			-->
+		<result property="artcCd" 		 		 		column="ARTC_CD" 					/> <!-- 품목코드       			-->	
 		<result property="uprArtcCd" 		 		 	column="UPR_ARTC_CD" 				/> <!-- 상위 품목코드    			-->
+		<result property="ecArtcCd" 		 		 	column="EC_ARTC_CD" 				/> <!-- 전자상거래품목코드  			-->
 		<result property="artcDpthNo" 		 		 	column="ARTC_DPTH_NO" 				/> <!-- 품목깊이번호     			-->
 		<result property="artcNm" 		 		 		column="ARTC_NM" 					/> <!-- 품목명        				-->
 		<result property="artcFullNm" 		 		 	column="ARTC_FULL_NM" 				/> <!-- 품목FULL명    			-->
@@ -24,6 +24,7 @@
 		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
 		
 		<result property="uprArtcNm" 		 		 	column="UPR_ARTC_NM" 				/> <!-- 상위 품목명    			-->
+		<result property="ecArtcNm" 		 		 	column="EC_ARTC_NM" 				/> <!-- 전자상거래품목명  			-->
 	</resultMap>
 	
 	<!-- 품목군 Tree 정보 List -->
@@ -76,6 +77,7 @@
 					, A.SIZE_LKTB_FILE_NM
 					, A.SIZE_LKTB_PATH_NM
 					--, (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS EC_ARTC_NM
+					, '전자상거래품목명'  AS EC_ARTC_NM
 					, (SELECT ARTC_NM FROM TB_GOODS_ARTC_CD WHERE ARTC_CD = A.UPR_ARTC_CD) AS UPR_ARTC_NM
 					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 				FROM TB_GOODS_ARTC_CD A
@@ -105,21 +107,22 @@
 				, A.SIZE_LKTB_FILE_NM
 				, A.SIZE_LKTB_PATH_NM
 				--, (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS EC_ARTC_NM
-				, (SELECT COUNT(0) AS _NM FROM TB_GOODS_ARTC_CD WHERE UPR_ARTC_CD = A.ARTC_CD) AS CHILD_COUNT
+				, (SELECT COUNT(0) AS CHILD_COUNT FROM TB_GOODS_ARTC_CD WHERE UPR_ARTC_CD = A.ARTC_CD) AS CHILD_COUNT
 				<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 			FROM TB_GOODS_ARTC_CD A
+			<where>
+				<choose>
+					<when test='artcCd != null and artcCd != ""'>
+						AND A.UPR_ARTC_CD = #{artcCd	}
+					</when>
+					<when test='artcCd == null or artcCd == ""'>
+						AND A.UPR_ARTC_CD IS NULL
+						AND A.ARTC_DPTH_NO = 1
+					</when>
+				</choose>
+			</where>
 		) A
-		<choose>
-			<when test='artcCd != null and artcCd != ""'>
-				AND A.UPR_ARTC_CD = #{artcCd	}
-		        
-			</when>
-			<when test='artcCd == null or artcCd == ""'>
-				AND A.UPR_ARTC_CD IS NULL
-				AND A.ARTC_DPTH_NO = 1
-			</when>
-		</choose>
-		ORDER A.ARTC_CD ASC
+		ORDER BY A.ARTC_CD ASC
 	</select>
 	
 	<select id="selectGoodsArtcCdInfo" parameterType="goodsArtcCdVO" resultMap="goodsArtcCdInfo">

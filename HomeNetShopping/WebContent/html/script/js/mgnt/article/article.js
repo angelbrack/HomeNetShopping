@@ -2,10 +2,10 @@
 var option = {};
 option = {
 		"validList" : [
-		      {"objId" : "brndNm", 			"label" : "품목군명", 			"rule" : { "required":true,   "maxlength":200}		}
-			, {"objId" : "brndKorNm", 		"label" : "품목군한글명", 		"rule" : { "required":false,  "maxlength":200}		}
-			, {"objId" : "brndEngNm", 		"label" : "품목군영문명", 		"rule" : { "required":false,  "maxlength":200}		}
-			, {"objId" : "brndDescCont", 	"label" : "품목군상세설명", 		"rule" : { "required":false,  "maxlength":4000}		}
+		      {"objId" : "artcCd", 			"label" : "품목코드", 			"rule" : { "required":true,   "maxlength":10}		}
+			, {"objId" : "artcNm", 			"label" : "품목명", 			"rule" : { "required":true,  "maxlength":100}		}
+			, {"objId" : "artcFullNm", 		"label" : "품목FULL명", 		"rule" : { "required":true,  "maxlength":300}		}
+			, {"objId" : "ecArtcCd", 		"label" : "전자상거래품목", 		"rule" : { "required":true,  "maxlength":10}		}
 			
 			
 		]
@@ -18,11 +18,12 @@ var articleTreeList = {
 	},
 	// 초기화
 	init : function () {
+		
 		// 이벤트 추가
 		articleTreeList.addEvent();
 		
 		// 품목군 초기 Tree 조회
-		articleTreeList.initTreeSearch();
+		//articleTreeList.initTreeSearch();
 		
 	},
 	// 이벤트 추가
@@ -34,10 +35,12 @@ var articleTreeList = {
 		// 품목군 Tree 조회
 		var data	= {};
 		
-		//fnTreeSearch();
+		articleTreeList.fnCleanTree();
+		
+		articleTreeList.fnTreeSearch(data, "treeRoot");
 	},
-	// 검색
-	fnTreeSearch : function(data) {
+	// Tree 검색
+	fnTreeSearch : function(data, id) {
 		var param	= JSON.stringify(data); 
 		
    		$.ajax({
@@ -49,143 +52,206 @@ var articleTreeList = {
 			dataType:"json",
 			success : function (data) {
 				var list		= data.list;
-				console.log("list=["+JSON.stringify(list)+"]");
 				
+				tree.deleteChildItems(id);
+				
+				$(list).each(function(idx){
+					/*console.log("this.artcCd["+idx+"]=["+this.artcCd+"]");
+					console.log("this.artcNm["+idx+"]=["+this.artcNm+"]");
+					console.log("this.childCount["+idx+"]=["+this.childCount+"]");*/
+					// 하위에 품목군이 존재하는 경우
+					if(this.childCount > 0) {
+						tree.insertNewChild(id, this.artcCd, this.artcNm, null, 0, 0, 0, "CHILD");
+						//tree.insertNewChild(id, "", "", null, 0, 0, 0);
+					}else{
+						tree.insertNewChild(id, this.artcCd, this.artcNm, null, 0, 0, 0);
+					}
+					tree.closeItem(this.artcCd);
+				});
+				//$("#displayTreeForm").find("#displayNo").val(id);
+				return true;
 			}, 
 			error: function(data, textStatus, errorThrown) {
 				fnAjaxError(data);
 			}
 		});
 	},
-	// 
+	// Tree 에서 하위를 open 했을때
 	fnOpenHandler : function(id, mode) {
-		console.log("id=["+id+"]");
-		console.log("mode=["+mode+"]");
-		/*if(mode <= 0) {
-			// tree를 open한 경우 하위 매장리스트조회
-			$("#displayTreeForm").find("#displayNo").val(id);
-			if(id == $("#displayTreeForm").find("#displayMallNo").val()) {
-				$("#displayTreeForm").find("#displayNo").val("");
-			}
-			var val = $("#displayTreeForm").serialize();
+		var data	= {};
+		
+		if(mode <= 0) {
+			// tree를 open한 경우 하위 폼목리스트 조회
 			
-			ajaxCall("post", "/display/lower.display.shop.tree.list.ajax.lecs", val, "json", callback = function(data){
-				if(data.message != 'O') {
-					alert(data.message);
-				}else {
-					
-					tree.deleteChildItems(id);
-					$(data.data).each(function(idx){
-						
-						// 하위에 매장이 존재하는 경우
-						if(this.childDisplayShopCount > 0) {
-							tree.insertNewChild(id,this.displayNo,this.displayName, null,0,0,0,"CHILD");
-							tree.insertNewChild(this.displayNo,"","", null,0,0,0);
-						}else{
-							tree.insertNewChild(id,this.displayNo,this.displayName, null,0,0,0);
-						}
-						tree.closeItem(this.displayNo);
-					});
-					$("#displayTreeForm").find("#displayNo").val(id);
-					return true;
-				}
-			});
+			if ( id != "treeRoot" ) {
+				$("#form1").find("#artcCd").val(id);
+				data.artcCd = id;
+			}
+			
+			articleTreeList.fnTreeSearch(data, id);
+			
 		}else{
 			return true;
-		}*/
+		}
 	},
-	//
+	// Tree 에서 품목명을 선택했을때
+	fnClickHandler : function(id) {
+		var data = {};
+		
+		var artcCd		    = "";
+		var artcNm		    = "";
+		var artcFullNm	    = "";
+		var ecArtcCd	    = "";
+		var ecArtcNm	    = "";
+		var uprArtcCd	    = "";
+		var uprArtcNm	    = "";
+		var artcDpthNo	    = "1";
+		var onlBrchInvRt	= "";
+		var maxLmtQty		= "";
+		var goodsMrgnRt		= "";
+		
+		if ( id != "treeRoot" ) {
+			$("#form1 #treeId").val(id);
+			data.artcCd = id;
+			
+			var param	= JSON.stringify(data); 
+			
+			$.ajax({
+				async : false,
+				type: 'POST',
+				url: CTX_PATH + "/mgnt/article/selectGoodsArtcCdInfo.json",
+				data: param,
+				contentType: 'application/json',
+				dataType:"json",
+				success : function (data) {
+					var info		= data.info;
+					
+					if ( info != undefined ) {
+						artcCd 		    = nvl(info.artcCd, "");
+						artcNm 		    = fnRecoveHtml(nvl(info.artcNm, ""));
+						artcFullNm 	    = fnRecoveHtml(nvl(info.artcFullNm, ""));
+						ecArtcCd 	    = nvl(info.ecArtcCd, "");
+						ecArtcNm 	    = fnRecoveHtml(nvl(info.ecArtcNm, ""));
+						uprArtcCd 	    = nvl(info.uprArtcCd, "");
+						uprArtcNm 	    = fnRecoveHtml(nvl(info.uprArtcNm, ""));
+						artcDpthNo	    = nvl(info.artcDpthNo, "");
+						onlBrchInvRt	= nvl(info.onlBrchInvRt, "");
+						maxLmtQty		= nvl(info.maxLmtQty, "");
+						goodsMrgnRt		= nvl(info.goodsMrgnRt, "");
+					}
+					
+					$("#form1 #artcCd").val(artcCd);
+					$("#form1 #artcNm").val(artcNm);
+					$("#form1 #artcFullNm").val(artcFullNm);
+					$("#form1 #ecArtcCd").val(ecArtcCd);
+					$("#form1 #ecArtcNm").val(ecArtcNm);
+					$("#form1 #uprArtcCd").val(uprArtcCd);
+					$("#form1 #uprArtcNm").val(uprArtcNm);
+					$("#form1 #artcDpthNo").val(artcDpthNo);
+					$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+					$("#form1 #maxLmtQty").val(maxLmtQty);
+					$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+					
+					$("#form1 #artcCd").prop("disabled", true);
+					$("#form1 #artcNm").prop("disabled", true);
+					
+					$("#form1 #cmd").val("U");	// 수정
+				}, 
+				error: function(data, textStatus, errorThrown) {
+					//$("#form1 #cmd").val("");
+					fnAjaxError(data);
+				}
+			});
+		} else {
+			$("#form1 #treeId").val("");
+			
+			$("#form1 #artcCd").val(artcCd);
+			$("#form1 #artcNm").val(artcNm);
+			$("#form1 #artcFullNm").val(artcFullNm);
+			$("#form1 #ecArtcCd").val(ecArtcCd);
+			$("#form1 #ecArtcNm").val(ecArtcNm);
+			$("#form1 #uprArtcCd").val(uprArtcCd);
+			$("#form1 #uprArtcNm").val(uprArtcNm);
+			$("#form1 #artcDpthNo").val(artcDpthNo);
+			$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+			$("#form1 #maxLmtQty").val(maxLmtQty);
+			$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+			
+			$("#form1 #artcCd").prop("disabled", false);
+			$("#form1 #artcNm").prop("disabled", false);
+			
+			$("#form1 #cmd").val("I");	// 등록
+		}
+	},
+	// Tree 초기화
 	fnCleanTree : function() {
 		
 		var val = $("#displayTreeForm").serialize();
-		var html = "<ul><li id=\"treeRoot\">Root<ul><li></li></ul></li></ul>";	
+		var html = "<ul><li id=\"treeRoot\">품목<ul><li></li></ul></li></ul>";	
 		tree.destructor();
 		$("#treeboxbox_tree").html(html);
 		tree = dhtmlXTreeFromHTML("treeboxbox_tree");
 		tree.setOnClickHandler(articleTreeList.fnClickHandler);
 		tree.setOnOpenHandler(articleTreeList.fnOpenHandler);
 	},
-	// 페이징에서 호출
-	fnListPage : function(pageNo) {
-		var frm	= document.form1;
+	// 신규 버튼 click
+	fnAdd : function() {
+		var treeId			= "";
+		var artcCd		    = "";
+		var artcNm		    = "";
+		var artcFullNm	    = "";
+		var ecArtcCd	    = "";
+		var ecArtcNm	    = "";
+		var uprArtcCd	    = "";
+		var uprArtcNm	    = "";
+		var artcDpthNo	    = 0;
+		var onlBrchInvRt	= "";
+		var maxLmtQty		= "";
+		var goodsMrgnRt		= "";
 		
-		$("#form1 #currentPage").val(pageNo);
+		treeId		= nvl($("#form1 #treeId").val(), "");
+		artcCd		= nvl($("#form1 #artcCd").val(), "");
+		artcNm		= nvl($("#form1 #artcNm").val(), "");
+		artcDpthNo	= nvl($("#form1 #artcDpthNo").val(), 1);
 		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/article/initMgntArticle.do";
+		if ( treeId == "" ) {
+			artcCd	= "";
+			artcNm	= "";
+		}
 		
-		frm.submit();
+		if ( artcCd != "" && treeId != "" ) {
+			artcDpthNo = Number(artcDpthNo) + 1;
+		}
+		
+		$("#form1 #artcCd").val("");
+		$("#form1 #artcNm").val("");
+		$("#form1 #artcFullNm").val(artcFullNm);
+		$("#form1 #ecArtcCd").val(ecArtcCd);
+		$("#form1 #ecArtcNm").val(ecArtcNm);
+		$("#form1 #uprArtcCd").val(artcCd);
+		$("#form1 #uprArtcNm").val(artcNm);
+		$("#form1 #artcDpthNo").val(artcDpthNo);
+		$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+		$("#form1 #maxLmtQty").val(maxLmtQty);
+		$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+		
+		$("#form1 #artcCd").prop("disabled", false);
+		$("#form1 #artcNm").prop("disabled", false);
+		
+		$("#form1 #cmd").val("I");
 	},
-	// 페이지당 레코드 갯수로 호출
-	fnListPerLine : function(recordCountPerPage) {
-		var frm	= document.form1
-		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/article/initMgntArticle.do";
-		
-		frm.submit();
-	},
-	// 신규/수정 페이지로 이동
-	fnEdit : function(cmd, brndNo) {
-		
-		var frm = document.form1
-		
-		$("#form1 #cmd").val(cmd);
-		$("#form1 #brndNo").val(brndNo);
-		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/article/articleHandle.do";
-		
-		frm.submit();
-		
-	}
-	
-}
-
-// 품목군 정보 등록/수정
-var articleHandle = {
-	// 전역변수
-	GV : {	 
-	},
-	// 초기화
-	init : function () {
-		// 이벤트 추가
-		articleHandle.addEvent();
-		
-	},
-	// 이벤트 추가
-	addEvent : function() {
-		
-	},
-	// 목록 페이지로 이동
-	fnList : function(pageNo) {
-		var frm = document.form1;
-		
-		$("#form1 #currentPage").val(pageNo);
-		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/article/initMgntArticle.do";
-		
-		frm.submit();
-	},
-	// 저장
-	fnSave : function() { 
-		
+	// 저장 버튼 click
+	fnSave : function() {
 		var data = {};
-		if ( !articleHandle.validate(data) ) {
+		if ( !articleTreeList.validate(data) ) {
 			return false;
 		}
 		
 		var param	= JSON.stringify(data); 
-		console.log(param);
-   		
-   		if ( !confirm("저장하시겠습니까?") ) return false;
-   		
-   		$.ajax({
+			
+		if ( !confirm("저장하시겠습니까?") ) return false;
+			
+		$.ajax({
 			async : false,
 			type: 'POST',
 			url: CTX_PATH + "/mgnt/article/articleSave.json",
@@ -193,26 +259,67 @@ var articleHandle = {
 			contentType: 'application/json',
 			dataType:"json",
 			success : function (data) {
-				// Server Valid Error 
-				//if( !fnValidError(data) ) return;
-
 				var resultMsg		= data.resultMsg;
 				var completeYn		= data.completeYn;
 				
 				alert(resultMsg);
 				if ( completeYn == "Y" ) {
-					/*
-					 * 검색조건 초기화 리스트 페이지 이동
-					 */
-					articleHandle.fnInitList();
+					
 				}
-				
 			}, 
 			error: function(data, textStatus, errorThrown) {
 				fnAjaxError(data);
 			}
 		});
+	},
+	// 품목정보 저장시 입력값 체크
+	validate : function(data) {
+		$("#ecArtcCd").val("01");	// 테스트를 위해서
 		
+		$("#form1").validInit({onsubmit : false, onfocusout : false});
+		
+		$("#form1").validAddRules(option);		
+		if($("#form1").validate().form() == false) {
+	    	return false;
+		}
+		
+		data.cmd				= $("#cmd").val();							// 등록/수정 구분
+		data.artcCd				= $.trim($("#artcCd").val());				// 품목코드
+		data.artcNm				= $.trim($("#artcNm").val());				// 품목명
+		data.artcFullNm			= $.trim($("#artcFullNm").val());			// 품목FULL명
+		data.uprArtcCd			= $.trim($("#uprArtcCd").val());			// 상위 품목코드  
+		data.uprArtcNm			= $.trim($("#uprArtcNm").val());			// 상위 품목명  
+		
+		data.ecArtcCd			= $.trim($("#ecArtcCd").val());				// 전자상거래품목코드
+		data.ecArtcNm			= $.trim($("#ecArtcNm").val());				// 전자상거래품목명
+		data.artcDpthNo			= $.trim($("#artcDpthNo").val());			// 품목깊이번호
+		var onlBrchInvRt		= $.trim($("#onlBrchInvRt").val());			// 재고율
+		var maxLmtQty			= $.trim($("#maxLmtQty").val());			// 최대구매수량
+		var goodsMrgnRt			= $.trim($("#goodsMrgnRt").val());			// 상품마진율
+		
+		if ( onlBrchInvRt != "" ) {
+			data.onlBrchInvRt	= onlBrchInvRt;
+		}
+		if ( maxLmtQty != "" ) {
+			data.maxLmtQty	= maxLmtQty;
+		}
+		if ( goodsMrgnRt != "" ) {
+			data.goodsMrgnRt	= goodsMrgnRt;
+		}
+		
+		/*// 첨부파일 정보
+		if ( $('input[name="addFileList"]').length > 0 ) {
+			addFileList = new Array();
+			$('input[name="addFileList"]').each(function() {
+				addFileList.push(this.value);
+			});
+			data.addFileList	= addFileList;
+		} else {
+			alert("배너 이미지 첨부파일를 선택해주세요.");
+			return false;
+		}*/
+		
+		return true;
 	},
 	// 삭제
 	fnDelete : function() {
@@ -223,7 +330,6 @@ var articleHandle = {
 		}
 		
 		var param	= JSON.stringify(data); 
-		console.log(param);
    		
    		if ( !confirm("삭제하시겠습니까?") ) return false; 
    		
@@ -240,62 +346,13 @@ var articleHandle = {
 				
 				alert(resultMsg);
 				if ( completeYn == "Y" ) {
-					recuRecruitList.fnInitList(1);
+					
 				}
-				
 			}, 
 			error: function(data, textStatus, errorThrown) {
 				fnAjaxError(data);
 			}
 		});
-	},
-	// 채용정보 저장시 입력값 체크
-	validate : function(data) {
-		
-		$("#form1").validInit({onsubmit : false, onfocusout : false});
-		
-		$("#form1").validAddRules(option);		
-		if($("#form1").validate().form() == false) {
-	    	return false;
-		}
-		
-		var brndBaseVO;
-		var addFileList;
-		var addFileInfo;
-		
-		var etrNo;
-		
-		data.cmd			= $("#form1 #cmd").val();				// 처리구분(I:등록, U:수정)
-		
-		if ( nvl($("#form1 #brndNo").val(), "") != "" ) {
-			data.brndNo	= $("#form1 #brndNo").val();			   	// 품목군번호 
-		}
-		data.brndNm			= $("#form1 #brndNm").val();           	// 품목군명 	
-		data.brndKorNm		= $("#form1 #brndKorNm").val();        	// 품목군한글명 
-		data.brndEngNm		= $("#form1 #brndEngNm").val();        	// 품목군영문명 
-		data.brndDescCont	= $("#form1 #brndDescCont").val();     	// 품목군상세설명
-		
-		if ( $('input[name="addFileList"]').length > 0 ) {
-			addFileList = new Array();
-			$('input[name="addFileList"]').each(function() {
-				addFileList.push(this.value);
-			});
-			data.addFileList	= addFileList;
-		}
-		
-		return true;
-	},
-	// 폼 초기화 리스트 페이지 이동
-	fnInitList  : function() {
-		var frm	= document.formInit;
-		
-		$("#formInit #currentPage").val(1);
-		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/article/initMgntArticle.do";
-		
-		frm.submit();
 	}
 	
 }

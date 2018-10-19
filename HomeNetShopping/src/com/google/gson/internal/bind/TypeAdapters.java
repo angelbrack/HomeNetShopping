@@ -181,6 +181,7 @@ public final class TypeAdapters {
         reader.nextNull();
         return null;
       }
+      
       try {
         return (short) reader.nextInt();
       } catch (NumberFormatException e) {

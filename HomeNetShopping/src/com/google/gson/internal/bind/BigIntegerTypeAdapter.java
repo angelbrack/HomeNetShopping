@@ -45,6 +45,11 @@ public final class BigIntegerTypeAdapter extends TypeAdapter<BigInteger> {
 
   @Override
   public void write(JsonWriter writer, BigInteger value) throws IOException {
-    writer.value(value);
+	  if (value == null) {
+          writer.nullValue();
+          return;
+      }
+	  
+	  writer.value(value);
   }
 }

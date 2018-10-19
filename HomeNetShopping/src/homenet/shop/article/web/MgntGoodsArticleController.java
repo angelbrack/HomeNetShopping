@@ -67,7 +67,23 @@ public class MgntGoodsArticleController {
 	public String initMgntBrand(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		/*PaginationInfo paginationInfo = new PaginationInfo();
+		return "mgnt/article/articleHandle";
+	}
+	
+	/*
+	 * 품목군 리스트
+	 * 
+	 * @param  : GoodsArtcCdVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/article/selectGoodsArtcCdList.do")
+	public String selectGoodsArtcCdList(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
 
 		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
 		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
@@ -88,7 +104,7 @@ public class MgntGoodsArticleController {
 		
 		model.addAttribute("list", 				list);
 		model.addAttribute("totalCount", 		totalCount);
-        model.addAttribute("paginationInfo", 	paginationInfo);*/
+        model.addAttribute("paginationInfo", 	paginationInfo);
 		
         return "mgnt/article/articleList";
 	}
@@ -132,6 +148,81 @@ public class MgntGoodsArticleController {
 	}
 	
 	/**
+	  * 목적 		: 품목군 저장
+	  * @param 	: GoodsArtcCdVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/article/articleSave.json", headers="Accept=application/json" )
+	public ModelAndView articleSave(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+
+		String resultMsg 				= "OK";
+		String completeYn 				= "Y";
+		
+		int result						= 0;
+		
+		paramVO.setWrtPnNo(SessionUtil.getUserNo());
+		paramVO.setUpdtPnNo(SessionUtil.getUserNo());
+		paramVO.setWrtPnIp(WebUtil.getRemoteAddr(request));
+		paramVO.setUpdtPnIp(WebUtil.getRemoteAddr(request));
+		
+		// 저장
+		result = goodsArticleService.saveGoodsArtcCd(paramVO);
+		if(result > 0) {
+			resultMsg 	= egovMessageSource.getMessage("success.common.insert");
+			completeYn	= "Y";
+		} else {
+			resultMsg 	= egovMessageSource.getMessage("fail.common.insert");
+			completeYn	= "N";
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		resultMap.put("resultMsg", 	resultMsg);
+		resultMap.put("completeYn", completeYn);
+		
+		return new ModelAndView("jsonView", resultMap);
+	}
+	
+	/**
+	  * 목적 		: 품목군 저장
+	  * @param 	: GoodsArtcCdVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/article/articleDelete.json", headers="Accept=application/json" )
+	public ModelAndView articleDelete(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+
+		String resultMsg 				= "OK";
+		String completeYn 				= "Y";
+		
+		int result						= 0;
+		
+		// 저장
+		result = goodsArticleService.deleteArticle(paramVO);
+		if(result > 0) {
+			resultMsg 	= egovMessageSource.getMessage("success.common.delete");
+			completeYn	= "Y";
+		} else {
+			resultMsg 	= egovMessageSource.getMessage("fail.common.delete");
+			completeYn	= "N";
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		resultMap.put("resultMsg", 	resultMsg);
+		resultMap.put("completeYn", completeYn);
+		
+		return new ModelAndView("jsonView", resultMap);
+	}
+	
+	/**
 	  * 목적 		: 품목군 초기 등록
 	  * @param 	: GoodsArtcCdVO paramVO
 	  * @param 	: ModelMap model
@@ -140,7 +231,7 @@ public class MgntGoodsArticleController {
 	  * @return : ModelAndView
 	  * 개정이력 	: 없음
 	  */
-	@RequestMapping(value = "/mgnt/article/articleSaveList.json", headers="Accept=application/json" )
+	@RequestMapping(value = "/mgnt/article/initArticleSaveList.json", headers="Accept=application/json" )
 	public ModelAndView articleSaveList(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
 
 		String resultMsg 				= "OK";

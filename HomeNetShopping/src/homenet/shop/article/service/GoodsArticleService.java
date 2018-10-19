@@ -37,6 +37,13 @@ public interface GoodsArticleService {
 	Integer saveGoodsArtcCdList(List<GoodsArtcCdVO> list) throws Exception;
 	
 	/*
+	 * 품목군 저장
+	 * @param  : GoodsArtcCdVO 저장 정보
+	 * @return : Integer 품목군 등록 결과
+	 */
+	Integer saveGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception;
+	
+	/*
 	 * 품목군 등록
 	 * @param  	: GoodsArtcCdVO 등록 정보
 	 * @return 	: Integer 품목군 등록 결과
@@ -46,16 +53,24 @@ public interface GoodsArticleService {
 	
 	/*
 	 * 품목군 수정
-	 * @param  	: GoodsArtcCdVO 등록 정보
-	 * @return 	: Integer 품목군 등록 결과
+	 * @param  	: GoodsArtcCdVO 수정 정보
+	 * @return 	: Integer 품목군 수정 결과
 	 * 개정이력 	: 없음
 	 */
 	Integer updateGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception;
 	
 	/*
+	 * 품목군 관련 정보 삭제
+	 * @param  	: GoodsArtcCdVO 삭제 정보
+	 * @return 	: Integer 품목군 삭제 결과
+	 * 개정이력 	: 없음
+	 */
+	Integer deleteArticle(GoodsArtcCdVO paramVO) throws Exception;
+	
+	/*
 	 * 품목군 삭제
-	 * @param  	: GoodsArtcCdVO 등록 정보
-	 * @return 	: Integer 품목군 등록 결과
+	 * @param  	: GoodsArtcCdVO 삭제 정보
+	 * @return 	: Integer 품목군 삭제 결과
 	 * 개정이력 	: 없음
 	 */
 	Integer deleteGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception;

@@ -20,7 +20,7 @@
 				<div class="navi">
 					<img src="<ctag:conf key="THEME.PATH" />mgnt/images/ic_01.jpg" alt="" />
 					<span>&nbsp;>&nbsp;</span>
-					품목군 관리
+					기준정보관리
 					<span>&nbsp;>&nbsp;</span>
 					품목군 관리
 				</div>	

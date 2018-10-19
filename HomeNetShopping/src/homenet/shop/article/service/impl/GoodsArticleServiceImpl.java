@@ -61,7 +61,7 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	}
 	
 	/*
-	 * 품목군 저장
+	 * 품목군 저장 - 리스트
 	 * @param  : List<GoodsArtcCdVO> 저장 정보
 	 * @return : Integer 품목군 등록 결과
 	 */
@@ -72,6 +72,22 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 			result += insertGoodsArtcCd(goodsArtcCdVO);
 		}
 		
+		return result;
+	}
+	
+	/*
+	 * 품목군 저장
+	 * @param  : GoodsArtcCdVO 저장 정보
+	 * @return : Integer 품목군 등록 결과
+	 */
+	public Integer saveGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
+		int result = 0;
+		
+		if ( "I".equals(paramVO.getCmd()) ) {
+			result += insertGoodsArtcCd(paramVO);
+		} else {
+			result += updateGoodsArtcCd(paramVO);
+		}
 		return result;
 	}
 	
@@ -92,6 +108,20 @@ public class GoodsArticleServiceImpl implements GoodsArticleService {
 	 */
 	public Integer updateGoodsArtcCd(GoodsArtcCdVO paramVO) throws Exception {
 		return mybatisDataAccessDAO.update("homenet.shop.article.service.GoodsArtcCdService.updateGoodsArtcCd", paramVO);
+	}
+	
+	/*
+	 * 품목군 관련 정보 삭제
+	 * @param  	: GoodsArtcCdVO 삭제 정보
+	 * @return 	: Integer 품목군 삭제 결과
+	 * 개정이력 	: 없음
+	 */
+	public Integer deleteArticle(GoodsArtcCdVO paramVO) throws Exception {
+		int result = 0;
+		
+		result += deleteGoodsArtcCd(paramVO);
+		
+		return result;
 	}
 	
 	/*

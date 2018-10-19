@@ -54,7 +54,7 @@ function fnArtc() {
 	$.ajax({
 		async : false,
 		type: 'POST',
-		url: CTX_PATH + "/mgnt/article/articleSaveList.json",
+		url: CTX_PATH + "/mgnt/article/initArticleSaveList.json",
 		data: null,
 		contentType: 'application/json',
 		dataType:"json",

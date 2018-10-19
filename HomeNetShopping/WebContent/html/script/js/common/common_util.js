@@ -1616,3 +1616,32 @@ function getSelectedValue(name) {
 	var value = $("select[name='"+name+"']").val();
 	return value;
 }
+
+function escapeXml(unsafe) {
+    return unsafe.replace(/[<>&'"]/g, function (c) {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+        }
+    });
+}
+
+/*
+ * HTML 태크 원복
+ */
+function fnRecoveHtml(sourceVal) {
+	var changeVal	= '';
+	if ( sourceVal == '' ) return changeVal;
+	
+	changeVal = sourceVal.replace(/&lt;/g, '<');
+	changeVal = changeVal.replace(/&gt;/g, '>');
+	changeVal = changeVal.replace(/&amp;/g, '&');
+	
+	changeVal = changeVal.replace(/&quot;/g, '\"');
+	changeVal = changeVal.replace(/&apos;/g, '\'');
+	
+	return changeVal
+}
