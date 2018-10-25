@@ -55,7 +55,7 @@ public class MgntGoodsArticleController {
 	private GoodsArticleService goodsArticleService;
 	
 	/*
-	 * 품목군 리스트
+	 * 품목군 리스트 화면
 	 * 
 	 * @param  : GoodsArtcCdVO paramVO
 	 * @param  : ModelMap model

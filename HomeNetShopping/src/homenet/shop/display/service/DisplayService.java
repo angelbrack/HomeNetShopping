@@ -14,6 +14,14 @@ import homenet.shop.brand.service.BrndBaseVO;
 public interface DisplayService {
 	
 	/**
+	 * 목적 : 전시몰 정보   조회
+	 * 매개변수 : DpmlBaseVO paramVO 조회조건
+	 * 반환값 : List<DpmlBaseVO> 전시몰 정보 리스트
+	 * 개정이력 : 없음
+	 */
+	List<DpmlBaseVO> selectDisplayMallList(DpmlBaseVO paramVO) throws Exception;
+	
+	/**
 	 * 목적 : 전시매장 정보   조회
 	 * 매개변수 : DispShopBaseVO paramVO 조회조건
 	 * 반환값 : List<DispShopBaseVO> 전시매장 정보 리스트

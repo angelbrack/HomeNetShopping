@@ -24,6 +24,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
+import homenet.shop.display.service.DpmlBaseVO;
 import prjframework.common.util.Casting;
 import prjframework.common.util.SessionUtil;
 import prjframework.common.util.WebUtil;
@@ -61,29 +62,14 @@ public class MgntDisplayController {
 	public String initMgntDisplay(@ModelAttribute("searchVO") DispShopBaseVO paramVO, ModelMap model, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		PaginationInfo paginationInfo = new PaginationInfo();
+		DpmlBaseVO dpmlBaseVO = new DpmlBaseVO();
+		dpmlBaseVO.setDpmlNm(paramVO.getDpmlNo());
+		
+		// 전시몰 조회
+		List<DpmlBaseVO> mallList = displayService.selectDisplayMallList(dpmlBaseVO);
+		
+		model.addAttribute("mallList", 			mallList);
 
-		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
-		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
-		paginationInfo.setPageSize(paramVO.getPageSize());
-		
-		paramVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		paramVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		paramVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
-		
-		int totalCount = 0;
-		List<DispShopBaseVO> list = displayService.selectDisplayList(paramVO);
-		
-		if ( list != null && list.size() > 0 ) {
-			totalCount = list.get(0).getTotalCount();
-		}
-		
-		paginationInfo.setTotalRecordCount(totalCount);
-		
-		model.addAttribute("list", 				list);
-		model.addAttribute("totalCount", 		totalCount);
-        model.addAttribute("paginationInfo", 	paginationInfo);
-		
         return "mgnt/display/displayList";
 	}
 	

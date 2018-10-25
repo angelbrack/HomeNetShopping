@@ -7,35 +7,36 @@
         <setting name="jdbcTypeForNull" value="VARCHAR" />
     </settings>
     <typeAliases>
-    	<typeAlias  alias="egovMap" 				type="egovframework.rte.psl.dataaccess.util.EgovMap"		/>
-    	<typeAlias  alias="dataMap" 				type="prjframework.common.dataaccess.util.DataMap"			/>
-    	<typeAlias  alias="hmap" 					type="java.util.HashMap"									/>
+    	<typeAlias  alias="egovMap" 					type="egovframework.rte.psl.dataaccess.util.EgovMap"		/>
+    	<typeAlias  alias="dataMap" 					type="prjframework.common.dataaccess.util.DataMap"			/>
+    	<typeAlias  alias="hmap" 						type="java.util.HashMap"									/>
 		
-		<typeAlias 	alias="CodeVO" 					type="site.code.service.CodeVO"								/>	
-		<typeAlias  alias="MenuVO"  				type="site.menu.service.MenuVO"								/>
-		<typeAlias  alias="userRoleVO" 				type="site.userRole.service.UserRoleVO"						/>
-		<typeAlias  alias="programVO" 				type="site.program.service.ProgramVO"						/>
+		<typeAlias 	alias="CodeVO" 						type="site.code.service.CodeVO"								/>	
+		<typeAlias  alias="MenuVO"  					type="site.menu.service.MenuVO"								/>
+		<typeAlias  alias="userRoleVO" 					type="site.userRole.service.UserRoleVO"						/>
+		<typeAlias  alias="programVO" 					type="site.program.service.ProgramVO"						/>
 
-		<typeAlias  alias="indvInfoVO" 				type="site.common.service.impl.IndvInfoVO"					/>
+		<typeAlias  alias="indvInfoVO" 					type="site.common.service.impl.IndvInfoVO"					/>
 
 		<!-- 게시판 -->
-		<typeAlias 	alias="boardVO" 				type="homenet.shop.brd.common.service.BoardVO"				/>
+		<typeAlias 	alias="boardVO" 					type="homenet.shop.brd.common.service.BoardVO"				/>
 		
 		<!-- 권한 -->
-		<typeAlias alias="authSearchVO" 			type="site.auth.service.AuthSearchVO"						/>
-		<typeAlias alias="authVO" 					type="site.auth.service.AuthVO"								/>
+		<typeAlias alias="authSearchVO" 				type="site.auth.service.AuthSearchVO"						/>
+		<typeAlias alias="authVO" 						type="site.auth.service.AuthVO"								/>
     	
     	<!-- 브랜드 -->
-    	<typeAlias alias="brndBaseVO" 				type="homenet.shop.brand.service.BrndBaseVO"				/>
-    	<typeAlias alias="brndImgInfoVO" 			type="homenet.shop.brand.service.BrndImgInfoVO"				/>
+    	<typeAlias alias="brndBaseVO" 					type="homenet.shop.brand.service.BrndBaseVO"				/>
+    	<typeAlias alias="brndImgInfoVO" 				type="homenet.shop.brand.service.BrndImgInfoVO"				/>
     	
     	<!-- 전시 -->
-    	<typeAlias alias="dispShopBaseVO" 				type="homenet.shop.display.service.DispShopBaseVO"		/>
-    	<typeAlias alias="dispImgInfoVO" 				type="homenet.shop.display.service.DispImgInfoVO"		/>
-    	<typeAlias alias="dispGoodsInfoVO" 				type="homenet.shop.display.service.DispGoodsInfoVO"		/>
+    	<typeAlias alias="dispShopBaseVO" 				type="homenet.shop.display.service.DispShopBaseVO"			/>
+    	<typeAlias alias="dispImgInfoVO" 				type="homenet.shop.display.service.DispImgInfoVO"			/>
+    	<typeAlias alias="dispGoodsInfoVO" 				type="homenet.shop.display.service.DispGoodsInfoVO"			/>
+    	<typeAlias alias="dpmlBaseVO" 					type="homenet.shop.display.service.DpmlBaseVO"				/>
     	
     	<!-- 품목 -->
-    	<typeAlias alias="goodsArtcCdVO" 				type="homenet.shop.article.service.GoodsArtcCdVO"		/>
-    	<typeAlias alias="goodsEcArtcItemVO" 			type="homenet.shop.article.service.GoodsEcArtcItemVO"	/>
+    	<typeAlias alias="goodsArtcCdVO" 				type="homenet.shop.article.service.GoodsArtcCdVO"			/>
+    	<typeAlias alias="goodsEcArtcItemVO" 			type="homenet.shop.article.service.GoodsEcArtcItemVO"		/>
     </typeAliases>
 </configuration>

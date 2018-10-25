@@ -16,6 +16,7 @@ import homenet.shop.brand.service.impl.BrandServiceImpl;
 import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
+import homenet.shop.display.service.DpmlBaseVO;
 import prjframework.common.dataaccess.dao.MybatisDataAccessDAO;
 
 /**
@@ -34,6 +35,16 @@ public class DisplayServiceImpl implements DisplayService {
 	
 	@Resource(name = "mybatisDataAccessDAO")
 	private MybatisDataAccessDAO mybatisDataAccessDAO;
+	
+	/**
+	 * 목적 : 전시몰 정보   조회
+	 * 매개변수 : DpmlBaseVO paramVO 조회조건
+	 * 반환값 : List<DpmlBaseVO> 전시몰 정보 리스트
+	 * 개정이력 : 없음
+	 */
+	public List<DpmlBaseVO> selectDisplayMallList(DpmlBaseVO paramVO) throws Exception {
+		return (List<DpmlBaseVO>) mybatisDataAccessDAO.list("homenet.shop.display.service.DisplayService.selectDisplayMallList", paramVO);
+	}
 	
 	/**
 	 * 목적 : 전시매장 정보   조회

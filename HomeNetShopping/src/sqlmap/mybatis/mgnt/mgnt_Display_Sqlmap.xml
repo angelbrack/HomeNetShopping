@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="homenet.shop.display.service.DisplayService">
 	
+	<!-- 전시몰정보 List -->
+	<resultMap id="displayMallList" type="dpmlBaseVO">
+		<result property="dpmlNo" 		 		 		column="DPML_NO" 					/> <!-- 전시몰번호				-->
+		<result property="dpmlNm" 		 		 		column="DPML_NM" 					/> <!-- 전시몰명				-->
+		<result property="useYn" 		 		 		column="USE_YN" 					/> <!-- 사용여부				-->
+		
+		<result property="wrtPnNo"  					column="WRT_PN_NO" 					/> <!-- 작성자번호 				-->
+		<result property="wrtPnIp"  					column="WRT_PN_IP" 					/> <!-- 작성자IP 				-->
+		<result property="wrtDttm"  					column="WRT_DTTM" 					/> <!-- 작성일시 				-->
+		<result property="updtPnNo"  					column="UPDT_PN_NO" 				/> <!-- 수정자번호 				--> 
+		<result property="updtPnIp"  					column="UPDT_PN_IP" 				/> <!-- 수정자IP 				-->   
+		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
+	</resultMap>
+	
 	<!-- 전시매장 정보 List -->
 	<resultMap id="displayList" type="dispShopBaseVO"> 
 		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
@@ -101,6 +115,30 @@
 		</where>
 	</sql>
 	
+	<select id="selectDisplayMallList" parameterType="dpmlBaseVO" resultMap="displayMallList">
+		/* homenet.shop.display.service.DisplayService.selectDisplayMallList 전시몰 정보 조회*/
+		SELECT
+			  A.DPML_NO
+			, A.DPML_NM
+			, A.USE_YN
+			<!-- , (
+				SELECT 
+					COUNT( COUNT(0) ) AS CONR_CNT
+              	FROM PR_DISP_CONR_INFO CI, PR_CONR_BASE CB, PR_DISP_SHOP_BASE DB, PR_TMPL_CONR_MPPG_INFO MT
+             	WHERE DB.DPML_NO = DM.DPML_NO
+               		AND DB.DISP_NO = CI.DISP_NO
+               		AND CI.CONR_NO = CB.CONR_NO
+               		AND CB.CONR_NO = MT.CONR_NO
+             	GROUP BY CB.CONR_NO ) AS CONR_CNT -->
+             <include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />	
+		FROM TB_DPML_BASE A
+		<where>
+			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(dpmlNo)">
+	      		AND A.DPML_NO = #{dpmlNo}
+	    	</if>
+    	<where>
+	</select>
+	
 	<select id="selectDisplayList" parameterType="dispShopBaseVO" resultMap="displayList">
 		/* homenet.shop.display.service.DisplayService.selectDisplayList 전시매장 정보 조회*/
 		SELECT 
@@ -149,6 +187,52 @@
 	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
 		]]>
 		</if>
+	</select>
+	
+	<select id="selectDisplayTreeList" parameterType="dispShopBaseVO" resultMap="displayTreeList">
+		SELECT
+			  A.DISP_NO
+			, A.UPR_DISP_NO
+			, A.DPML_NO
+			, A.DISP_NM
+			, A.DISP_GNB_NM
+			, A.GNB_EXP_METH_CD
+			, A.DISP_TIT_NM
+			, A.DISP_TIT_EXP_METH_CD
+			, A.SHOP_TP_CD
+			, A.SHOP_DESC_CONT
+			, A.DPTH_NO
+			, A.DISP_PRIO_RNK
+			, A.USE_YN
+			, A.DISP_YN
+			, A.TLWT_LF_YN
+			, A.PRT_TP_CD
+			, A.LST_SORT_CD
+			, A.MOV_FRME_CD
+			, A.LNK_URL_ADDR
+			, A.LNK_SPDP_HH_NO
+			, A.DISP_LRG_NO
+			, A.DISP_MID_NO
+			, A.DISP_SML_NO
+			, A.DISP_THN_NO
+			, A.MENU_USE_YN
+			, A.TMPL_NO
+			, A.PPP_SN
+			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+		FROM TB_DISP_SHOP_BASE A
+		<where>
+				<choose>
+					AND A.DPML_NO = #{dpmlNo	}
+					<when test='dispNo != null and dispNo != ""'>
+						AND A.UPR_DISP_NO = #{dispNo	}
+					</when>
+					<when test='dispNo == null or dispNo == ""'>
+						AND A.UPR_DISP_NO IS NULL
+						AND A.DPTH_NO = 1
+					</when>
+					AND A.SHOP_TP_CD = #{shopTpCd}
+				</choose>
+			</where>
 	</select>
 	
 	<select id="selectDisplayInfo" parameterType="dispShopBaseVO" resultMap="displayInfo">
