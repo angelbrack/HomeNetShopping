@@ -1,0 +1,117 @@
+<select id="getDisplayMall" resultMap="display.displayMallBaseResult">
+    
+		SELECT /* 파일명[파일설명] : Display.xml[전시몰 정보]
+				  SQL ID : getDisplayMall
+				  업무파트: 전시
+				  작성자 :	 김수원  	
+				  작성일시 : 2015.04.13 수정 (aki)
+				*/		
+			dm.dpml_no, dm.dpml_nm, dm.use_yn, 
+            (SELECT count( count(*) ) 
+              FROM pr_disp_conr_info ci, pr_conr_base cb, pr_disp_shop_base db, pr_tmpl_conr_mppg_info mt
+             WHERE 1=1
+               AND db.dpml_no = dm.dpml_no
+               AND db.disp_no = ci.disp_no
+               AND ci.conr_no = cb.conr_no
+               AND cb.conr_no = mt.conr_no
+             GROUP BY cb.conr_no ) as conr_cnt
+		FROM pr_dpml_base dm
+		WHERE 1=1
+    <if test="@nframework.persistent.mybatis.Expression@isNotEmpty(displayMallNo)">
+      AND
+			dm.dpml_no = #{displayMallNo}
+		
+    </if>
+    
+		ORDER BY dpml_no
+	
+  </select>
+  
+  <insert id="createDisplayMall">
+    <selectKey keyProperty="displayMallNo" resultType="String">
+      
+            SELECT (
+                        #{storeKey} || NVL ((SELECT /*+ INDEX_DESC(m PR_DPML_BASE_PK) */
+                                SUBSTR (m.dpml_no, 3, 1) + 1
+                         FROM   pr_dpml_base m
+                         WHERE  m.store_no = #{storeNo}
+                         AND    m.site_no = #{siteNo}
+                         AND    m.dpml_no like #{storeKey} || '%'
+                         AND    ROWNUM = 1), 1)
+                    ) displayMallNo
+            FROM   DUAL
+        
+    </selectKey>
+    
+        INSERT INTO /* 파일명[파일설명] : DisplayMgmt.xml[전시몰 등록 ]
+                      SQL ID : createDisplayMall
+                      업무파트: 전시
+                      작성자 :  김수원    
+                      작성일시 : 2010.09.29
+                    */ 
+            pr_dpml_base
+        (
+            store_no,
+            site_no,
+            dpml_no,
+            dpml_nm,
+            mall_tp_cd,
+            disp_yn,
+            use_yn,
+            prt_tp_cd,
+            mov_frme_cd,
+            lnk_url_addr,
+            lnk_spdp_hh_no,
+            tmpl_no,
+            sys_regr_id,
+            sys_reg_dtime,
+            sys_modr_id,
+            sys_mod_dtime 
+        )
+        VALUES
+        (
+            #{storeNo},
+            #{siteNo},
+            #{displayMallNo},
+            #{displayMallName},
+            #{mallTypeCode},
+            #{displayYn},
+            #{useYn},
+            #{printTypeCode},
+            #{moveFrameCode},
+            #{linkUrlAddress},
+            #{linkSpecialDisplayNo},
+            #{templateNo},
+            #{sysRegrId},
+            SYSDATE,
+            #{sysModrId},
+            SYSDATE 
+        )
+    
+  </insert>
+  <update id="updateDisplayMall">
+    
+        UPDATE /* 파일명[파일설명] : DisplayMgmt.xml[전시몰 수정 ]
+                  SQL ID : updateDisplayMall
+                  업무파트: 전시
+                  작성자 :  김수원    
+                  작성일시 : 2010.09.29
+                */  
+            pr_dpml_base
+        SET
+            dpml_nm = #{displayMallName},
+            mall_tp_cd = #{mallTypeCode},
+            disp_yn = #{displayYn},
+            use_yn = #{useYn},
+            prt_tp_cd = #{printTypeCode},
+            mov_frme_cd = #{moveFrameCode},
+            tmpl_no = #{templateNo},
+            lnk_url_addr = #{linkUrlAddress},
+            lnk_spdp_hh_no = #{linkSpecialDisplayNo},
+            sys_modr_id = #{sysModrId},
+            sys_mod_dtime = SYSDATE
+        WHERE store_no = #{storeNo}
+        AND site_no = #{siteNo} 
+        AND dpml_no = #{displayMallNo}
+    
+  </update> -->

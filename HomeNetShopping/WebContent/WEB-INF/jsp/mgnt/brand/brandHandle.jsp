@@ -65,7 +65,9 @@
 							<td  class="pt10 pb10" colspan="3">
 								<div style="width:700px;padding:0px;" id="apndFile">							 	
 								</div>
-								<div class="imgs_wrap" id="apndImg">
+								<div class="img_list" id="apndImgDiv">
+									<ul id="apndImgUl">
+									</ul>
 								</div>
 							</td>
 						</tr>

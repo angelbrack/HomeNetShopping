@@ -408,3 +408,87 @@ shopDescCont
             where rn = 1 /* 전시마다 세트명을 달리 넣는 경우가 있어서 */
     
   </insert>
+  
+  
+  <select id="findOneDisplayShop" resultMap="displayShopDetailResult">
+    
+		SELECT /* 파일명[파일설명] : DisplayMapper.xml[전시 매장 정보]
+				  SQL ID : findOneDisplayShop
+				  업무파트: 전시
+				  작성자 :	 aki  	
+				  작성일시 : 2015.05.27
+				*/		
+			ds.disp_no, ds.disp_nm, ds.disp_shop_exp_meth_cd, '' upr_disp_nm, ds.dpml_no, 
+			m.dpml_nm, 0 new_dpth_no, ds.shop_tp_cd, ds.shop_desc_cont, ds.upr_disp_no, ds.dpth_no, 
+			ds.disp_prio_rnk, ds.use_yn, ds.disp_yn, ds.tlwt_lf_yn, ds.prt_tp_cd, ds.lst_sort_cd, ds.mov_frme_cd, 
+			ds.lnk_url_addr, ds.lnk_spdp_hh_no, ds.disp_lrg_no, ds.disp_mid_no, ds.disp_sml_no, ds.disp_thn_no,
+      		ds.menu_use_yn, ds.tmpl_no, t.tmpl_tp_cd, t.tmpl_nm, t.tmpl_path_nm, t.tmpl_file_nm, 
+			t.tmpl_path_nm || t.tmpl_file_nm tmpl_path, t.use_yn tmpl_use_yn,
+			ds.disp_gnb_nm, ds.gnb_exp_meth_cd, ds.disp_tit_nm, ds.disp_tit_exp_meth_cd,   		
+			i.disp_shop_sct_cd, i.shop_disp_no, i.disp_img_tp_cd, i.img_sn, i.bnr_img_path_nm, i.bnr_img_file_nm,
+			i.lnk_url_addr img_lnk_url_addr, s.spdp_tp_cd,
+			(SELECT count(*)
+		       FROM pr_disp_shop_base cd
+			  WHERE 1=1
+			    AND ds.disp_no = cd.upr_disp_no ) as child_cnt,
+			CASE 
+				WHEN ds.disp_lrg_no IS NOT NULL THEN 
+					(SELECT disp_nm 
+					   FROM pr_disp_shop_base d 
+					  WHERE 1=1
+					    AND d.disp_no = ds.disp_lrg_no 
+					    AND d.use_yn = 'Y' 
+					    AND d.disp_yn = 'Y'
+					    AND d.menu_use_yn = 'Y')
+				ELSE NULL 
+			END disp_lrg_nm,
+			CASE 
+				WHEN ds.disp_mid_no IS NOT NULL THEN 
+					(SELECT disp_nm 
+					   FROM pr_disp_shop_base d 
+					  WHERE d.disp_no = ds.disp_mid_no 
+					    AND d.use_yn = 'Y' 
+					    AND d.disp_yn = 'Y' 
+					    AND d.menu_use_yn = 'Y')
+				ELSE NULL 
+			END disp_mid_nm,
+			CASE 
+				WHEN ds.disp_sml_no IS NOT NULL THEN 
+					(SELECT disp_nm 
+					   FROM pr_disp_shop_base d 
+					  WHERE  d.disp_no = ds.disp_sml_no 
+					    AND d.use_yn = 'Y' 
+					    AND d.disp_yn = 'Y' 
+					    AND d.menu_use_yn = 'Y')
+				ELSE NULL 
+			END disp_sml_nm,
+			CASE 
+				WHEN ds.disp_thn_no IS NOT NULL THEN 
+					(SELECT disp_nm 
+					   FROM pr_disp_shop_base d 
+					  WHERE  d.disp_no = ds.disp_thn_no 
+					    AND d.use_yn = 'Y' 
+					    AND d.disp_yn = 'Y' 
+					    AND d.menu_use_yn = 'Y')
+				ELSE NULL 
+			END disp_thn_nm
+		FROM pr_disp_shop_base ds, pr_tmpl_base t, pr_dpml_base m, pr_disp_img_info i,  pr_spdp_base s
+		WHERE ds.disp_no = #{dispNo} 
+		
+    <if test="dpmlNo != null and dpmlNo != '' ">
+      AND
+			ds.dpml_no = #{dpmlNo}
+    </if>
+    <if test="shopTpCd != null and shopTpCd != '' ">
+      AND
+        	ds.shop_tp_cd = #{shopTpCd}
+        
+    </if>
+    
+		AND ds.tmpl_no = t.tmpl_no(+)
+		AND ds.dpml_no = m.dpml_no	
+   		AND ds.disp_no = i.shop_disp_no(+)
+   		AND ds.lnk_spdp_hh_no = s.spdp_no(+)   	
+        ORDER BY i.sys_reg_dtime DESC
+	
+  </select>

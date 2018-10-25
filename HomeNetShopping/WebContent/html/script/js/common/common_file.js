@@ -26,6 +26,8 @@ $(function() {
 				, addSavePath 	: ""					//추가 저장 경로
 				, callbackFn 	: null
 				, imgYn			: "N"
+				, sortYn		: "N"
+				, orienteYn		: "N"
 			};
 		$.extend(dafaultOption, option);
 		
@@ -39,10 +41,12 @@ $(function() {
 			uploadingUrl = CTX_PATH + "/user_uploading";
 		}
 		
-		var url 	= uploadingUrl + "?pathkey=" + dafaultOption.path + "&addSavePath=" + dafaultOption.addSavePath;
-		var idx 	= dafaultOption.idx;
-		var fileCo 	= dafaultOption.fileCo;
-		var imgYn	= dafaultOption.imgYn;
+		var url 		= uploadingUrl + "?pathkey=" + dafaultOption.path + "&addSavePath=" + dafaultOption.addSavePath;
+		var idx 		= dafaultOption.idx;
+		var fileCo 		= dafaultOption.fileCo;
+		var imgYn		= dafaultOption.imgYn;
+		var sortYn		= dafaultOption.sortYn;
+		var orienteYn	= dafaultOption.orienteYn;
 		
 		var upCnt = 1;
 		
@@ -92,19 +96,35 @@ $(function() {
 		    		    	}
 		    		    	
 		                    var fileHtml = "";
-		                    fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
-		                    fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href='"+url+"&getfile="+file.fileName+"&realFileName="+encodeURI(encodeURIComponent(decodeURI(decodeURIComponent(file.realFileName))))+"' target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(file.realFileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(file.fileInfo)) +"\" ></span>";
-		                    fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this, '"+imgYn+"', '"+file.fileName.split('.')[0]+"')\">&times;</a> ";
-		                    fileHtml += " </li> ";
-		                    $("#uploaded-files"+idx).append(fileHtml);
+		                    if ( imgYn != "Y" ) {
+			                    fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
+			                    fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href='"+url+"&getfile="+file.fileName+"&realFileName="+encodeURI(encodeURIComponent(decodeURI(decodeURIComponent(file.realFileName))))+"' target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(file.realFileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(file.fileInfo)) +"\" ></span>";
+			                    fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this, '"+imgYn+"', '"+file.fileName.split('.')[0]+"')\">&times;</a> ";
+			                    fileHtml += " </li> ";
+			                    $("#uploaded-files"+idx).append(fileHtml);
+		                    }
 		                    
+		                    var fileImgHtml = "";
 		                    if ( imgYn == "Y" ) {
-		                    	var fileImgHtml = "";
-		                    	fileImgHtml += "<span id='spanImg_"+file.fileName.split('.')[0]+"'>";
+		                    	fileImgHtml += "<li id='Img_"+file.fileName.split('.')[0]+"'>";
+		                    	fileImgHtml += "	<div class=\"img\">";
+		                    	if ( orienteYn == "Y" ) {
+		                    		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(file.filePath))+"/"+file.fileName+"\" exif=\"true\" name=\"exifImg\" onload=\"fnUploadImg(this);\" />";
+		                    	} else {
+		                    		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(file.filePath))+"/"+file.fileName+"\" exif=\"true\" name=\"exifImg\" />";
+		                    	}
+		                    	fileImgHtml += "	</div>";
+		                    	fileImgHtml += "	<div class=\"img_del\"><a href=\"#\" onClick=\"onImgFileDelete(this)\">삭제</a></div>";
+		                    	fileImgHtml += "	<div class=\"layer_img\">";
+		                    	fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(file.filePath))+"/"+file.fileName+"\">";
+		                    	fileImgHtml += "	</div>";
+		                    	fileImgHtml += "<input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(file.fileInfo)) +"\" /></li>";
+		                    	
+		                    	/*fileImgHtml += "<span id='spanImg_"+file.fileName.split('.')[0]+"'>";
 		    					fileImgHtml += "<a href='#none' onclick='fnImgPreview(this);'>";
 		    	                fileImgHtml += "<img src='"+decodeURI(decodeURIComponent(file.filePath))+file.fileName+"'>";
 		    	                fileImgHtml += "</a>";
-		    	                fileImgHtml += "</span>";
+		    	                fileImgHtml += "</span>";*/
 		    	                
 		    	                $("#apndImg"+idx).append(fileImgHtml);
 		    				}
@@ -124,6 +144,27 @@ $(function() {
 		                $(".data-loading").hide();
 		                $("#progress" + idx).hide();
 		            });
+		            
+		         // 이미지 뷰어
+		    		if ( imgYn == "Y" ) {
+		    			$('.img_list li').on({
+		    				'mouseover':function(){
+		    					
+		    					if($(this).find('.layer_img').css('display') == 'none'){
+		    						
+		    						$(this).find('.layer_img').show();
+		    					}
+		    				},
+		    				'mouseleave':function(){
+		    					$('.img_list li').find('.layer_img').hide();
+		    				}
+		    			});
+		    		}
+		    		
+		    		// sorting
+		    		if ( sortYn == "Y" ) {
+		    			$('#apndImgUl'+ idx).sortable();
+		    		}
 		        },
 		        progressall: function (e, data) {   
 		            var progress = parseInt(data.loaded / data.total * 100, 10);            
@@ -469,7 +510,7 @@ function fnMobileFileDown(path, idx, obj, addSavePath) {
 }
 
 //파일수정
-function fnFileEdit(path, idx, obj, addSavePath){
+function fnFileEdit(path, idx, obj, addSavePath, imgYn, sortYn, orienteYn){
 	if(idx === 0){
 		idx = "";
 	}
@@ -506,16 +547,61 @@ function fnFileEdit(path, idx, obj, addSavePath){
 					fileHtml += "	<br />";
 				}
 				
-				fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
-                fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(fileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" ></span>";
-                fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this)\">&times;</a> ";
-                fileHtml += " </li> ";
+				if ( imgYn != "Y" ) {
+					fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
+	                fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(fileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" ></span>";
+	                fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this)\">&times;</a> ";
+	                fileHtml += " </li> ";
+					
+					$("#uploaded-files"+idx).append(fileHtml);
+				}
 				
-				$("#uploaded-files"+idx).append(fileHtml);
+				var fileImgHtml = "";
+                if ( imgYn == "Y" ) {	 
+                	
+                	fileImgHtml += "<li id='Img_"+realFileName.split('.')[0]+"'>";
+                	fileImgHtml += "	<div class=\"img\">";
+                	if ( orienteYn == "Y" ) {
+                		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\" exif=\"true\" name=\"exifImg\" onload=\"fnUploadImg(this);\" />";
+                	} else {
+                		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\" exif=\"true\" name=\"exifImg\" />";
+                	}
+                	fileImgHtml += "	</div>";
+                	fileImgHtml += "	<div class=\"img_del\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">다운로드</a><a href=\"#\" onClick=\"onImgFileDelete(this)\">삭제</a></div>";
+                	fileImgHtml += "	<div class=\"layer_img\">";
+                	fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\">";
+                	fileImgHtml += "	</div>";
+                	fileImgHtml += "<input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" /></li>";
+                	
+                	/*fileImgHtml += "<span id='spanImg_"+file.fileName.split('.')[0]+"'>";
+					fileImgHtml += "<a href='#none' onclick='fnImgPreview(this);'>";
+	                fileImgHtml += "<img src='"+decodeURI(decodeURIComponent(file.filePath))+file.fileName+"'>";
+	                fileImgHtml += "</a>";
+	                fileImgHtml += "</span>";*/
+	                
+	                $("#apndImgUl"+idx).append(fileImgHtml);
+				}
 				
 				fileYn = "Y";
 			}
 		});
+		
+		if ( imgYn == "Y" ) {
+			$('.img_list li').on({
+				'mouseover':function(){
+					if($(this).find('.layer_img').css('display') == 'none'){
+						$(this).find('.layer_img').show();
+					}
+				},
+				'mouseleave':function(){
+					$('.img_list li').find('.layer_img').hide();
+				}
+			});
+		}
+		
+		if ( sortYn == "Y" ) {
+			$("#apndImgUl"+idx).sortable()
+		}
 		
 	}
 }

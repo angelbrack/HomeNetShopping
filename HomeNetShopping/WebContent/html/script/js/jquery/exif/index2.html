@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="exif.js"></script>
+    <script type="text/javascript" src="jQueryRotate-2.3.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    Upload a local file to read Exif data.
+    <br/>
+    <input id="file-input" type="file" />
+    <br/><br/>
+    Click the images to read Exif data. The first image tests reading single tags, while the other two simply show all available data. Check this <a href="example">example</a> if you prefer not to click but see EXIF info immediately.
+    <br/><br/>
+    Note: these examples will not work if running from a local file:// URL.
+    <br/><br/>
+    <img src="example/DSCN0614_small.jpg" id="img1" onload="fnUploadImg(this);" >
+    <br/>
+    <img src="example/Bush-dog.jpg" id="img2"  onload="fnUploadImg(this);" >
+    <br/>
+    <img src="example/dsc_09827.jpg" id="img3"  onload="fnUploadImg(this);"  ><br/>
+    <br/>
+    <img src="example/KakaoTalk_20181022_131508011.jpg" id="img4"  onload="fnUploadImg(this);" style="width:200px;height:300px"><br/>
+    <br/>
+    <button id="objecturltest">Object URL Test</button><br/>
+    <br/>
+    <button id="blobtest">Blob Test</button><br/>
+    <br/>
+    <button id="base64test">Base64 Test</button><br/>
+	
+	
+    <script>
+        
+        
+        function fnUploadImg(obj) {
+        	
+        	try {
+	        	EXIF.getData(obj, function() {
+	                 var orientation = EXIF.getTag(this, "Orientation");
+	                 
+	                 fnRotate(orientation, this);
+	            });
+        	} catch (e) {
+              alert(e);
+            }
+        }
+        
+        function fnRotate(orientation, obj) {
+        	var id = $(obj).attr("id");
+        	alert("orientation["+id+"]=["+orientation+"]");
+        	if ( orientation == 2 ) {
+        		$(obj).rotate(360);
+        	} else if ( orientation == 3 ) {
+        		$(obj).rotate(180);
+			} else if ( orientation == 4 ) {
+				$(obj).rotate(-180);
+			} else if ( orientation == 5 ) {
+				$(obj).rotate(-270);
+			} else if ( orientation == 6 ) {
+				$(obj).rotate(90);
+        	} else if ( orientation == 7 ) {
+        		$(obj).rotate(-90);
+			} else if ( orientation == 8 ) {
+				$(obj).rotate(270);
+			}
+        	
+        }
+    </script>
+</body>
+</html>

@@ -26,7 +26,12 @@
                 url : '<c:url value="/mgnt/home/menuLeftAction.ajax" />?currentMenuNo='+currMenuNo,             
                 dataType : "json",
                 success : function(data) {
-                    var cnt = data.row.length;
+                	var row = data.row;
+                    var cnt = 0;
+                    
+                    if ( row != null ) {
+                    	cnt = data.row.length;
+                    }
                     
                     var leftMenuDiv = "";
                     for(var i = 0; i < cnt; i++) {
