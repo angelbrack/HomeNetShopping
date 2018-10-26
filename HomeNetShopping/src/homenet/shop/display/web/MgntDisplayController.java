@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import homenet.shop.article.service.GoodsArtcCdVO;
 import homenet.shop.display.service.DispImgInfoVO;
 import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
@@ -70,7 +71,26 @@ public class MgntDisplayController {
 		
 		model.addAttribute("mallList", 			mallList);
 
-        return "mgnt/display/displayList";
+        return "mgnt/display/displayHandle";
+	}
+	
+	/**
+	  * 목적 		: 전시매장 Tree 리스트
+	  * @param 	: DispShopBaseVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/display/selectDisplayTreeList.json", headers="Accept=application/json" )
+	public ModelAndView selectDisplayTreeList(ModelMap model, @RequestBody DispShopBaseVO paramVO, HttpServletRequest request) throws Exception {
+		
+		List<DispShopBaseVO> list = displayService.selectDisplayTreeList(paramVO);
+		
+		model.addAttribute("list", 		list);
+		
+		return new ModelAndView("jsonView", model);
 	}
 	
 	/**

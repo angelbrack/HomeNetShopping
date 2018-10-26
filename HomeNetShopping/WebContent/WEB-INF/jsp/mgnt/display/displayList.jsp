@@ -10,8 +10,7 @@
 			</form>
 			<form name="form1" id="form1" method="post" action="">
 				<input type="hidden" id="cmd"					name="cmd"					value=""														/> <!-- 등록/수정 구분 		-->
-				<input type="hidden" id="currentPage" 			name="currentPage" 			value="<c:out value="${searchVO.currentPage 		}" />" 		/> <!-- 페이지 번호 			-->
-				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 														/> <!-- 브랜드번호	 		-->
+				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 														/> <!-- 전시번호	 		-->
 			<!--contents-->
 			<div class="con_top">
 				<div class="tit">
@@ -20,9 +19,9 @@
 				<div class="navi">
 					<img src="<ctag:conf key="THEME.PATH" />mgnt/images/ic_01.jpg" alt="" />
 					<span>&nbsp;>&nbsp;</span>
-					브랜드 관리
+					전시매장 관리
 					<span>&nbsp;>&nbsp;</span>
-					브랜드 관리
+					전시매장 관리
 				</div>	
 			</div>
 			
@@ -38,16 +37,49 @@
 							<td colspan="3" class="blank"></td>
 						</tr>
 						<tr>
-                            <td class="tit"><label for="searchWord">검색어</label></td>
-                            <td>
-                                <select style="width:120px;height:22px;" name="searchKey" id="searchKey">
-                                    <option value="000" <c:if test="${empty searchVO.searchKey or searchVO.searchKey eq '000'}">selected="selected"</c:if>>브랜드명</option>
-                                    <option value="001" <c:if test="${searchVO.searchKey eq '001'}">selected="selected"</c:if>>브랜드상세설명</option>
+                            <td class="tit"><label for="dpmlNo">전시몰</label></td>
+                            <td colspan="2">
+                                <select style="width:120px;height:22px;" name="dpmlNo" id="dpmlNo">
+                                    <c:forEach var="mall" items="${mallList}">
+										<option value="${mall.dpmlNo}">${mall.dpmlNm}</option>
+									</c:forEach>
                                 </select>
-                                <input type="text" name="searchWord" id="searchWord" maxlength="100" style="width:400px;height:18px;" class="txtbox1" title="" value="${searchVO.searchWord }" class="txtbox1" onkeypress="if(event.keyCode==13) {displayList.fnSearch();}" escapeXml="false" />
                             </td>
-                            <td class="ar">
-                                <a href="#none" onclick="displayList.fnSearch();" class="btn_search3 ml5 mr20">검색</a>
+                        </tr>
+                        <tr>
+                            <td class="tit"><label for="shopTpCd">매장유형</label></td>
+                            <td colspan="2">
+                                <ctag:code name="shopTpCd" type="S" key="SHOP_TP_CD" selected=""  css="form" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tit"><label for="dispYn">전시여부</label></td>
+                            <td colspan="2">
+                                <select style="width:120px;height:22px;" name="dispYn" id="dispYn">
+                                	<option value="">- 선택 -</option>
+                                	<option value="Y">전시</option>
+                                	<option value="N">전시안함</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tit"><label for="menuUseYn">메뉴사용여부</label></td>
+                            <td colspan="2">
+                                <select style="width:120px;height:22px;" name="menuUseYn" id="menuUseYn">
+                                	<option value="">- 선택 -</option>
+                                	<option value="Y">메뉴사용</option>
+                                	<option value="N">메뉴사용안함</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tit"><label for="useYn">사용여부</label></td>
+                            <td colspan="2">
+                                <select style="width:120px;height:22px;" name="useYn" id="useYn">
+                                	<option value="">- 선택 -</option>
+                                	<option value="Y">사용</option>
+                                	<option value="N">사용안함</option>
+                                </select>
                             </td>
                         </tr>
 						<tr> 
@@ -57,119 +89,64 @@
 				</table>
 			</div>
 			
-			<div class="con_list_option mt33">
-				<ul>
-					<li>검색건수 : <fmt:formatNumber value="${paginationInfo.totalRecordCount }" pattern="#,###" />건</li>
-					<li class="op1"></li>
-				</ul>
+			<div class="con_btn mt30">
+				<a href="#none" onclick="articleList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
 			</div>
 			
 			<div class="con_list">
 				<table>
 					<caption>
-						브랜드정보에 대한 목록
+						전시매장정보에 대한 관리
 					</caption>
 					<colgroup>
-						<col width="4%" />
-						
 						<col width="5%" />
-						<col width="*" />
-						<col width="10%" />
-						<col width="*%" />
-						<col width="5%" />
-						<col width="5%" />
-						<col width="5%" />
-						<col width="10%" />
-						<col width="5%" />
-						<col width="5%" />
-						<col width="5%" />
-						
-						<col width="10%" />
-						<col width="10%" />
-						
-					</colgroup>
-					<thead>
+						<col />
+						<col width="90%" />						
+					</colgroup>					
+					<tbody>		
 						<tr>
-							<th scope="col">No</th>
-							<th scope="col">전시번호</th>
-							<th scope="col">전시명</th>
-							<th scope="col">우선순위</th>
-							<th scope="col">전시여부</th>
-							<th scope="col">사용여부</th>
-							<th scope="col">메뉴사용여부</th>
-							<th scope="col">상위전시번호</th>
-							<th scope="col">상위전시명</th>						
-							<th scope="col">깊이번호</th>
-							<th scope="col">Leaf 여부</th>
-							<th scope="col">몰번호</th>
-							
-							<th scope="col">등록일</th>
-							<th scope="col">수정일</th>
-						</tr>
-					</thead>
-					<tbody>
-			<c:choose>
-				<c:when test="${fn:length(list) > 0 }">
-					<c:forEach items="${list}" var="item" varStatus="status">
-						<tr>
-							<td><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.currentPage-1) * searchVO.recordCountPerPage + status.count)}"/></td>
-							
-							<td><c:out value="${item.dispNo }"/></td>
 							<td>
-								<a href="#none" onClick="displayList.fnEdit('U', '<c:out value="${item.dispNo }"/>');">
-								<c:out value="${item.dispNm }"/>
-								</a>	
+								<div id="treeArea" style="width: 250px; height: 650px; background-color: #f5f5f5; border: 1px solid Silver;" >
+									<div id="treeboxbox_tree" class="tree clear" setImagePath="/html/script/css/images/dhtmlxtree/" xclass="dhtmlxTree" style="display:none;width: 250px; height: 650px; overflow-x:auto;overflow-y:auto;">
+										<ul>
+											<li id="treeRoot">Root
+												<ul>
+													<li></li>
+												</ul>
+											</li>
+										</ul>	
+									</div>
+								</div>
 							</td>
-							<td><c:out value="${item.dispPrioRnk }"/></td>
-							<td><c:out value="${item.dispYn }"/></td>
-							<td><c:out value="${item.useYn }"/></td>
-							<td><c:out value="${item.menuUseYn }"/></td>
-							<td><c:out value="${item.uprDispNo }"/></td>
-							<td><c:out value="${item.useYn }"/></td>
-							<td><c:out value="${item.dpthNo }"/></td>
-							<td><c:out value="${item.tlwtLfYn }"/></td>
-							<td><c:out value="${item.dpmlNo }"/></td>
+							<td>&nbsp;</td>
+							<td id="detailArea">
 							
-							
-							<td>
-                                <fmt:parseDate value="${item.wrtDttm}" var="wrtDttm" pattern="yyyyMMddHHmmss"/>
-                                <fmt:formatDate value="${wrtDttm}" pattern="yyyy.MM.dd"/>
-                            </td>
-                            <td>
-                                <fmt:parseDate value="${item.updtDttm}" var="updtDttm" pattern="yyyyMMddHHmmss"/>
-                                <fmt:formatDate value="${updtDttm}" pattern="yyyy.MM.dd"/>
-                            </td>
+							</td>						
 						</tr>
-					</c:forEach>
-				</c:when>
-				<c:otherwise>
-						<tr>
-							<td colspan="14">검색된 데이터가 없습니다.</td>
-						</tr>
-				</c:otherwise>
-			</c:choose>
+					
 					</tbody>
 				</table>
-			</div>
-			
-			<div class="con_paging mt30">
-				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="displayList.fnListPage" rowControl="true" jsRowFunction="displayList.fnListPerLine" />
-		   	</div>
-			
-			<div class="con_btn mt30">
-				<a href="#none" onclick="displayList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
 			</div>
 			</form>
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180928100001"></script>
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.css">
+<script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
+<script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
+<script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180918000000"></script>
 <script type="text/javascript">
 <!--
+
+var tree = dhtmlXTreeFromHTML("treeboxbox_tree"); // for script conversion
+tree.setOnClickHandler(displayTreeList.fnClickHandler);
+tree.setOnOpenHandler(displayTreeList.fnOpenHandler);
+$('#treeboxbox_tree').show();
+
 $(document).ready(function() {
 	// 화면 초기화
-	displayList.init();
+	displayTreeList.init();
 });
 //-->
 </script>

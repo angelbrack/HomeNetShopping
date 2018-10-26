@@ -510,7 +510,7 @@ function fnMobileFileDown(path, idx, obj, addSavePath) {
 }
 
 //파일수정
-function fnFileEdit(path, idx, obj, addSavePath, imgYn, sortYn, orienteYn){
+function fnFileEdit(idx, obj, addSavePath, imgYn, sortYn, orienteYn){
 	if(idx === 0){
 		idx = "";
 	}

@@ -29,7 +29,7 @@
 	
 	<!-- 품목군 Tree 정보 List -->
 	<resultMap id="goodsArtcCdTreeList" type="goodsArtcCdVO" extends="goodsArtcCdList">
-		<result property="childCount" 		 		 	column="CHILD_COUNT" 				/> <!-- 상위 품목명    			-->
+		<result property="childCount" 		 		 	column="CHILD_COUNT" 				/> <!-- 하위 품목 갯수    			-->
 	</resultMap>
 	
 	<!-- 품목군 상세 정보 -->

@@ -9,63 +9,350 @@ option = {
 	};
 
 // 전시매장 정보 리스트
-var displayList = {
+var displayTreeList = {
 	// 전역변수
 	GV : {
 	},
 	// 초기화
 	init : function () {
+		
 		// 이벤트 추가
-		displayList.addEvent();
+		displayTreeList.addEvent();
 		
 	},
 	// 이벤트 추가
 	addEvent : function() {
 		
 	},
-	// 검색
-	fnSearch : function() {
-		recuRecruitList.fnListPage(1);
+	// 전시매장 초기 Tree 조회
+	initTreeSearch : function() {
+		// 전시매장 Tree 조회
+		var data	= {};
+		
+		displayTreeList.fnCleanTree();
+		
+		displayTreeList.fnTreeSearch(data, "treeRoot");
 	},
-	// 페이징에서 호출
-	fnListPage : function(pageNo) {
-		var frm	= document.form1;
+	// Tree 검색
+	fnTreeSearch : function(data, id) {
+		var param	= JSON.stringify(data); 
 		
-		$("#form1 #currentPage").val(pageNo);
-		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/display/initMgntDisplay.do";
-		
-		frm.submit();
+   		$.ajax({
+			async : false,
+			type: 'POST',
+			url: CTX_PATH + "/mgnt/display/selectDisplayTreeList.json",
+			data: param,
+			contentType: 'application/json',
+			dataType:"json",
+			success : function (data) {
+				var list		= data.list;
+				
+				tree.deleteChildItems(id);
+				
+				$(list).each(function(idx){
+					/*console.log("this.dispNo["+idx+"]=["+this.dispNo+"]");
+					console.log("this.dispNm["+idx+"]=["+this.dispNm+"]");
+					console.log("this.childCount["+idx+"]=["+this.childCount+"]");*/
+					// 하위에 전시매장이 존재하는 경우
+					if(this.childCount > 0) {
+						tree.insertNewChild(id, this.dispNo, this.dispNm, null, 0, 0, 0, "CHILD");
+						//tree.insertNewChild(id, "", "", null, 0, 0, 0);
+					}else{
+						tree.insertNewChild(id, this.dispNo, this.dispNm, null, 0, 0, 0);
+					}
+					tree.closeItem(this.dispNo);
+				});
+				//$("#displayTreeForm").find("#displayNo").val(id);
+				return true;
+			}, 
+			error: function(data, textStatus, errorThrown) {
+				fnAjaxError(data);
+			}
+		});
 	},
-	// 페이지당 레코드 갯수로 호출
-	fnListPerLine : function(recordCountPerPage) {
-		var frm	= document.form1
+	// Tree 에서 하위를 open 했을때
+	fnOpenHandler : function(id, mode) {
+		var data	= {};
 		
-		frm.method = "post";
-		frm.target = "_self";
-		frm.action = CTX_PATH + "/mgnt/display/initMgntDisplay.do";
+		data.searchDpmlNo 		= $("#searchDpmlNo option:selected").val();		// 전시몰 번호
+		data.searchShopTpCd 	= $("#searchShopTpCd option:selected").val();	// 매장유형
+		data.searchDispYn 		= $("#searchDispYn option:selected").val();		// 전시여부
+		data.searchMenuUseYn 	= $("#searchMenuUseYn option:selected").val();	// 메뉴사용여부
+		data.searchUseYn 		= $("#searchUseYn option:selected").val();		// 사용여부
 		
-		frm.submit();
+		if(mode <= 0) {
+			// tree를 open한 경우 하위 폼목리스트 조회
+			
+			if ( id != "treeRoot" ) {
+				$("#form1").find("#dispNo").val(id);
+				data.dispNo = id;
+			}
+			
+			displayTreeList.fnTreeSearch(data, id);
+			
+		}else{
+			return true;
+		}
 	},
-	// 신규/수정 페이지로 이동
-	fnEdit : function(cmd, dispNo) {
+	// Tree 에서 품목명을 선택했을때
+	fnClickHandler : function(id) {
+		var data = {};
 		
-		var VIEW_DISP = window.open('', 'VIEW_DISP' , 'width=1000, height=800, resizable=yes, scrollbars=yes, left=200, top=100');
-		VIEW_DISP.focus();   
+		var dispNo		    = "";
+		var dispNm		    = "";
+		var artcFullNm	    = "";
+		var ecdispNo	    = "";
+		var ecdispNm	    = "";
+		var uprdispNo	    = "";
+		var uprdispNm	    = "";
+		var artcDpthNo	    = "1";
+		var onlBrchInvRt	= "";
+		var maxLmtQty		= "";
+		var goodsMrgnRt		= "";
 		
-		var frm = document.form1
+		if ( id != "treeRoot" ) {
+			$("#form1 #treeId").val(id);
+			data.dispNo = id;
+			
+			var param	= JSON.stringify(data); 
+			
+			$.ajax({
+				async : false,
+				type: 'POST',
+				url: CTX_PATH + "/mgnt/article/selectGoodsdispNoInfo.json",
+				data: param,
+				contentType: 'application/json',
+				dataType:"json",
+				success : function (data) {
+					var info		= data.info;
+					
+					if ( info != undefined ) {
+						dispNo 		    = nvl(info.dispNo, "");
+						dispNm 		    = fnRecoveHtml(nvl(info.dispNm, ""));
+						artcFullNm 	    = fnRecoveHtml(nvl(info.artcFullNm, ""));
+						ecdispNo 	    = nvl(info.ecdispNo, "");
+						ecdispNm 	    = fnRecoveHtml(nvl(info.ecdispNm, ""));
+						uprdispNo 	    = nvl(info.uprdispNo, "");
+						uprdispNm 	    = fnRecoveHtml(nvl(info.uprdispNm, ""));
+						artcDpthNo	    = nvl(info.artcDpthNo, "");
+						onlBrchInvRt	= nvl(info.onlBrchInvRt, "");
+						maxLmtQty		= nvl(info.maxLmtQty, "");
+						goodsMrgnRt		= nvl(info.goodsMrgnRt, "");
+					}
+					
+					$("#form1 #dispNo").val(dispNo);
+					$("#form1 #dispNm").val(dispNm);
+					$("#form1 #artcFullNm").val(artcFullNm);
+					$("#form1 #ecdispNo").val(ecdispNo);
+					$("#form1 #ecdispNm").val(ecdispNm);
+					$("#form1 #uprdispNo").val(uprdispNo);
+					$("#form1 #uprdispNm").val(uprdispNm);
+					$("#form1 #artcDpthNo").val(artcDpthNo);
+					$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+					$("#form1 #maxLmtQty").val(maxLmtQty);
+					$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+					
+					$("#form1 #dispNo").prop("disabled", true);
+					$("#form1 #dispNm").prop("disabled", true);
+					
+					$("#form1 #cmd").val("U");	// 수정
+				}, 
+				error: function(data, textStatus, errorThrown) {
+					//$("#form1 #cmd").val("");
+					fnAjaxError(data);
+				}
+			});
+		} else {
+			$("#form1 #treeId").val("");
+			
+			$("#form1 #dispNo").val(dispNo);
+			$("#form1 #dispNm").val(dispNm);
+			$("#form1 #artcFullNm").val(artcFullNm);
+			$("#form1 #ecdispNo").val(ecdispNo);
+			$("#form1 #ecdispNm").val(ecdispNm);
+			$("#form1 #uprdispNo").val(uprdispNo);
+			$("#form1 #uprdispNm").val(uprdispNm);
+			$("#form1 #artcDpthNo").val(artcDpthNo);
+			$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+			$("#form1 #maxLmtQty").val(maxLmtQty);
+			$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+			
+			$("#form1 #dispNo").prop("disabled", false);
+			$("#form1 #dispNm").prop("disabled", false);
+			
+			$("#form1 #cmd").val("I");	// 등록
+		}
+	},
+	// Tree 초기화
+	fnCleanTree : function() {
 		
-		$("#form1 #cmd").val(cmd);
-		$("#form1 #dispNo").val(dispNo);
+		var val = $("#displayTreeForm").serialize();
+		var html = "<ul><li id=\"treeRoot\">품목<ul><li></li></ul></li></ul>";	
+		tree.destructor();
+		$("#treeboxbox_tree").html(html);
+		tree = dhtmlXTreeFromHTML("treeboxbox_tree");
+		tree.setOnClickHandler(displayTreeList.fnClickHandler);
+		tree.setOnOpenHandler(displayTreeList.fnOpenHandler);
+	},
+	// 신규 버튼 click
+	fnAdd : function() {
+		var treeId			= "";
+		var dispNo		    = "";
+		var dispNm		    = "";
+		var artcFullNm	    = "";
+		var ecdispNo	    = "";
+		var ecdispNm	    = "";
+		var uprdispNo	    = "";
+		var uprdispNm	    = "";
+		var artcDpthNo	    = 0;
+		var onlBrchInvRt	= "";
+		var maxLmtQty		= "";
+		var goodsMrgnRt		= "";
 		
-		frm.method = "post";
-		frm.target = "VIEW_DISP";
-		frm.action = CTX_PATH + "/mgnt/display/displayHandlePopup.do";
+		treeId		= nvl($("#form1 #treeId").val(), "");
+		dispNo		= nvl($("#form1 #dispNo").val(), "");
+		dispNm		= nvl($("#form1 #dispNm").val(), "");
+		artcDpthNo	= nvl($("#form1 #artcDpthNo").val(), 1);
 		
-		frm.submit();
+		if ( treeId == "" ) {
+			dispNo	= "";
+			dispNm	= "";
+		}
 		
+		if ( dispNo != "" && treeId != "" ) {
+			artcDpthNo = Number(artcDpthNo) + 1;
+		}
+		
+		$("#form1 #dispNo").val("");
+		$("#form1 #dispNm").val("");
+		$("#form1 #artcFullNm").val(artcFullNm);
+		$("#form1 #ecdispNo").val(ecdispNo);
+		$("#form1 #ecdispNm").val(ecdispNm);
+		$("#form1 #uprdispNo").val(dispNo);
+		$("#form1 #uprdispNm").val(dispNm);
+		$("#form1 #artcDpthNo").val(artcDpthNo);
+		$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
+		$("#form1 #maxLmtQty").val(maxLmtQty);
+		$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+		
+		$("#form1 #dispNo").prop("disabled", false);
+		$("#form1 #dispNm").prop("disabled", false);
+		
+		$("#form1 #cmd").val("I");
+	},
+	// 저장 버튼 click
+	fnSave : function() {
+		var data = {};
+		if ( !displayTreeList.validate(data) ) {
+			return false;
+		}
+		
+		var param	= JSON.stringify(data); 
+			
+		if ( !confirm("저장하시겠습니까?") ) return false;
+			
+		$.ajax({
+			async : false,
+			type: 'POST',
+			url: CTX_PATH + "/mgnt/article/articleSave.json",
+			data: param,
+			contentType: 'application/json',
+			dataType:"json",
+			success : function (data) {
+				var resultMsg		= data.resultMsg;
+				var completeYn		= data.completeYn;
+				
+				alert(resultMsg);
+				if ( completeYn == "Y" ) {
+					
+				}
+			}, 
+			error: function(data, textStatus, errorThrown) {
+				fnAjaxError(data);
+			}
+		});
+	},
+	// 품목정보 저장시 입력값 체크
+	validate : function(data) {
+		$("#ecdispNo").val("01");	// 테스트를 위해서
+		
+		$("#form1").validInit({onsubmit : false, onfocusout : false});
+		
+		$("#form1").validAddRules(option);		
+		if($("#form1").validate().form() == false) {
+	    	return false;
+		}
+		
+		data.cmd				= $("#cmd").val();							// 등록/수정 구분
+		data.dispNo				= $.trim($("#dispNo").val());				// 품목코드
+		data.dispNm				= $.trim($("#dispNm").val());				// 품목명
+		data.artcFullNm			= $.trim($("#artcFullNm").val());			// 품목FULL명
+		data.uprdispNo			= $.trim($("#uprdispNo").val());			// 상위 품목코드  
+		data.uprdispNm			= $.trim($("#uprdispNm").val());			// 상위 품목명  
+		
+		data.ecdispNo			= $.trim($("#ecdispNo").val());				// 전자상거래품목코드
+		data.ecdispNm			= $.trim($("#ecdispNm").val());				// 전자상거래품목명
+		data.artcDpthNo			= $.trim($("#artcDpthNo").val());			// 품목깊이번호
+		var onlBrchInvRt		= $.trim($("#onlBrchInvRt").val());			// 재고율
+		var maxLmtQty			= $.trim($("#maxLmtQty").val());			// 최대구매수량
+		var goodsMrgnRt			= $.trim($("#goodsMrgnRt").val());			// 상품마진율
+		
+		if ( onlBrchInvRt != "" ) {
+			data.onlBrchInvRt	= onlBrchInvRt;
+		}
+		if ( maxLmtQty != "" ) {
+			data.maxLmtQty	= maxLmtQty;
+		}
+		if ( goodsMrgnRt != "" ) {
+			data.goodsMrgnRt	= goodsMrgnRt;
+		}
+		
+		/*// 첨부파일 정보
+		if ( $('input[name="addFileList"]').length > 0 ) {
+			addFileList = new Array();
+			$('input[name="addFileList"]').each(function() {
+				addFileList.push(this.value);
+			});
+			data.addFileList	= addFileList;
+		} else {
+			alert("배너 이미지 첨부파일를 선택해주세요.");
+			return false;
+		}*/
+		
+		return true;
+	},
+	// 삭제
+	fnDelete : function() {
+		var data = {};
+		
+		if ( nvl($("#form1 #brndNo").val(), "") != "" ) {
+			data.brndNo	= $("#form1 #brndNo").val();
+		}
+		
+		var param	= JSON.stringify(data); 
+   		
+   		if ( !confirm("삭제하시겠습니까?") ) return false; 
+   		
+   		$.ajax({
+			async : false,
+			type: 'POST',
+			url: CTX_PATH + "/mgnt/article/articleDelete.json",
+			data: param,
+			contentType: 'application/json',
+			dataType:"json",
+			success : function (data) {
+				var resultMsg		= data.resultMsg;
+				var completeYn		= data.completeYn;
+				
+				alert(resultMsg);
+				if ( completeYn == "Y" ) {
+					
+				}
+			}, 
+			error: function(data, textStatus, errorThrown) {
+				fnAjaxError(data);
+			}
+		});
 	}
 	
 }

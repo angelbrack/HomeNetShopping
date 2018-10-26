@@ -57,6 +57,11 @@
 		
 	</resultMap>
 	
+	<!-- 품목군 Tree 정보 List -->
+	<resultMap id="displayTreeList" type="dispShopBaseVO" extends="displayList">
+		<result property="childCount" 		 		 	column="CHILD_COUNT" 				/> <!-- 하위 전시 갯수    			-->
+	</resultMap>
+	
 	<!-- 전시매장 상세정보 -->
 	<resultMap id="displayInfo" type="dispShopBaseVO" extends="displayList">
 	</resultMap>
@@ -124,7 +129,7 @@
 			<!-- , (
 				SELECT 
 					COUNT( COUNT(0) ) AS CONR_CNT
-              	FROM PR_DISP_CONR_INFO CI, PR_CONR_BASE CB, PR_DISP_SHOP_BASE DB, PR_TMPL_CONR_MPPG_INFO MT
+              	FROM TB_DISP_CONR_INFO CI, TB_CONR_BASE CB, TB_DISP_SHOP_BASE DB, TB_TMPL_CONR_MPPG_INFO MT
              	WHERE DB.DPML_NO = DM.DPML_NO
                		AND DB.DISP_NO = CI.DISP_NO
                		AND CI.CONR_NO = CB.CONR_NO
@@ -136,7 +141,7 @@
 			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(dpmlNo)">
 	      		AND A.DPML_NO = #{dpmlNo}
 	    	</if>
-    	<where>
+    	</where>
 	</select>
 	
 	<select id="selectDisplayList" parameterType="dispShopBaseVO" resultMap="displayList">
@@ -218,21 +223,31 @@
 			, A.MENU_USE_YN
 			, A.TMPL_NO
 			, A.PPP_SN
+			, (SELECT COUNT(0) AS CHILD_COUNT FROM TB_DISP_SHOP_BASE WHERE UPR_DISP_NO = A.DISP_NO) AS CHILD_COUNT
 			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 		FROM TB_DISP_SHOP_BASE A
 		<where>
-				<choose>
-					AND A.DPML_NO = #{dpmlNo	}
-					<when test='dispNo != null and dispNo != ""'>
-						AND A.UPR_DISP_NO = #{dispNo	}
-					</when>
-					<when test='dispNo == null or dispNo == ""'>
-						AND A.UPR_DISP_NO IS NULL
-						AND A.DPTH_NO = 1
-					</when>
-					AND A.SHOP_TP_CD = #{shopTpCd}
-				</choose>
-			</where>
+			AND A.DPML_NO 		= #{searchDpmlNo	}
+			AND A.SHOP_TP_CD 	= #{searchShopTpCd}
+			<choose>
+				<when test='dispNo != null and dispNo != ""'>
+					AND A.UPR_DISP_NO = #{dispNo	}
+				</when>
+				<when test='dispNo == null or dispNo == ""'>
+					AND A.UPR_DISP_NO IS NULL
+					AND A.DPTH_NO = 1
+				</when>
+			</choose>
+			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchDispYn)">
+	      		AND A.DISP_YN = #{searchDispYn}
+	    	</if>
+			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchMenuUseYn)">
+	      		AND A.MENU_USE_YN = #{searchMenuUseYn}
+	    	</if>
+	    	<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchUseYn)">
+	      		AND A.USE_YN = #{searchUseYn}
+	    	</if>
+		</where>
 	</select>
 	
 	<select id="selectDisplayInfo" parameterType="dispShopBaseVO" resultMap="displayInfo">
