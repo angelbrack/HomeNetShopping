@@ -187,7 +187,7 @@ public class DisplayServiceImpl implements DisplayService {
 	 */
 	@Override
 	public List<DispImgInfoVO> selectDisplayImgInfoList(DispImgInfoVO paramVO) throws Exception {
-		return (List<DispImgInfoVO>) mybatisDataAccessDAO.select("homenet.shop.display.service.DisplayService.selectDisplayImgInfoList", paramVO);
+		return (List<DispImgInfoVO>) mybatisDataAccessDAO.list("homenet.shop.display.service.DisplayService.selectDisplayImgInfoList", paramVO);
 	}
 	
 	/*
@@ -216,9 +216,9 @@ public class DisplayServiceImpl implements DisplayService {
 			arrGnbImgInfo		= paramVO.getAddGnbImgList();
 			arrHeaderImgInfo	= paramVO.getAddHeaderImgList();
 			
-			if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
-				
-				if ( "I".equals(paramVO.getCmd()) ) {
+			
+			if ( "I".equals(paramVO.getCmd()) ) {
+				if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
 					for(int i = 0; i < arrTitleImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -227,8 +227,8 @@ public class DisplayServiceImpl implements DisplayService {
 						dispImgInfoVO.setDispNo(paramVO.getDispNo());
 						dispImgInfoVO.setDispImgTpCd("04");		// 04 전시매장대표
 						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
-						dispImgInfoVO.setBnrImgFileNm(arrTitleImgInfo[1]);
-						dispImgInfoVO.setBnrImgPathNm(arrTitleImgInfo[4]);
+						dispImgInfoVO.setBnrImgFileNm(arrTitleImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrTitleImgSplitInfo[4]);
 						
 						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
 						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
@@ -237,7 +237,9 @@ public class DisplayServiceImpl implements DisplayService {
 						
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
-					
+				}
+				
+				if(arrGnbImgInfo != null && arrGnbImgInfo.length > 0) {
 					for(int i = 0; i < arrGnbImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -256,7 +258,9 @@ public class DisplayServiceImpl implements DisplayService {
 						
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
-					
+				}
+				
+				if(arrHeaderImgInfo != null && arrHeaderImgInfo.length > 0) {
 					for(int i = 0; i < arrHeaderImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -275,11 +279,12 @@ public class DisplayServiceImpl implements DisplayService {
 						
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
-					
-				} else {
-					
-					result += deleteDisplayImgInfo(paramVO);
-					
+				}
+			} else {
+				
+				result += deleteDisplayImgInfo(paramVO);
+				
+				if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
 					for(int i = 0; i < arrTitleImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -288,8 +293,8 @@ public class DisplayServiceImpl implements DisplayService {
 						dispImgInfoVO.setDispNo(paramVO.getDispNo());
 						dispImgInfoVO.setDispImgTpCd("05");		// 05 전시매장대표
 						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
-						dispImgInfoVO.setBnrImgFileNm(arrTitleImgInfo[1]);
-						dispImgInfoVO.setBnrImgPathNm(arrTitleImgInfo[4]);
+						dispImgInfoVO.setBnrImgFileNm(arrTitleImgSplitInfo[1]);
+						dispImgInfoVO.setBnrImgPathNm(arrTitleImgSplitInfo[4]);
 						
 						dispImgInfoVO.setWrtPnNo(paramVO.getWrtPnNo());
 						dispImgInfoVO.setUpdtPnNo(paramVO.getUpdtPnNo());
@@ -298,7 +303,9 @@ public class DisplayServiceImpl implements DisplayService {
 						
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
-					
+				}
+				
+				if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
 					for(int i = 0; i < arrGnbImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -317,7 +324,9 @@ public class DisplayServiceImpl implements DisplayService {
 						
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
-					
+				}
+				
+				if(arrTitleImgInfo != null && arrTitleImgInfo.length > 0) {
 					for(int i = 0; i < arrHeaderImgInfo.length; i++) {
 						dispImgInfoVO = new DispImgInfoVO();
 						
@@ -337,8 +346,8 @@ public class DisplayServiceImpl implements DisplayService {
 						result += insertDisplayImgInfo(dispImgInfoVO);
 					}
 				}
-				
 			}
+				
 		}
 		
 		return result;

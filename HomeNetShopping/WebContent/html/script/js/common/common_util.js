@@ -1643,5 +1643,10 @@ function fnRecoveHtml(sourceVal) {
 	changeVal = changeVal.replace(/&quot;/g, '\"');
 	changeVal = changeVal.replace(/&apos;/g, '\'');
 	
+	changeVal = changeVal.replace(/&#39;/g, '\'');
+	changeVal = changeVal.replace(/&#40;/g, '\"');
+	changeVal = changeVal.replace(/&#40;/g, '\\(');
+	changeVal = changeVal.replace(/&#41;/g, '\\)');
+	
 	return changeVal
 }

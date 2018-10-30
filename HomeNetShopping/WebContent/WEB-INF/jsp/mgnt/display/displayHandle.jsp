@@ -5,10 +5,18 @@
 		<div class="con_right_c">
 			<form name="form1" id="form1" method="post" action="">
 				<input type="hidden" id="cmd"					name="cmd"					value="I"					/> <!-- 등록/수정 구분 		-->
+				<input type="hidden" id="treeId" 				name="treeId" 				value="" 					/> <!-- tree id	 		-->
+				<input type="hidden" id="treeDepth" 			name="treeDepth" 			value="" 					/> <!-- tree depth	 	-->
+				
 				<input type="hidden" id="dpmlNo" 				name="dpmlNo" 				value="" 					/> <!-- 전시몰번호	 		-->
 				<input type="hidden" id="shopTpCd" 				name="shopTpCd" 			value="" 					/> <!-- 매장유형	 		-->
 				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 					/> <!-- 전시번호	 		-->
 				<input type="hidden" id="uprDispNo" 			name="uprDispNo" 			value="" 					/> <!-- 상위전시번호	 		-->
+				
+				<input type="hidden" id="dispLrgNo" 			name="dispLrgNo" 			value="" 					/> <!-- 전시대번호	 		-->
+				<input type="hidden" id="dispMidNo" 			name="dispMidNo" 			value="" 					/> <!-- 전시중번호	 		-->
+				<input type="hidden" id="dispSmlNo" 			name="dispSmlNo" 			value="" 					/> <!-- 전시소번호	 		-->
+				<input type="hidden" id="dispThnNo" 			name="dispThnNo" 			value="" 					/> <!-- 전시세번호	 		-->
 			<!--contents-->
 			<div class="con_top">
 				<div class="tit">
@@ -45,13 +53,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="tit"><label for="shopTpCd">매장유형</label></td>
+                            <td class="tit"><label for="searchShopTpCd">매장유형</label></td>
                             <td colspan="2">
                                 <ctag:code name="searchShopTpCd" type="S" key="SHOP_TP_CD" selected=""  css="form" />
                             </td>
                         </tr>
                         <tr>
-                            <td class="tit"><label for="dispYn">전시여부</label></td>
+                            <td class="tit"><label for="searchDispYn">전시여부</label></td>
                             <td colspan="2">
                                 <select style="width:120px;height:22px;" name="searchDispYn" id="searchDispYn">
                                 	<option value="">- 선택 -</option>
@@ -61,7 +69,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="tit"><label for="menuUseYn">메뉴사용여부</label></td>
+                            <td class="tit"><label for="searchMenuUseYn">메뉴사용여부</label></td>
                             <td colspan="2">
                                 <select style="width:120px;height:22px;" name="searchMenuUseYn" id="searchMenuUseYn">
                                 	<option value="">- 선택 -</option>
@@ -71,7 +79,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="tit"><label for="useYn">사용여부</label></td>
+                            <td class="tit"><label for="searchUseYn">사용여부</label></td>
                             <td colspan="2">
                                 <select style="width:120px;height:22px;" name="searchUseYn" id="searchUseYn">
                                 	<option value="">- 선택 -</option>
@@ -105,10 +113,10 @@
 					<tbody>		
 						<tr>
 							<td>
-								<div id="treeArea" style="width: 250px; height: 850px; background-color: #f5f5f5; border: 1px solid Silver;" >
+								<div id="treeArea" style="width: 250px; height: 1000px; background-color: #f5f5f5; border: 1px solid Silver;" >
 									<div id="treeboxbox_tree" class="tree clear" setImagePath="/html/script/css/images/dhtmlxtree/" xclass="dhtmlxTree" style="display:none;width: 250px; height: 650px; overflow-x:auto;overflow-y:auto;">
 										<ul>
-											<li id="treeRoot">Root
+											<li id="treeRoot"><span id="spDpmlNm"></span>
 												<ul>
 													<li></li>
 												</ul>
@@ -119,7 +127,7 @@
 							</td>
 							<td>&nbsp;</td>
 							<td id="detailArea">
-								<div class="con_write" style="height: 850px;">
+								<div class="con_write" style="height: 1000px;">
 									<table>
 										<caption>전시</caption>
 										<colgroup>
@@ -161,7 +169,7 @@
 													<div style="width:700px;padding:0px;" id="apndFile0">							 	
 													</div>
 													<div class="img_list" id="apndImgDiv">
-														<ul id="apndImgUl0">
+														<ul id="apndImgUl1">
 														</ul>
 													</div>
 												</td>
@@ -172,7 +180,7 @@
 													<div style="width:700px;padding:0px;" id="apndFile1">							 	
 													</div>
 													<div class="img_list" id="apndImgDiv">
-														<ul id="apndImgUl1">
+														<ul id="apndImgUl2">
 														</ul>
 													</div>
 												</td>
@@ -180,7 +188,7 @@
 											<tr>
 												<th scope="row"><label for="shopDescCont">매장 설명 내용</label> </th>
 												<td colspan="3" class="pt10 pb10">
-													<textarea id="shopDescCont" name="shopDescCont" class="txtbox1" style="width:98%; height:100px;"><c:out value="${info.shopDescCont }" escapeXml="false" /></textarea>
+													<textarea id="shopDescCont" name="shopDescCont" class="txtbox1" style="width:98%; height:100px;"></textarea>
 												</td>
 											</tr>
 											<tr>
@@ -270,7 +278,7 @@
 													<div style="width:700px;padding:0px;" id="apndFile2">							 	
 													</div>
 													<div class="img_list" id="apndImgDiv">
-														<ul id="apndImgUl2">
+														<ul id="apndImgUl3">
 														</ul>
 													</div>
 												</td>
@@ -316,7 +324,7 @@
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180918000002"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181030000004"></script>
 <script type="text/javascript">
 <!--
 
@@ -331,27 +339,120 @@ $(document).ready(function() {
 	
 	$("#apndFile0").fnFileUpload({
 		  path 		: "DISPLAY.IMG"		
-		, idx 		: "0"				
-		, fileCo 	: 1
-		, imgYn		: "Y"
-	});
-	fnFileEdit("0", "<c:out value='${(fileList)}'/>", "", "Y");
-	
-	$("#apndFile1").fnFileUpload({
-		  path 		: "DISPLAY.IMG"		
 		, idx 		: "1"				
 		, fileCo 	: 1
 		, imgYn		: "Y"
 	});
-	fnFileEdit("1", "<c:out value='${(fileList)}'/>", "", "Y");
 	
-	$("#apndFile2").fnFileUpload({
+	$("#apndFile1").fnFileUpload({
 		  path 		: "DISPLAY.IMG"		
 		, idx 		: "2"				
 		, fileCo 	: 1
 		, imgYn		: "Y"
 	});
-	fnFileEdit("2", "<c:out value='${(fileList)}'/>", "", "Y");
+	
+	$("#apndFile2").fnFileUpload({
+		  path 		: "DISPLAY.IMG"		
+		, idx 		: "3"				
+		, fileCo 	: 1
+		, imgYn		: "Y"
+	});
+	
 });
+
+/*
+ * 첨부파일 수정시
+ */
+function fnFileEdit(idx, obj, addSavePath, imgYn, sortYn, orienteYn){
+	
+	if(typeof obj === "string" && obj.length > 0) {
+		
+		var fileObj = obj.replaceAll("&#034;", '"').toString();
+		
+		var curUrl = document.location.href;
+		var uploadingUrl = "";
+		if(curUrl.indexOf("/mgnt/") > -1) {
+			uploadingUrl = CTX_PATH + "/upload";
+		} else if(curUrl.indexOf("/app/") > -1) {
+			uploadingUrl = CTX_PATH + "/user_uploading";
+		} else {
+			uploadingUrl = CTX_PATH + "/user_uploading";
+		}
+		
+		/*var url = uploadingUrl + "?pathkey=" + path;
+		if(addSavePath != undefined && addSavePath != "") {
+			url += "&addSavePath=" + addSavePath;
+		}*/
+		var url = "";
+		var jsonFileArray = JSON.parse(fileObj);
+		
+		$.each(jsonFileArray, function(i, jsonObj) {
+			if(jsonObj.bnrImgPathNm != undefined && jsonObj.bnrImgFileNm != undefined) {
+				var fileHtml 		= "";	
+				var fileName 		= jsonObj.bnrImgFileNm;
+				var realFileName	= jsonObj.bnrImgFileNm;
+				var fileSize		= 0;
+				var filePath		= jsonObj.bnrImgPathNm;
+				
+				var fileInfo = fileName+"|"+realFileName+"| |"+ fileSize+"|"+filePath;
+				
+				if(fileHtml != "") {
+					fileHtml += "	<br />";
+				}
+				
+				url	= uploadingUrl + "?filePath="+filePath;
+				
+				if ( imgYn != "Y" ) {
+					fileHtml += " <li name=\"fileGubun"+idx+"\"> ";
+	                fileHtml += "   <span class=\"m-r-10 font-dark-grey underline\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">"+decodeURI(decodeURIComponent(fileName))+"</a><input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" ></span>";
+	                fileHtml += "   <a href=\"#none\" class=\"btn-delete\" onclick=\"onFileDelede(this)\">&times;</a> ";
+	                fileHtml += " </li> ";
+					
+					$("#uploaded-files"+idx).append(fileHtml);
+				}
+				
+				var fileImgHtml = "";
+                if ( imgYn == "Y" ) {	 
+                	
+                	fileImgHtml += "<li id='Img_"+realFileName.split('.')[0]+"'>";
+                	fileImgHtml += "	<div class=\"img\">";
+                	if ( orienteYn == "Y" ) {
+                		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\" exif=\"true\" name=\"exifImg\" onload=\"fnUploadImg(this);\" />";
+                	} else {
+                		fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\" exif=\"true\" name=\"exifImg\" />";
+                	}
+                	fileImgHtml += "	</div>";
+                	fileImgHtml += "	<div class=\"img_del\"><a href=\""+url+"&getfile="+realFileName+"&realFileName="+encodeURI(encodeURIComponent(fileName))+"\" target=\"fileHiddenFrame\">다운로드</a><a href=\"#\" onClick=\"onImgFileDelete(this)\">삭제</a></div>";
+                	fileImgHtml += "	<div class=\"layer_img\">";
+                	fileImgHtml += "		<img src=\""+decodeURI(decodeURIComponent(filePath))+"/"+realFileName+"\">";
+                	fileImgHtml += "	</div>";
+                	fileImgHtml += "<input type=\"hidden\" name=\"addFileList"+idx+"\" value=\""+ decodeURI(decodeURIComponent(fileInfo)) +"\" /></li>";
+	                
+	                $("#apndImgUl"+idx).append(fileImgHtml);
+				}
+				
+				fileYn = "Y";
+			}
+		});
+		
+		if ( imgYn == "Y" ) {
+			$('.img_list li').on({
+				'mouseover':function(){
+					if($(this).find('.layer_img').css('display') == 'none'){
+						$(this).find('.layer_img').show();
+					}
+				},
+				'mouseleave':function(){
+					$('.img_list li').find('.layer_img').hide();
+				}
+			});
+		}
+		
+		if ( sortYn == "Y" ) {
+			$("#apndImgUl"+idx).sortable()
+		}
+		
+	}
+}
 //-->
 </script>

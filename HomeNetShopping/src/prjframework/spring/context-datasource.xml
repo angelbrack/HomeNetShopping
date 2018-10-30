@@ -50,6 +50,16 @@
         <property name="url" value="jdbc:oracle:thin:@oracle11gr2.cbq7jkvjidzs.ap-northeast-2.rds.amazonaws.com:1521:orcl"/>
         <property name="username" value="gn"/>
         <property name="password" value="gn"/>
+        <property name="initialSize" value="10"/>
+        <property name="maxActive" value="10"/>
+        <property name="maxIdle" value="10"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxWait" value="1000"/>
+        
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="validationQuery" value="select 1 from dual"/>
     </bean>
     
     <!-- <bean id="SMSDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

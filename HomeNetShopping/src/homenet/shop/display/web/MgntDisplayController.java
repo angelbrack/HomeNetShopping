@@ -205,6 +205,7 @@ public class MgntDisplayController {
 
 		resultMap.put("resultMsg", 	resultMsg);
 		resultMap.put("completeYn", completeYn);
+		resultMap.put("dispNo", 	paramVO.getDispNo());
 		
 		return new ModelAndView("jsonView", resultMap);
 	}

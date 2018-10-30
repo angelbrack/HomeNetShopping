@@ -63,7 +63,7 @@
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/inputmask/phone-codes/phone.js?20180907000001" charset="utf-8"></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jTemplates/jquery-jtemplates_uncompressed.js?20180907000001" charset="utf-8"></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />validate/jquery.validate.js?20180907000001" ></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_util.js?20180907000002" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_util.js?20181030000002" ></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_valid.js?20180907000001" ></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_file.js?20180907000001" ></script>
 <script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/webutil.js?20180907000001" ></script>

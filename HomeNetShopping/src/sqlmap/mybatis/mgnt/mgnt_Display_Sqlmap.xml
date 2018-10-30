@@ -32,12 +32,12 @@
 		<result property="dispPrioRnk" 		 		 	column="DISP_PRIO_RNK" 				/> <!-- 전시우선순위				-->
 		<result property="useYn" 		 		 		column="USE_YN" 					/> <!-- 사용여부				-->
 		<result property="dispYn" 		 		 		column="DISP_YN" 					/> <!-- 전시여부				-->
-		<result property="tlwtLfYn" 		 		 	column="TLWT_LF_YN" 				/> <!-- 최하위리프여부				-->
+		<result property="tlwtLfYn" 		 		 	column="TLWT_LF_YN" 				/> <!-- 최하위리프여부			-->
 		<result property="prtTpCd" 		 		 		column="PRT_TP_CD" 					/> <!-- 출력유형코드				-->
-		<result property="lstSortCd" 		 		 	column="LST_SORT_CD" 				/> <!-- 리스트정렬코드				-->
-		<result property="movFrmeCd" 		 		 	column="MOV_FRME_CD" 				/> <!-- 이동프레임코드				-->
-		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 url주소				-->
-		<result property="lnkSpdpHhNo" 		 			column="LNK_SPDP_HH_NO" 			/> <!-- 연결 기획전 전시번호 			-->
+		<result property="lstSortCd" 		 		 	column="LST_SORT_CD" 				/> <!-- 리스트정렬코드			-->
+		<result property="movFrmeCd" 		 		 	column="MOV_FRME_CD" 				/> <!-- 이동프레임코드			-->
+		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 url주소			-->
+		<result property="lnkSpdpHhNo" 		 			column="LNK_SPDP_HH_NO" 			/> <!-- 연결 기획전 전시번호 		-->
 		<result property="dispLrgNo" 		 		 	column="DISP_LRG_NO" 				/> <!-- 전시대번호				-->
 		<result property="dispMidNo" 		 		 	column="DISP_MID_NO" 				/> <!-- 전시중번호				-->
 		<result property="dispSmlNo" 		 		 	column="DISP_SML_NO" 				/> <!-- 전시소번호				-->
@@ -238,6 +238,9 @@
 					AND A.DPTH_NO = 1
 				</when>
 			</choose>
+			<if test='searchDispYn != null and searchDispYn != ""'>
+	      		AND A.DISP_YN = #{searchDispYn}
+	    	</if>
 			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchDispYn)">
 	      		AND A.DISP_YN = #{searchDispYn}
 	    	</if>

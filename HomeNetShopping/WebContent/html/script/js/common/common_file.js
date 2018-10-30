@@ -527,25 +527,29 @@ function fnFileEdit(idx, obj, addSavePath, imgYn, sortYn, orienteYn){
 			uploadingUrl = CTX_PATH + "/user_uploading";
 		}
 		
-		var url = uploadingUrl + "?pathkey=" + path;
+		/*var url = uploadingUrl + "?pathkey=" + path;
 		if(addSavePath != undefined && addSavePath != "") {
 			url += "&addSavePath=" + addSavePath;
-		}
-		var jsonFileArray = JSON.parse(fileObj);
+		}*/
+		var url = "";
 		
+		var jsonFileArray = JSON.parse(fileObj);
 		
 		$.each(jsonFileArray, function(i, jsonObj) {
 			if(jsonObj.atchmnflNm != undefined && jsonObj.atchmnflStreNm != undefined && jsonObj.atchmnflMg != undefined) {
-				var fileHtml = "";	
-				var fileName = jsonObj.atchmnflNm;
-				var realFileName= jsonObj.atchmnflStreNm;
-				var fileSize= jsonObj.atchmnflMg;
+				var fileHtml 		= "";	
+				var fileName 		= jsonObj.atchmnflNm;
+				var realFileName	= jsonObj.atchmnflStreNm;
+				var fileSize		= jsonObj.atchmnflMg;
+				var filePath		= jsonObj.attachFilePath;
 				
-				var fileInfo = fileName+"|"+realFileName+"| |"+ fileSize;
+				var fileInfo = fileName+"|"+realFileName+"| |"+ fileSize+"|"+filePath;
 				
 				if(fileHtml != "") {
 					fileHtml += "	<br />";
 				}
+				
+				url	= uploadingUrl + "?filePath="+filePath;
 				
 				if ( imgYn != "Y" ) {
 					fileHtml += " <li name=\"fileGubun"+idx+"\"> ";

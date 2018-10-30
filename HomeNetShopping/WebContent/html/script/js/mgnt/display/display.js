@@ -20,6 +20,9 @@ var displayTreeList = {
 		// 이벤트 추가
 		displayTreeList.addEvent();
 		
+		// 전시몰 change
+		$("#searchDpmlNo").change();
+		
 		var searchDpmlNo	= $("#form1 #searchDpmlNo option:selected").val();		// 전시몰번호
 		var searchShopTpCd	= $("#form1 #searchShopTpCd option:selected").val();	// 매장유형
 		$("#dpmlNo").val(searchDpmlNo);												// 전시몰번호
@@ -36,35 +39,61 @@ var displayTreeList = {
 		};
 		
 		// 출력유형 change
-		$("#prtTpCd").change();
+		$("#form1 #prtTpCd").change();
 		
-		$("#dispPrioRnk").inputmask("999", {"placeholder": ""});										// 
+		$("#form1 #dispPrioRnk").inputmask("999", {"placeholder": ""});										// 
 	},
 	// 이벤트 추가
 	addEvent : function() {
+		// 전시몰 change 시
+		$("#searchDpmlNo").change(function(){
+			var text = $("#searchDpmlNo option:selected").text();
+			$("#spDpmlNm").html(text);
+			
+			displayTreeList.fnCleanTree();
+		});
+		
+		// 매장유형 change 시
+		$("#searchShopTpCd").change(function(){
+			displayTreeList.fnCleanTree();
+		});
+		
+		// 전시여부 change 시
+		$("#searchDispYn").change(function(){
+			displayTreeList.fnCleanTree();
+		});
+		
+		// 메뉴사용여부 change 시
+		$("#searchMenuUseYn").change(function(){
+			displayTreeList.fnCleanTree();
+		});
+		
+		// 사용여부 change 시
+		$("#searchUseYn").change(function(){
+			displayTreeList.fnCleanTree();
+		});
+		
 		// 매장 타이틀 노출유형 click 시
 		$("input[name*='dispTitExpMethCd']").click(function(){
 			
-			if($(this).is(':checked')&& $(this).val() == '01') {
-				$("#fileupload0").prop("disabled",false);
-			}else
-				$("#fileupload0").prop("disabled",true);
-		});
-		
-		// 매장 메뉴 노출유형 click 시
-		$("input[name*='gnbExpMethCd']").click(function(){
 			if($(this).is(':checked')&& $(this).val() == '01') {
 				$("#fileupload1").prop("disabled",false);
 			}else
 				$("#fileupload1").prop("disabled",true);
 		});
 		
+		// 매장 메뉴 노출유형 click 시
+		$("input[name*='gnbExpMethCd']").click(function(){
+			if($(this).is(':checked')&& $(this).val() == '01') {
+				$("#fileupload2").prop("disabled",false);
+			}else
+				$("#fileupload2").prop("disabled",true);
+		});
+		
 		// 출력유형 change 시
 		$("#prtTpCd").change(function(){
 			var prtTpCd = $("#prtTpCd").val();
-			console.log("prtTpCd=["+prtTpCd+"]");
 			$("tr[name*='printType']").each(function(i){
-				console.log("$(this).css('display')["+$(this).index()+"]=["+$(this).is(":visible")+"]");
 				/*if($(this).css('display') == '') 
 					$(this).css('display', 'none');	*/	
 				$(this).hide();
@@ -112,15 +141,12 @@ var displayTreeList = {
 				tree.deleteChildItems(id);
 				
 				$(list).each(function(idx){
-					/*console.log("this.dispNo["+idx+"]=["+this.dispNo+"]");
-					console.log("this.dispNm["+idx+"]=["+this.dispNm+"]");
-					console.log("this.childCount["+idx+"]=["+this.childCount+"]");*/
 					// 하위에 전시매장이 존재하는 경우
 					if(this.childCount > 0) {
-						tree.insertNewChild(id, this.dispNo, this.dispNm, null, 0, 0, 0, "CHILD");
+						tree.insertNewChild(id, this.dispNo, fnRecoveHtml(nvl(this.dispNm, "")), null, 0, 0, 0, "CHILD");
 						//tree.insertNewChild(id, "", "", null, 0, 0, 0);
 					}else{
-						tree.insertNewChild(id, this.dispNo, this.dispNm, null, 0, 0, 0);
+						tree.insertNewChild(id, this.dispNo, fnRecoveHtml(nvl(this.dispNm, "")), null, 0, 0, 0);
 					}
 					tree.closeItem(this.dispNo);
 				});
@@ -141,6 +167,8 @@ var displayTreeList = {
 		data.searchDispYn 		= $("#searchDispYn option:selected").val();		// 전시여부
 		data.searchMenuUseYn 	= $("#searchMenuUseYn option:selected").val();	// 메뉴사용여부
 		data.searchUseYn 		= $("#searchUseYn option:selected").val();		// 사용여부
+		
+		displayTreeList.fnFormInit();
 		
 		if(mode <= 0) {
 			// tree를 open한 경우 하위 폼목리스트 조회
@@ -186,11 +214,9 @@ var displayTreeList = {
 		var dispThnNo           = null;     // 전시세번호    
 		var menuUseYn           = "";       // 메뉴사용여부   
 		var tmplNo              = null;     // 템플릿번호    
+		var tmplNm              = "";     	// 템플릿명
 		var pppSn               = "";       // 팝업일련번호   
 		                
-		
-		
-		
 		if ( id != "treeRoot" ) {
 			$("#form1 #treeId").val(id);
 			data.dispNo = id;
@@ -210,7 +236,13 @@ var displayTreeList = {
 					var gnbImgList		= data.gnbImgList;
 					var headerImgList	= data.headerImgList;
 					
-					console.log("info=["+JSON.stringify(info)+"]")
+					/*console.log("info=["+JSON.stringify(info)+"]")
+					console.log("titleImgList=["+JSON.stringify(titleImgList)+"]")
+					console.log("gnbImgList=["+JSON.stringify(gnbImgList)+"]")*/
+					
+					$("#apndImgUl1").html("");
+					$("#apndImgUl2").html("");
+					$("#apndImgUl3").html("");
 					
 					if ( info != undefined ) {
 						dispNo 		    	= nvl(info.dispNo, null);						// 전시번호      
@@ -243,23 +275,53 @@ var displayTreeList = {
 						
 					}
 					
+					$("#form1 #treeId").val(dispNo);
+					$("#form1 #treeDepth").val(dpthNo);
+					
 					$("#form1 #dispNo").val(dispNo);
-					$("#form1 #uprDispNo").val(dispNm);
-					$("#form1 #dpmlNo").val(artcFullNm);
-					$("#form1 #dispNm").val(ecdispNo);
+					$("#form1 #uprDispNo").val(uprDispNo);
+					$("#form1 #dpmlNo").val(dpmlNo);
+					$("#form1 #shopTpCd").val(shopTpCd);
+					$("#form1 #dispLrgNo").val(dispLrgNo);
+					$("#form1 #dispMidNo").val(dispMidNo);
+					$("#form1 #dispSmlNo").val(dispSmlNo);
+					$("#form1 #dispThnNo").val(dispThnNo);
 					
+					$("#form1 #dispNm").val(dispNm);
+					$('input:radio[name=dispTitExpMethCd]:input[value=' + dispTitExpMethCd + ']').attr("checked", true);
+					$('input:radio[name=gnbExpMethCd]:input[value=' + gnbExpMethCd + ']').attr("checked", true);
+					$("#form1 #shopDescCont").val(shopDescCont);
+					$("#form1 #dpthNo").val(dpthNo);
+					$('input:radio[name=tlwtLfYn]:input[value=' + tlwtLfYn + ']').attr("checked", true);
+					$("#form1 #dispPrioRnk").val(dispPrioRnk);
+					$('input:radio[name=dispYn]:input[value=' + dispYn + ']').attr("checked", true);
+					$('input:radio[name=useYn]:input[value=' + useYn + ']').attr("checked", true);
+					$('input:radio[name=menuUseYn]:input[value=' + menuUseYn + ']').attr("checked", true);
+					$("#form1 #prtTpCd").val(prtTpCd);
+					$("#form1 #tmplNo").val(tmplNo);
+					$("#form1 #tmplNm").val(tmplNm);
+					$("#form1 #lnkUrlAddr").val(lnkUrlAddr);
 					
+					if ( prtTpCd == '04' ) {
+						$("#form1 #lnkSpdpHhNo40").val(lnkSpdpHhNo);
+					} else if ( prtTpCd == '05' ) {
+						$("#form1 #lnkSpdpHhNo50").val(lnkSpdpHhNo);
+					}
 					
-					$("#form1 #ecdispNm").val(ecdispNm);
-					$("#form1 #uprdispNo").val(uprdispNo);
-					$("#form1 #uprdispNm").val(uprdispNm);
-					$("#form1 #artcDpthNo").val(artcDpthNo);
-					$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
-					$("#form1 #maxLmtQty").val(maxLmtQty);
-					$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+					// 출력유형 change
+					$("#form1 #prtTpCd").change();
 					
-					$("#form1 #dispNo").prop("disabled", true);
-					$("#form1 #dispNm").prop("disabled", true);
+					$("#form1 #lstSortCd").val(lstSortCd);
+					
+					if ( titleImgList != undefined ) {
+						fnFileEdit(1, JSON.stringify(titleImgList), "", "Y");
+					}
+					if ( gnbImgList != undefined ) {
+						fnFileEdit(2, JSON.stringify(gnbImgList), "", "Y");
+					}
+					if ( headerImgList != undefined ) {
+						fnFileEdit(3, JSON.stringify(headerImgList), "", "Y");
+					}
 					
 					$("#form1 #cmd").val("U");	// 수정
 				}, 
@@ -269,80 +331,154 @@ var displayTreeList = {
 				}
 			});
 		} else {
-			$("#form1 #treeId").val("");
+			dpmlNo 				= $("#searchDpmlNo option:selected").val();		// 전시몰 번호
+			shopTpCd 			= $("#searchShopTpCd option:selected").val();	// 매장유형
+			dispTitExpMethCd	= "01";
+			gnbExpMethCd		= "01";
+			tlwtLfYn			= "N";
+			dispYn				= "N";
+			useYn				= "N";
+			menuUseYn			= "N";
+			prtTpCd				= "01";
+			lstSortCd			= "01";
+			
+			dpthNo				= "";
+			
+			$("#form1 #treeId").val(dispNo);
+			$("#form1 #treeDepth").val(dpthNo);
 			
 			$("#form1 #dispNo").val(dispNo);
-			$("#form1 #dispNm").val(dispNm);
-			$("#form1 #artcFullNm").val(artcFullNm);
-			$("#form1 #ecdispNo").val(ecdispNo);
-			$("#form1 #ecdispNm").val(ecdispNm);
-			$("#form1 #uprdispNo").val(uprdispNo);
-			$("#form1 #uprdispNm").val(uprdispNm);
-			$("#form1 #artcDpthNo").val(artcDpthNo);
-			$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
-			$("#form1 #maxLmtQty").val(maxLmtQty);
-			$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+			$("#form1 #uprDispNo").val(uprDispNo);
+			$("#form1 #dpmlNo").val(dpmlNo);
+			$("#form1 #shopTpCd").val(shopTpCd);
+			$("#form1 #dispLrgNo").val(dispLrgNo);
+			$("#form1 #dispMidNo").val(dispMidNo);
+			$("#form1 #dispSmlNo").val(dispSmlNo);
+			$("#form1 #dispThnNo").val(dispThnNo);
 			
-			$("#form1 #dispNo").prop("disabled", false);
-			$("#form1 #dispNm").prop("disabled", false);
+			$("#form1 #dispNm").val(dispNm);
+			$('input:radio[name=dispTitExpMethCd]:input[value='+dispTitExpMethCd+']').attr("checked", true);
+			$('input:radio[name=gnbExpMethCd]:input[value='+gnbExpMethCd+']').attr("checked", true);
+			$("#form1 #shopDescCont").val(shopDescCont);
+			$("#form1 #dpthNo").val(dpthNo);
+			$('input:radio[name=tlwtLfYn]:input[value='+tlwtLfYn+']').attr("checked", true);
+			$("#form1 #dispPrioRnk").val(dispPrioRnk);
+			$('input:radio[name=dispYn]:input[value='+dispYn+']').attr("checked", true);
+			$('input:radio[name=useYn]:input[value='+useYn+']').attr("checked", true);
+			$('input:radio[name=menuUseYn]:input[value='+menuUseYn+']').attr("checked", true);
+			$("#form1 #prtTpCd").val(prtTpCd);
+			$("#form1 #tmplNo").val(tmplNo);
+			$("#form1 #tmplNm").val(tmplNm);
+			$("#form1 #lnkUrlAddr").val(lnkUrlAddr);
+			$("#form1 #lnkSpdpHhNo40").val(lnkSpdpHhNo);
+			$("#form1 #lnkSpdpHhNo50").val(lnkSpdpHhNo);
+			$("#form1 #lstSortCd").val(lstSortCd);
+			
+			$("#apndImgUl1").html("");
+			$("#apndImgUl2").html("");
+			$("#apndImgUl3").html("");
+			
+			// 출력유형 change
+			$("#form1 #prtTpCd").change();
 			
 			$("#form1 #cmd").val("I");	// 등록
 		}
 	},
 	// Tree 초기화
 	fnCleanTree : function() {
-		
 		var val = $("#displayTreeForm").serialize();
-		var html = "<ul><li id=\"treeRoot\">품목<ul><li></li></ul></li></ul>";	
+		var html = "<ul><li id=\"treeRoot\"><span id=\"spDpmlNm\"></span><ul><li></li></ul></li></ul>";	
 		tree.destructor();
 		$("#treeboxbox_tree").html(html);
 		tree = dhtmlXTreeFromHTML("treeboxbox_tree");
 		tree.setOnClickHandler(displayTreeList.fnClickHandler);
 		tree.setOnOpenHandler(displayTreeList.fnOpenHandler);
+		
+		var text = $("#searchDpmlNo option:selected").text();
+		$("#spDpmlNm").html(text);
+		
+		// 등록 form 초기화
+		displayTreeList.fnFormInit();
 	},
 	// 신규 버튼 click
 	fnAdd : function() {
-		var treeId			= "";
-		var dispNo		    = "";
-		var dispNm		    = "";
-		var artcFullNm	    = "";
-		var ecdispNo	    = "";
-		var ecdispNm	    = "";
-		var uprdispNo	    = "";
-		var uprdispNm	    = "";
-		var artcDpthNo	    = 0;
-		var onlBrchInvRt	= "";
-		var maxLmtQty		= "";
-		var goodsMrgnRt		= "";
+		var dispNo		    	= null;		// 전시번호     
+		var uprDispNo			= null;     // 상위전시번호   
+		var dpmlNo		    	= "";       // 전시몰번호    
+		var dispNm		    	= "";       // 전시명      
+		var dispGnbNm           = "";       // 전시 GNB명  
+		var gnbExpMethCd        = "";       // 전시 GNB노출방
+		var dispTitNm           = "";       // 전시 제목명   
+		var dispTitExpMethCd    = "";       // 전시제목노출방식 
+		var shopTpCd            = "";       // 매장유형코드   
+		var shopDescCont        = "";       // 매장설명내용   
+		var dpthNo          	= "";       // 깊이번호     
+		var dispPrioRnk     	= null;     // 전시우선순위   
+		var useYn           	= "";       // 사용여부     
+		var dispYn              = "";       // 전시여부     
+		var tlwtLfYn            = "";       // 최하위리프여부  
+		var prtTpCd             = "";       // 출력유형코드   
+		var lstSortCd           = "";       // 리스트정렬코드  
+		var movFrmeCd           = "";       // 이동프레임코드  
+		var lnkUrlAddr          = "";       // 연결 url주소 
+		var lnkSpdpHhNo         = null;     // 연결 기획전 전시
+		var dispLrgNo           = null;     // 전시대번호    
+		var dispMidNo           = null;     // 전시중번호    
+		var dispSmlNo           = null;     // 전시소번호    
+		var dispThnNo           = null;     // 전시세번호    
+		var menuUseYn           = "";       // 메뉴사용여부   
+		var tmplNo              = null;     // 템플릿번호    
+		var tmplNm              = "";     	// 템플릿명
+		var pppSn               = "";       // 팝업일련번호 
 		
-		treeId		= nvl($("#form1 #treeId").val(), "");
-		dispNo		= nvl($("#form1 #dispNo").val(), "");
-		dispNm		= nvl($("#form1 #dispNm").val(), "");
-		artcDpthNo	= nvl($("#form1 #artcDpthNo").val(), 1);
+		uprDispNo			= $("#form1 #treeId").val();
+		dpmlNo 				= $("#searchDpmlNo option:selected").val();		// 전시몰 번호
+		shopTpCd 			= $("#searchShopTpCd option:selected").val();	// 매장유형
+		dpthNo				= Number(nvl($("#form1 #treeDepth").val(), 0)) + 1;
+		dispTitExpMethCd	= "01";
+		gnbExpMethCd		= "01";
+		tlwtLfYn			= "N";
+		dispYn				= "N";
+		useYn				= "N";
+		menuUseYn			= "N";
+		prtTpCd				= "01";
+		lstSortCd			= "01";
 		
-		if ( treeId == "" ) {
-			dispNo	= "";
-			dispNm	= "";
-		}
-		
-		if ( dispNo != "" && treeId != "" ) {
-			artcDpthNo = Number(artcDpthNo) + 1;
-		}
+		alert(uprDispNo+"#"+dpthNo);
 		
 		$("#form1 #dispNo").val("");
-		$("#form1 #dispNm").val("");
-		$("#form1 #artcFullNm").val(artcFullNm);
-		$("#form1 #ecdispNo").val(ecdispNo);
-		$("#form1 #ecdispNm").val(ecdispNm);
-		$("#form1 #uprdispNo").val(dispNo);
-		$("#form1 #uprdispNm").val(dispNm);
-		$("#form1 #artcDpthNo").val(artcDpthNo);
-		$("#form1 #onlBrchInvRt").val(onlBrchInvRt);
-		$("#form1 #maxLmtQty").val(maxLmtQty);
-		$("#form1 #goodsMrgnRt").val(goodsMrgnRt);
+		$("#form1 #uprDispNo").val(uprDispNo);
+		$("#form1 #dpmlNo").val(dpmlNo);
+		$("#form1 #shopTpCd").val(shopTpCd);
+		$("#form1 #dispLrgNo").val(dispLrgNo);
+		$("#form1 #dispMidNo").val(dispMidNo);
+		$("#form1 #dispSmlNo").val(dispSmlNo);
+		$("#form1 #dispThnNo").val(dispThnNo);
 		
-		$("#form1 #dispNo").prop("disabled", false);
-		$("#form1 #dispNm").prop("disabled", false);
+		$("#form1 #dispNm").val(dispNm);
+		$('input:radio[name=dispTitExpMethCd]:input[value='+dispTitExpMethCd+']').attr("checked", true);
+		$('input:radio[name=gnbExpMethCd]:input[value='+gnbExpMethCd+']').attr("checked", true);
+		$("#form1 #shopDescCont").val(shopDescCont);
+		$("#form1 #dpthNo").val(dpthNo);
+		$('input:radio[name=tlwtLfYn]:input[value='+tlwtLfYn+']').attr("checked", true);
+		$("#form1 #dispPrioRnk").val(dispPrioRnk);
+		$('input:radio[name=dispYn]:input[value='+dispYn+']').attr("checked", true);
+		$('input:radio[name=useYn]:input[value='+useYn+']').attr("checked", true);
+		$('input:radio[name=menuUseYn]:input[value='+menuUseYn+']').attr("checked", true);
+		$("#form1 #prtTpCd").val(prtTpCd);
+		$("#form1 #tmplNo").val(tmplNo);
+		$("#form1 #tmplNm").val(tmplNm);
+		$("#form1 #lnkUrlAddr").val(lnkUrlAddr);
+		$("#form1 #lnkSpdpHhNo40").val(lnkSpdpHhNo);
+		$("#form1 #lnkSpdpHhNo50").val(lnkSpdpHhNo);
+		$("#form1 #lstSortCd").val(lstSortCd);
+		
+		$("#apndImgUl1").html("");
+		$("#apndImgUl2").html("");
+		$("#apndImgUl3").html("");
+		
+		// 출력유형 change
+		$("#form1 #prtTpCd").change();
 		
 		$("#form1 #cmd").val("I");
 	},
@@ -352,6 +488,12 @@ var displayTreeList = {
 		if ( !displayTreeList.validate(data) ) {
 			return false;
 		}
+		
+		var cmd		= data.cmd;
+		var dispNo	= data.dispNo;
+		var dispNm	= data.dispNm;
+		
+		var treeId	= nvl($("#form1 #treeId").val(), "treeRoot");
 		
 		var param	= JSON.stringify(data); 
 			
@@ -368,9 +510,18 @@ var displayTreeList = {
 				var resultMsg		= data.resultMsg;
 				var completeYn		= data.completeYn;
 				
+				dispNo				= data.dispNo;
+				
 				alert(resultMsg);
 				if ( completeYn == "Y" ) {
-					
+					if ( cmd == "U" ) {
+						tree.setItemText(dispNo, dispNm);
+					} else {
+						tree.insertNewChild(treeId, dispNo, fnRecoveHtml(nvl(dispNm, "")), null, 0, 0, 0);
+						tree.selectItem(dispNo);
+						
+						displayTreeList.fnClickHandler(dispNo);
+					}
 				}
 			}, 
 			error: function(data, textStatus, errorThrown) {
@@ -380,8 +531,6 @@ var displayTreeList = {
 	},
 	// 품목정보 저장시 입력값 체크
 	validate : function(data) {
-		$("#ecdispNo").val("01");	// 테스트를 위해서
-		
 		$("#form1").validInit({onsubmit : false, onfocusout : false});
 		
 		$("#form1").validAddRules(option);		
@@ -392,11 +541,14 @@ var displayTreeList = {
 		data.cmd				= $("#form1 #cmd").val();									// 등록/수정 구분
 		data.dpmlNo				= $.trim($("#form1 #dpmlNo").val());						// 전시몰번호
 		data.shopTpCd			= $.trim($("#form1 #shopTpCd").val());						// 매장유형
-		var dispNo				= nvl($.trim($("#form1 #dispNo").val()), "");				// 전시번호
-		if ( dispNo != "" ) {
+		data.dispNo				= nvl($.trim($("#form1 #dispNo").val()), null);				// 전시번호
+		/*if ( dispNo != "" ) {
 			data.dispNo	= dispNo;
-		}
+		}*/
+		data.uprDispNo			= nvl($("#form1 #uprDispNo").val(), null);					// 상위전시번호
 		data.dispNm				= $.trim($("#form1 #dispNm").val());						// 전시카테고리명
+		data.dispGnbNm			= data.dispNm;												// 전시 GNB명
+		data.dispTitNm			= data.dispTitNm;											// 전시 제목명
 		data.dispTitExpMethCd	= $("input:radio[name=dispTitExpMethCd]:checked").val();	// 매장 타이틀 노출유형
 		data.gnbExpMethCd		= $("input:radio[name=gnbExpMethCd]:checked").val();		// 매장 메뉴 노출유형
 		data.shopDescCont		= $.trim($("#shopDescCont").val());							// 매장 설명 내용
@@ -438,13 +590,18 @@ var displayTreeList = {
 		
 		data.lstSortCd			= $("#form1 #lstSortCd option:selected").val();				// 리스트소팅값
 		
+		data.dispLrgNo			= nvl($.trim($("#form1 #dispLrgNo").val()), null);			// 전시대번호
+		data.dispMidNo			= nvl($.trim($("#form1 #dispMidNo").val()), null);			// 전시중번호
+		data.dispSmlNo			= nvl($.trim($("#form1 #dispSmlNo").val()), null);			// 전시소번호
+		data.dispThnNo			= nvl($.trim($("#form1 #dispThnNo").val()), null);			// 전시세번호
+		
 		var addFileList;
 		
 		// 매장 타이틀 이미지 첨부파일 정보
 		if ( data.dispTitExpMethCd == "01" ) {
-			if ( $('input[name="addFileList0"]').length > 0 ) {
+			if ( $('input[name="addFileList1"]').length > 0 ) {
 				addFileList = new Array();
-				$('input[name="addFileList0"]').each(function() {
+				$('input[name="addFileList1"]').each(function() {
 					addFileList.push(this.value);
 				});
 				data.addTitleImgList	= addFileList;
@@ -456,9 +613,9 @@ var displayTreeList = {
 		
 		// 매장 메뉴  이미지 첨부파일 정보
 		if ( data.gnbExpMethCd == "01" ) {
-			if ( $('input[name="addFileList1"]').length > 0 ) {
+			if ( $('input[name="addFileList2"]').length > 0 ) {
 				addFileList = new Array();
-				$('input[name="addFileList1"]').each(function() {
+				$('input[name="addFileList2"]').each(function() {
 					addFileList.push(this.value);
 				});
 				data.addGnbImgList	= addFileList;
@@ -469,9 +626,9 @@ var displayTreeList = {
 		}
 		
 		// 매장 부가  이미지 첨부파일 정보
-		if ( $('input[name="addFileList2"]').length > 0 ) {
+		if ( $('input[name="addFileList3"]').length > 0 ) {
 			addFileList = new Array();
-			$('input[name="addFileList2"]').each(function() {
+			$('input[name="addFileList3"]').each(function() {
 				addFileList.push(this.value);
 			});
 			data.addHeaderImgList	= addFileList;
@@ -511,6 +668,86 @@ var displayTreeList = {
 				fnAjaxError(data);
 			}
 		});
+	},
+	fnFormInit : function() {
+		var dispNo		    	= null;		// 전시번호     
+		var uprDispNo			= null;     // 상위전시번호   
+		var dpmlNo		    	= "";       // 전시몰번호    
+		var dispNm		    	= "";       // 전시명      
+		var dispGnbNm           = "";       // 전시 GNB명  
+		var gnbExpMethCd        = "";       // 전시 GNB노출방
+		var dispTitNm           = "";       // 전시 제목명   
+		var dispTitExpMethCd    = "";       // 전시제목노출방식 
+		var shopTpCd            = "";       // 매장유형코드   
+		var shopDescCont        = "";       // 매장설명내용   
+		var dpthNo          	= "";       // 깊이번호     
+		var dispPrioRnk     	= null;     // 전시우선순위   
+		var useYn           	= "";       // 사용여부     
+		var dispYn              = "";       // 전시여부     
+		var tlwtLfYn            = "";       // 최하위리프여부  
+		var prtTpCd             = "";       // 출력유형코드   
+		var lstSortCd           = "";       // 리스트정렬코드  
+		var movFrmeCd           = "";       // 이동프레임코드  
+		var lnkUrlAddr          = "";       // 연결 url주소 
+		var lnkSpdpHhNo         = null;     // 연결 기획전 전시
+		var dispLrgNo           = null;     // 전시대번호    
+		var dispMidNo           = null;     // 전시중번호    
+		var dispSmlNo           = null;     // 전시소번호    
+		var dispThnNo           = null;     // 전시세번호    
+		var menuUseYn           = "";       // 메뉴사용여부   
+		var tmplNo              = null;     // 템플릿번호    
+		var tmplNm              = "";     	// 템플릿명
+		var pppSn               = "";       // 팝업일련번호 
+		
+		dpmlNo 				= $("#searchDpmlNo option:selected").val();		// 전시몰 번호
+		shopTpCd 			= $("#searchShopTpCd option:selected").val();	// 매장유형
+		dpthNo				= "";
+		dispTitExpMethCd	= "01";
+		gnbExpMethCd		= "01";
+		tlwtLfYn			= "N";
+		dispYn				= "N";
+		useYn				= "N";
+		menuUseYn			= "N";
+		prtTpCd				= "01";
+		lstSortCd			= "01";
+		
+		alert(uprDispNo+"#"+dpthNo);
+		
+		$("#form1 #dispNo").val(dispNo);
+		$("#form1 #uprDispNo").val(uprDispNo);
+		$("#form1 #dpmlNo").val(dpmlNo);
+		$("#form1 #shopTpCd").val(shopTpCd);
+		$("#form1 #dispLrgNo").val(dispLrgNo);
+		$("#form1 #dispMidNo").val(dispMidNo);
+		$("#form1 #dispSmlNo").val(dispSmlNo);
+		$("#form1 #dispThnNo").val(dispThnNo);
+		
+		$("#form1 #dispNm").val(dispNm);
+		$('input:radio[name=dispTitExpMethCd]:input[value='+dispTitExpMethCd+']').attr("checked", true);
+		$('input:radio[name=gnbExpMethCd]:input[value='+gnbExpMethCd+']').attr("checked", true);
+		$("#form1 #shopDescCont").val(shopDescCont);
+		$("#form1 #dpthNo").val(dpthNo);
+		$('input:radio[name=tlwtLfYn]:input[value='+tlwtLfYn+']').attr("checked", true);
+		$("#form1 #dispPrioRnk").val(dispPrioRnk);
+		$('input:radio[name=dispYn]:input[value='+dispYn+']').attr("checked", true);
+		$('input:radio[name=useYn]:input[value='+useYn+']').attr("checked", true);
+		$('input:radio[name=menuUseYn]:input[value='+menuUseYn+']').attr("checked", true);
+		$("#form1 #prtTpCd").val(prtTpCd);
+		$("#form1 #tmplNo").val(tmplNo);
+		$("#form1 #tmplNm").val(tmplNm);
+		$("#form1 #lnkUrlAddr").val(lnkUrlAddr);
+		$("#form1 #lnkSpdpHhNo40").val(lnkSpdpHhNo);
+		$("#form1 #lnkSpdpHhNo50").val(lnkSpdpHhNo);
+		$("#form1 #lstSortCd").val(lstSortCd);
+		
+		$("#apndImgUl1").html("");
+		$("#apndImgUl2").html("");
+		$("#apndImgUl3").html("");
+		
+		// 출력유형 change
+		$("#form1 #prtTpCd").change();
+		
+		$("#form1 #cmd").val("I");
 	}
 	
 }
@@ -636,7 +873,6 @@ var displayHandle = {
 		}
 		
 		var param	= JSON.stringify(data); 
-		console.log(param);
    		
    		if ( !confirm("저장하시겠습니까?") ) return false;
    		
