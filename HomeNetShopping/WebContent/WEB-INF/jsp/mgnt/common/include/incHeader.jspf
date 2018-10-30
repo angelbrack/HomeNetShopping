@@ -17,56 +17,56 @@
 <c:set var="_CTX_PATH" value="${pageContext.request.contextPath}" />
 
 <%-- css --%>
-<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.CSS.PATH" />fileupload/fileupload.css" />
-<%-- <link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />jquery/smoothness/jquery-ui-1.8.9.custom.css"  />  --%>
-<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.11.2/jquery-ui.css"  />
-<link rel="stylesheet" type="text/css" href="<ctag:conf key="THEME.PATH" />mgnt/css/ts.css" />
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.CSS.PATH" />fileupload/fileupload.css?20180907000001" />
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />jquery/smoothness/jquery-ui-1.8.9.custom.css?20180907000001"  /> 
+<%-- <link rel="stylesheet" type="text/css" href="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.11.2/jquery-ui.css?20180907000001"  /> --%>
+<link rel="stylesheet" type="text/css" href="<ctag:conf key="THEME.PATH" />mgnt/css/ts.css?20180907000001" />
 <%-- error message --%>
 <style type="text/css">
 	.errorMsg { padding:10px; font-size:13px; color: red; }
 </style>  
 <%-- bootstrap --%>
 <%-- <link rel="stylesheet" href="<c:url value='/html/script/bootstrap/css/bootstrap.css'/>" type="text/css" /> --%>
-<!-- <script type="text/javascript" src="/html/script/bootstrap/js/bootstrap.js"></script> -->
+<!-- <script type="text/javascript" src="/html/script/bootstrap/js/bootstrap.js?20180907000001"></script> -->
 
 <%-- jquery --%>
-<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.9.1.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.8.21.custom.min.js"></script> --%>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.10.1.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.11.2/jquery-ui.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.9.1.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.7.2.min.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.8.21.custom.min.js?20180907000001"></script>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-1.10.1.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-ui-1.11.2/jquery-ui.js?20180907000001"></script> --%>
 
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/exif/exif.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-rotate/jQueryRotate-2.3.js"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/exif/exif.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery-rotate/jQueryRotate-2.3.js?20180907000001"></script>
 
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/bootstrap-transition.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.cookie.js"></script>
-<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uniform.min.js"></script> --%>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.noty.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uploadify-3.1.min.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.history.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.multiselect.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/vendor/jquery.ui.widget.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.iframe-transport.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.fileupload.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jstree.1.0.1/jquery.jstree.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/util.tree.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.ui.datepicker-ko.js"></script>
-<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.bpopup.min.js"></script> --%>
-<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/plugin/jquery.validate.js"></script> --%>
-<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.validate.default.js"></script> --%>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/bootstrap-transition.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.cookie.js?20180907000001"></script>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uniform.min.js?20180907000001"></script> --%>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.noty.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.uploadify-3.1.min.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.history.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.multiselect.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/vendor/jquery.ui.widget.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.iframe-transport.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.fileupload.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jstree.1.0.1/jquery.jstree.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/util.tree.js?20180907000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.ui.datepicker-ko.js?20180907000001"></script>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.bpopup.min.js?20180907000001"></script> --%>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/plugin/jquery.validate.js?20180907000001"></script> --%>
+<%-- <script type="text/javascript" src="<ctag:conf key="JS.PATH" />jquery/jquery.validate.default.js?20180907000001"></script> --%>
 	
-<script src="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.js" type="text/javascript"></script>
-<link href="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.js?20180907000001" type="text/javascript"></script>
+<link href="<ctag:conf key="JS.PATH" />jquery/jquery.alerts-1.1/jquery.alerts.css?20180907000001" rel="stylesheet" type="text/css" media="screen" />
 
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/jquery.inputmask.bundle.js" charset="utf-8"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/inputmask/phone-codes/phone.js" charset="utf-8"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jTemplates/jquery-jtemplates_uncompressed.js"" charset="utf-8"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />validate/jquery.validate.js" ></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_util.js" ></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_valid.js" ></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_file.js" ></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/webutil.js" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/jquery.inputmask.bundle.js?20180907000001" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />inputmask-4.x/dist/inputmask/phone-codes/phone.js?20180907000001" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />jTemplates/jquery-jtemplates_uncompressed.js?20180907000001" charset="utf-8"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />validate/jquery.validate.js?20180907000001" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_util.js?20180907000002" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_valid.js?20180907000001" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/common_file.js?20180907000001" ></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/common/webutil.js?20180907000001" ></script>
 
 <style type="text/css">
 .imgs_wrap {

@@ -47,7 +47,7 @@ $(function() {
 		var imgYn		= dafaultOption.imgYn;
 		var sortYn		= dafaultOption.sortYn;
 		var orienteYn	= dafaultOption.orienteYn;
-		
+
 		var upCnt = 1;
 		
 		return this.each(function(i, obj) {
@@ -125,8 +125,8 @@ $(function() {
 		    	                fileImgHtml += "<img src='"+decodeURI(decodeURIComponent(file.filePath))+file.fileName+"'>";
 		    	                fileImgHtml += "</a>";
 		    	                fileImgHtml += "</span>";*/
-		    	                
-		    	                $("#apndImg"+idx).append(fileImgHtml);
+		    	               
+		    	                $("#apndImgUl"+idx).append(fileImgHtml);
 		    				}
 		                    
 		                    upCnt+1;
@@ -667,6 +667,46 @@ function onFileDelede(obj, imgYn, imgId) {
 	if ( imgYn == "Y" ) {
 		$("#spanImg_"+imgId).remove();
 	}
+}
+
+//삭제
+function onImgFileDelete(obj) {
+	$(obj).parent().parent().remove();
+}
+
+function fnUploadImg(obj) {
+	
+	try {
+		EXIF.getData(obj, function() {
+    		var orientation = EXIF.getTag(this, "Orientation");
+
+            if ( orientation != undefined ) {
+            	fnRotate(orientation, this);
+            }
+        });
+	} catch (e) {
+      //alert(e);
+    }
+}
+
+function fnRotate(orientation, obj) {
+	
+	if ( orientation == 2 ) {
+		$(obj).rotate(360);
+	} else if ( orientation == 3 ) {
+		$(obj).rotate(180);
+	} else if ( orientation == 4 ) {
+		$(obj).rotate(-180);
+	} else if ( orientation == 5 ) {
+		$(obj).rotate(-270);
+	} else if ( orientation == 6 ) {
+		$(obj).rotate(90);
+	} else if ( orientation == 7 ) {
+		$(obj).rotate(-90);
+	} else if ( orientation == 8 ) {
+		$(obj).rotate(270);
+	}
+	
 }
 
 // 이미지 미리보기

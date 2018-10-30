@@ -114,15 +114,51 @@ public class MgntDisplayController {
 		
 		if (paramVO.getCmd().equals("U")) {
 			info = displayService.selectDisplayInfo(paramVO);
-			
-			List<DispImgInfoVO> dispImgInfoList = displayService.selectDisplayImgInfoList(paramVO);
-			if ( dispImgInfoList != null ) {
-				model.addAttribute("fileList", 			Casting.listToJSonString(dispImgInfoList));
-			}
 		}
 
 		model.addAttribute("info", info);
 		return "mgnt/display/displayHandlePopup";
+	}
+	
+	/**
+	  * 목적 		: 전시매장 등록/수정 화면 - 팝업
+	  * @param 	: DispShopBaseVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : String
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/display/selectDisplayInfo.json", headers="Accept=application/json")
+	public ModelAndView selectDisplayInfo(ModelMap model, @RequestBody DispShopBaseVO paramVO, HttpServletRequest request) throws Exception {
+
+		DispShopBaseVO info = displayService.selectDisplayInfo(paramVO);
+		
+		DispImgInfoVO dispImgInfoVO = new DispImgInfoVO();
+		dispImgInfoVO.setDispNo(paramVO.getDispNo());
+		
+		// 전시매장대표 이미지 리스트
+		dispImgInfoVO.setDispImgTpCd("04");
+		List<DispImgInfoVO> titleImgList = displayService.selectDisplayImgInfoList(dispImgInfoVO);
+		
+		// 전시매장 GNB 이미지 리스트
+		dispImgInfoVO.setDispImgTpCd("05");
+		List<DispImgInfoVO> gnbImgList = displayService.selectDisplayImgInfoList(dispImgInfoVO);
+		
+		// 전시매장명 이미지 리스트
+		dispImgInfoVO.setDispImgTpCd("03");
+		List<DispImgInfoVO> headerImgList = displayService.selectDisplayImgInfoList(dispImgInfoVO);
+		
+		/*if ( dispImgInfoList != null ) {
+			model.addAttribute("fileList", 			Casting.listToJSonString(dispImgInfoList));
+		}*/
+
+		model.addAttribute("info", info);
+		model.addAttribute("titleImgList", 	titleImgList);
+		model.addAttribute("gnbImgList", 	gnbImgList);
+		model.addAttribute("headerImgList", headerImgList);
+		
+		return new ModelAndView("jsonView", model);
 	}
 	
 	/**

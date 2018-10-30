@@ -103,9 +103,19 @@ public class DisplayServiceImpl implements DisplayService {
 		int result	= 0;
 		
 		if ( "I".equals(paramVO.getCmd()) ) {
-			// 브랜드번호 생성
+			// 전시번호 생성
 			Integer dispNo	= selectDisplayPrimaryKeySequence(paramVO);
 			paramVO.setDispNo(dispNo);
+			
+			if ( paramVO.getDpthNo() == 1 ) {
+				paramVO.setDispLrgNo(dispNo);
+			} else if ( paramVO.getDpthNo() == 2 ) {
+				paramVO.setDispMidNo(dispNo);
+			} else if ( paramVO.getDpthNo() == 3 ) {
+				paramVO.setDispSmlNo(dispNo);		
+			} else if ( paramVO.getDpthNo() == 4 ) {
+				paramVO.setDispThnNo(dispNo);
+			}
 			
 			result += insertDisplayBase(paramVO);
 		} else {
@@ -171,13 +181,13 @@ public class DisplayServiceImpl implements DisplayService {
 	
 	/**
 	 * 목적 : 전시 이미지 정보   조회
-	 * 매개변수 : DispShopBaseVO paramVO 조회조건
+	 * 매개변수 : DispImgInfoVO paramVO 조회조건
 	 * 반환값 : List<DispImgInfoVO> 전시 이미지 정보 리스트
 	 * 개정이력 : 없음
 	 */
 	@Override
-	public List<DispImgInfoVO> selectDisplayImgInfoList(DispShopBaseVO paramVO) throws Exception {
-		return (List<DispImgInfoVO>) mybatisDataAccessDAO.select("homenet.shop.display.service.DisplayService.insertDisplayImgInfo", paramVO);
+	public List<DispImgInfoVO> selectDisplayImgInfoList(DispImgInfoVO paramVO) throws Exception {
+		return (List<DispImgInfoVO>) mybatisDataAccessDAO.select("homenet.shop.display.service.DisplayService.selectDisplayImgInfoList", paramVO);
 	}
 	
 	/*
@@ -215,7 +225,7 @@ public class DisplayServiceImpl implements DisplayService {
 						arrTitleImgSplitInfo = StringUtil.split(arrTitleImgInfo[i], "|");
 						
 						dispImgInfoVO.setDispNo(paramVO.getDispNo());
-						dispImgInfoVO.setDispImgTpCd("05");		// 05 전시매장대표
+						dispImgInfoVO.setDispImgTpCd("04");		// 04 전시매장대표
 						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
 						dispImgInfoVO.setBnrImgFileNm(arrTitleImgInfo[1]);
 						dispImgInfoVO.setBnrImgPathNm(arrTitleImgInfo[4]);
@@ -234,7 +244,7 @@ public class DisplayServiceImpl implements DisplayService {
 						arrGnbImgSplitInfo = StringUtil.split(arrGnbImgInfo[i], "|");
 						
 						dispImgInfoVO.setDispNo(paramVO.getDispNo());
-						dispImgInfoVO.setDispImgTpCd("03");		// 03 전시매장 GNB
+						dispImgInfoVO.setDispImgTpCd("05");		// 05 전시매장 GNB
 						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
 						dispImgInfoVO.setBnrImgFileNm(arrGnbImgSplitInfo[1]);
 						dispImgInfoVO.setBnrImgPathNm(arrGnbImgSplitInfo[4]);
@@ -253,7 +263,7 @@ public class DisplayServiceImpl implements DisplayService {
 						arrHeaderImgSplitInfo = StringUtil.split(arrHeaderImgInfo[i], "|");
 						
 						dispImgInfoVO.setDispNo(paramVO.getDispNo());
-						dispImgInfoVO.setDispImgTpCd("04");		// 04 전시매장타이틀
+						dispImgInfoVO.setDispImgTpCd("03");		// 03 전시매장명
 						dispImgInfoVO.setDispShopSctCd("01");	// 01 전시매장카테고리
 						dispImgInfoVO.setBnrImgFileNm(arrHeaderImgSplitInfo[1]);
 						dispImgInfoVO.setBnrImgPathNm(arrHeaderImgSplitInfo[4]);

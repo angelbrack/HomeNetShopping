@@ -389,7 +389,7 @@
 		WHERE DISP_NO = #{dispNo				}
 	</delete>
 	
-	<select id="selectDisplayImgInfoList" parameterType="dispShopBaseVO" resultMap="displayImgInfoList">
+	<select id="selectDisplayImgInfoList" parameterType="dispImgInfoVO" resultMap="displayImgInfoList">
 		/* homenet.shop.display.service.DisplayService.selectDisplayImgInfoList 전시 이미지 정보 조회*/
 		SELECT
 			  A.DISP_NO         
@@ -401,7 +401,8 @@
 			, A.LNK_URL_ADDR
 			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 		FROM TB_DISP_IMG_INFO A
-		WHERE A.DISP_NO = #{dispNo				}	
+		WHERE A.DISP_NO 			= #{dispNo				}
+			AND A.DISP_IMG_TP_CD 	= #{dispImgTpCd			}
 	</select>
 	
 	<insert id="insertDisplayImgInfo" parameterType="dispImgInfoVO" >
@@ -410,8 +411,8 @@
             SELECT 
             	NVL(MAX(IMG_SN),0)+1
             FROM TB_DISP_IMG_INFO
-            WHERE DISP_NO 		= #{dispNo}
-            AND DISP_IMG_TP_CD 	= #{displayImageTypeCode}
+            WHERE DISP_NO 			= #{dispNo			}
+            	AND DISP_IMG_TP_CD 	= #{dispImgTpCd		}
         
     	</selectKey>
     

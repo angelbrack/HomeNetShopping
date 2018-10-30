@@ -95,11 +95,11 @@ public interface DisplayService {
 	
 	/**
 	 * 목적 : 전시 이미지 정보   조회
-	 * 매개변수 : DispShopBaseVO paramVO 조회조건
+	 * 매개변수 : DispImgInfoVO paramVO 조회조건
 	 * 반환값 : List<DispImgInfoVO> 전시 이미지 정보 리스트
 	 * 개정이력 : 없음
 	 */
-	List<DispImgInfoVO> selectDisplayImgInfoList(DispShopBaseVO paramVO) throws Exception;
+	List<DispImgInfoVO> selectDisplayImgInfoList(DispImgInfoVO paramVO) throws Exception;
 	
 	/*
 	 * 전시 이미지 저장

@@ -4,8 +4,11 @@
 	<div id="con_right" class="mt29">
 		<div class="con_right_c">
 			<form name="form1" id="form1" method="post" action="">
-				<input type="hidden" id="cmd"					name="cmd"					value=""														/> <!-- 등록/수정 구분 		-->
-				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 														/> <!-- 전시번호	 		-->
+				<input type="hidden" id="cmd"					name="cmd"					value="I"					/> <!-- 등록/수정 구분 		-->
+				<input type="hidden" id="dpmlNo" 				name="dpmlNo" 				value="" 					/> <!-- 전시몰번호	 		-->
+				<input type="hidden" id="shopTpCd" 				name="shopTpCd" 			value="" 					/> <!-- 매장유형	 		-->
+				<input type="hidden" id="dispNo" 				name="dispNo" 				value="" 					/> <!-- 전시번호	 		-->
+				<input type="hidden" id="uprDispNo" 			name="uprDispNo" 			value="" 					/> <!-- 상위전시번호	 		-->
 			<!--contents-->
 			<div class="con_top">
 				<div class="tit">
@@ -32,7 +35,7 @@
 							<td colspan="3" class="blank"></td>
 						</tr>
 						<tr>
-                            <td class="tit"><label for="dpmlNo">전시몰</label></td>
+                            <td class="tit"><label for="searchDpmlNo">전시몰</label></td>
                             <td colspan="2">
                                 <select style="width:120px;height:22px;" name="searchDpmlNo" id="searchDpmlNo">
                                     <c:forEach var="mall" items="${mallList}">
@@ -116,9 +119,9 @@
 							</td>
 							<td>&nbsp;</td>
 							<td id="detailArea">
-								<div class="con_write" style="height: 650px;">
+								<div class="con_write" style="height: 850px;">
 									<table>
-										<caption>품목군</caption>
+										<caption>전시</caption>
 										<colgroup>
 											<col width="20%" />
 											<col width="30%" />
@@ -133,7 +136,7 @@
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="dispTitExpMethCd">매장 타이틀 노출유형</label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="dispTitExpMethCd">매장 타이틀 노출유형</label></th>
 												<td colspan="3">
 													<c:set var="dispTitExpMethCd" value="" />
 													<c:if test="${empty info }">
@@ -143,7 +146,7 @@
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="gnbExpMethCd">매장 메뉴 노출유형 </label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="gnbExpMethCd">매장 메뉴 노출유형 </label></th>
 												<td colspan="3">
 													<c:set var="gnbExpMethCd" value="" />
 													<c:if test="${empty info }">
@@ -153,25 +156,29 @@
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="apndFile0">매장 타이틀 이미지(titleImage)</label> </th>
+												<th scope="row"><label for="apndFile0">매장 타이틀 이미지</label> </th>
 												<td  class="pt10 pb10" colspan="3">
 													<div style="width:700px;padding:0px;" id="apndFile0">							 	
 													</div>
-													<div class="imgs_wrap" id="apndImg0">
+													<div class="img_list" id="apndImgDiv">
+														<ul id="apndImgUl0">
+														</ul>
 													</div>
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="apndFile1">매장 메뉴 이미지(gnbImage)</label> </th>
+												<th scope="row"><label for="apndFile1">매장 메뉴 이미지</label> </th>
 												<td  class="pt10 pb10" colspan="3">
 													<div style="width:700px;padding:0px;" id="apndFile1">							 	
 													</div>
-													<div class="imgs_wrap" id="apndImg1">
+													<div class="img_list" id="apndImgDiv">
+														<ul id="apndImgUl1">
+														</ul>
 													</div>
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="recuDtlCn">매장 설명 내용</label> </th>
+												<th scope="row"><label for="shopDescCont">매장 설명 내용</label> </th>
 												<td colspan="3" class="pt10 pb10">
 													<textarea id="shopDescCont" name="shopDescCont" class="txtbox1" style="width:98%; height:100px;"><c:out value="${info.shopDescCont }" escapeXml="false" /></textarea>
 												</td>
@@ -179,9 +186,9 @@
 											<tr>
 												<th scope="row"><label for="dpthNo">카테고리 깊이 </label> </th>
 												<td>
-													<c:out value="${info.dpthNo }" />
+													<input type="text" name="dpthNo" id="dpthNo" value="" class="txtbox1"  style="width:20%;height:18px;" disabled/>
 												</td>
-												<th scope="row"><label for="tlwtLfYn_Y">Leaf 카테고리 여부 </label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="tlwtLfYn_Y">Leaf 카테고리 여부 </label></th>
 												<td>
 													<input type="radio" id="tlwtLfYn_Y" name="tlwtLfYn" value="Y" <c:if test='${info.tlwtLfYn eq "Y" }'>checked="checked"</c:if> class="form" title="" style=""><label for="tlwtLfYn_Y" class="">&nbsp;예</label>
 													<input type="radio" id="tlwtLfYn_N" name="tlwtLfYn" value="N" <c:if test='${empty info or info.tlwtLfYn eq "N" }'>checked="checked"</c:if> class="form" title="" style=""><label for="tlwtLfYn_N" class="">&nbsp;아니오</label>
@@ -193,7 +200,7 @@
 													<input type="text" name="dispPrioRnk" id="dispPrioRnk" value="<c:out value="${info.dispPrioRnk }" />" maxlength="3" class="txtbox1"  style="width:100px;height:18px;" />
 													<span>1 ~ 999 범위 내 입력</span>
 												</td>
-												<th scope="row"><label for="dispYn_Y">전시여부 </label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="dispYn_Y">전시여부 </label></th>
 												<td>
 													<input type="radio" id="dispYn_Y" name="dispYn" value="Y" <c:if test='${info.dispYn eq "Y" }'>checked="checked"</c:if> class="form" title="" style=""><label for="dispYn_Y" class="">&nbsp;전시</label>
 													<input type="radio" id="dispYn_N" name="dispYn" value="N" <c:if test='${empty info or info.dispYn eq "N" }'>checked="checked"</c:if> class="form" title="" style=""><label for="dispYn_N" class="">&nbsp;전시안함</label>
@@ -201,12 +208,12 @@
 											</tr>
 											<tr>
 												
-												<th scope="row"><label for="useYn_Y">사용여부 </label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="useYn_Y">사용여부 </label></th>
 												<td>
 													<input type="radio" id="useYn_Y" name="useYn" value="Y" <c:if test='${info.useYn eq "Y" }'>checked="checked"</c:if> class="form" title="" style=""><label for="useYn_Y" class="">&nbsp;사용</label>
 													<input type="radio" id="useYn_N" name="useYn" value="N" <c:if test='${empty info or info.useYn eq "N" }'>checked="checked"</c:if> class="form" title="" style=""><label for="useYn_N" class="">&nbsp;사용안함</label>
 												</td>
-												<th scope="row"><label for="menuUseYn_Y">메뉴사용 여부 </label> <span class="fwb2 fcop4">*</span></th>
+												<th scope="row"><label for="menuUseYn_Y">메뉴사용 여부 </label></th>
 												<td>
 													<input type="radio" id="menuUseYn_Y" name="menuUseYn" value="Y" <c:if test='${info.menuUseYn eq "Y" }'>checked="checked"</c:if> class="form" title="" style=""><label for="menuUseYn_Y" class="">&nbsp;사용</label>
 													<input type="radio" id="menuUseYn_N" name="menuUseYn" value="N" <c:if test='${empty info or info.menuUseYn eq "N" }'>checked="checked"</c:if> class="form" title="" style=""><label for="menuUseYn_N" class="">&nbsp;사용안함</label>
@@ -215,73 +222,36 @@
 											<tr>
 												<th scope="row"><label for="prtTpCd">출력유형</label> </th>
 												<td>
-													<ctag:code name="prtTpCd" type="S" key="PRT_TP_CD" selected="${info.prtTpCd }"  optdef="- 선택 -" css="form" />
+													<ctag:code name="prtTpCd" type="S" key="PRT_TP_CD" selected="${info.prtTpCd }"  css="form" />
 												</td>
 												<th scope="row"><label for="prtTpCd">전시코너수</label> </th>
 												<td>
 													<a href="javascript:goCornerList('shop');">1개</a>
 												</td>
 											</tr>
-											<c:choose>
-												<c:when test="${info.prtTpCd == '06'}">
-													<c:set var="style10" value="display: "/>
-													<c:set var="style20" value="display: none;"/>
-													<c:set var="style30" value="display: none;"/>
-													<c:set var="style40" value="display: none;"/>
-													<c:set var="style50" value="display: none;"/>	
-												</c:when>
-												<c:when test="${info.prtTpCd == '01'}">			
-													<c:set var="style10" value="display: none;"/>
-													<c:set var="style20" value="display: "/>
-													<c:set var="style30" value="display: none;"/>
-													<c:set var="style40" value="display: none;"/>
-													<c:set var="style50" value="display: none;"/>			
-												</c:when>
-												<c:when test="${info.prtTpCd == '02'}">			
-													<c:set var="style10" value="display: none;"/>
-													<c:set var="style20" value="display: none;"/>
-													<c:set var="style30" value="display: "/>
-													<c:set var="style40" value="display: none;"/>
-													<c:set var="style50" value="display: none;"/>
-												</c:when>
-												<c:when test="${info.prtTpCd == '04'}">			
-													<c:set var="style10" value="display: none;"/>
-													<c:set var="style20" value="display: none;"/>
-													<c:set var="style30" value="display: none;"/>
-													<c:set var="style40" value="display: "/>
-													<c:set var="style50" value="display: none;"/>
-												</c:when>	
-												<c:otherwise>
-													<c:set var="style10" value="display: none;"/>
-													<c:set var="style20" value="display: none;"/>
-													<c:set var="style30" value="display: none;"/>
-													<c:set var="style40" value="display: none;"/>
-													<c:set var="style50" value="display: "/>
-												</c:otherwise>
-											</c:choose>
-											<tr id="printType06" style="${style10}" name="printType"></tr>
-											<tr id="printType01" style="${style20}" name="printType">
+											<tr id="printType06" style="display:none" name="printType"></tr>
+											<tr id="printType01" style="display:none" name="printType">
 												<th scope="row"><label for="tmplNm">전시 템플릿</label> <span class="fwb2 fcop4">*</span> </th>
 												<td colspan="3">
 													<input type="hidden" id="tmplNo" name="tmplNo" value="<c:out value="${info.tmplNo }" />" />
-													<input type="text" name="tmplNm" id="tmplNm" value="" class="txtbox1"  style="width:200px;height:18px;" readOnly />
+													<input type="text" name="tmplNm" id="tmplNm" value="" class="txtbox1"  style="width:200px;height:18px;" disabled />
 													<a href="#none" onclick="searchDisplayTemplate('displayShopForm');return false;" class="btn_search3 ml5 mr20" id="btnSearchDisplayTemplate">검색</a>
 												</td>
 											</tr>
-											<tr id="printType02" style="${style30}" name="printType"> 
+											<tr id="printType02" style="display:none" name="printType"> 
 												<th scope="row"><label for="lnkUrlAddr">대상 URL</label> <span class="fwb2 fcop4">*</span> </th>
 												<td colspan="3">
 													<input type="text" name="lnkUrlAddr" id="lnkUrlAddr" value="<c:out value="${info.lnkUrlAddr }" />" class="txtbox1"  style="width:500px;height:18px;" />
 												</td>
 											</tr>
-											<tr id="printType04" style="${style40}" name="printType">
+											<tr id="printType04" style="display:none" name="printType">
 												<th scope="row"><label for="lnkSpdpHhNo40">카테고리매장번호</label> <span class="fwb2 fcop4">*</span> </th>
 												<td colspan="3">
 													<input type="text" id="lnkSpdpHhNo40" value="" class="txtbox1"  style="width:200px;height:18px;" readOnly />
 													<a href="#none" onclick="searchDisplayShop('displayShopForm');return false;" class="btn_search3 ml5 mr20" id="btnSearchDisplayShop">검색</a>
 												</td>
 											</tr>
-											<tr id="printType05" style="${style50}" name="printType">
+											<tr id="printType05" style="display:none" name="printType">
 												<th scope="row"><label for="lnkSpdpHhNo50">기획전매장번호</label> <span class="fwb2 fcop4">*</span> </th>
 												<td colspan="3">
 													<input type="text" id="lnkSpdpHhNo50" value="" class="txtbox1"  style="width:200px;height:18px;" readOnly />
@@ -291,15 +261,17 @@
 											<tr>
 												<th scope="row"><label for="lstSortCd">리스트소팅값</label> </th>
 												<td colspan="3">
-													<ctag:code name="lstSortCd" type="S" key="LST_SORT_CD" selected="${info.lstSortCd }"  optdef="- 선택 -" css="form" />
+													<ctag:code name="lstSortCd" type="S" key="LST_SORT_CD" selected="${info.lstSortCd }"  css="form" />
 												</td>
 											</tr>
 											<tr>
-												<th scope="row"><label for="apndFile2">매장 부가 이미지(headerImage)</label> </th>
+												<th scope="row"><label for="apndFile2">매장 부가 이미지</th>
 												<td  class="pt10 pb10" colspan="3">
 													<div style="width:700px;padding:0px;" id="apndFile2">							 	
 													</div>
-													<div class="imgs_wrap" id="apndImg2">
+													<div class="img_list" id="apndImgDiv">
+														<ul id="apndImgUl2">
+														</ul>
 													</div>
 												</td>
 											</tr>
@@ -344,7 +316,7 @@
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180918000000"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20180918000002"></script>
 <script type="text/javascript">
 <!--
 

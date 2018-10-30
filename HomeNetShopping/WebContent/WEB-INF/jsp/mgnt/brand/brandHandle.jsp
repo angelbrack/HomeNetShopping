@@ -107,9 +107,10 @@ $(document).ready(function() {
 		, idx 		: ""				
 		, fileCo 	: 10
 		, imgYn		: "Y"
+		, sortYn	: "Y"
 	});
  	
-	fnBrandFileEdit("<c:out value='${(fileList)}'/>", "", "", "Y");
+	fnFileEdit("", "<c:out value='${(fileList)}'/>", "", "Y", "Y");
 });
 
 //파일수정

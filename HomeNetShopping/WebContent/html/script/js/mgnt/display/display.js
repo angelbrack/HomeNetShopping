@@ -5,6 +5,7 @@ option = {
 		      {"objId" : "dispNm", 			"label" : "전시카테고리명", 		"rule" : { "required":true,   "maxlength":200												}		}
 			, {"objId" : "shopDescCont", 	"label" : "매장 설명 내용", 		"rule" : { "required":false,  "maxlength":4000												}		}
 			, {"objId" : "dispPrioRnk", 	"label" : "전시우선순위", 		"rule" : { "required":true,   "number":true,		"min":1,  "max":999,	"maxlength":3	}		}
+			, {"objId" : "tmplNo", 			"label" : "전시 템플릿", 		"rule" : { "required":false																	}		}
 		]
 	};
 
@@ -19,10 +20,64 @@ var displayTreeList = {
 		// 이벤트 추가
 		displayTreeList.addEvent();
 		
+		var searchDpmlNo	= $("#form1 #searchDpmlNo option:selected").val();		// 전시몰번호
+		var searchShopTpCd	= $("#form1 #searchShopTpCd option:selected").val();	// 매장유형
+		$("#dpmlNo").val(searchDpmlNo);												// 전시몰번호
+		$("#shopTpCd").val(searchShopTpCd);											// 매장유형
+		
+		// 매장 타이틀 노출유형이 이미지가 아니면 매장 타이틀 이미지 파일업로드를 disabled 
+		if($("input[name*='dispTitExpMethCd']:checked").val() == '02'){
+			$("#fileupload0").prop("disabled",true);
+		};
+		
+		// 매장 메뉴 노출유형이 이미지가 아니면 매장 메뉴 이미지 파일업로드를 disabled 
+		if($("input[name*='gnbExpMethCd']:checked").val() == '02'){
+			$("#fileupload1").prop("disabled",true);
+		};
+		
+		// 출력유형 change
+		$("#prtTpCd").change();
+		
+		$("#dispPrioRnk").inputmask("999", {"placeholder": ""});										// 
 	},
 	// 이벤트 추가
 	addEvent : function() {
+		// 매장 타이틀 노출유형 click 시
+		$("input[name*='dispTitExpMethCd']").click(function(){
+			
+			if($(this).is(':checked')&& $(this).val() == '01') {
+				$("#fileupload0").prop("disabled",false);
+			}else
+				$("#fileupload0").prop("disabled",true);
+		});
 		
+		// 매장 메뉴 노출유형 click 시
+		$("input[name*='gnbExpMethCd']").click(function(){
+			if($(this).is(':checked')&& $(this).val() == '01') {
+				$("#fileupload1").prop("disabled",false);
+			}else
+				$("#fileupload1").prop("disabled",true);
+		});
+		
+		// 출력유형 change 시
+		$("#prtTpCd").change(function(){
+			var prtTpCd = $("#prtTpCd").val();
+			console.log("prtTpCd=["+prtTpCd+"]");
+			$("tr[name*='printType']").each(function(i){
+				console.log("$(this).css('display')["+$(this).index()+"]=["+$(this).is(":visible")+"]");
+				/*if($(this).css('display') == '') 
+					$(this).css('display', 'none');	*/	
+				$(this).hide();
+				
+				if ( prtTpCd == '01' ) {
+					option.validList[3].rule.required = true;	// 전시 템플릿
+				} else {
+					option.validList[3].rule.required = false;	// 전시 템플릿
+				}
+			});		
+			//$("#printType"+prtTpCd).css('display', '');
+			$("#printType"+prtTpCd).show();
+		});
 	},
 	// 전시매장 초기 Tree 조회
 	initTreeSearch : function() {
@@ -35,6 +90,13 @@ var displayTreeList = {
 	},
 	// Tree 검색
 	fnTreeSearch : function(data, id) {
+		
+		var searchDpmlNo	= data.searchDpmlNo;
+		var searchShopTpCd	= data.searchShopTpCd;
+		
+		$("#dpmlNo").val(searchDpmlNo);
+		$("#shopTpCd").val(searchShopTpCd);
+		
 		var param	= JSON.stringify(data); 
 		
    		$.ajax({
@@ -98,17 +160,36 @@ var displayTreeList = {
 	fnClickHandler : function(id) {
 		var data = {};
 		
-		var dispNo		    = "";
-		var dispNm		    = "";
-		var artcFullNm	    = "";
-		var ecdispNo	    = "";
-		var ecdispNm	    = "";
-		var uprdispNo	    = "";
-		var uprdispNm	    = "";
-		var artcDpthNo	    = "1";
-		var onlBrchInvRt	= "";
-		var maxLmtQty		= "";
-		var goodsMrgnRt		= "";
+		var dispNo		    	= null;		// 전시번호     
+		var uprDispNo			= null;     // 상위전시번호   
+		var dpmlNo		    	= "";       // 전시몰번호    
+		var dispNm		    	= "";       // 전시명      
+		var dispGnbNm           = "";       // 전시 GNB명  
+		var gnbExpMethCd        = "";       // 전시 GNB노출방
+		var dispTitNm           = "";       // 전시 제목명   
+		var dispTitExpMethCd    = "";       // 전시제목노출방식 
+		var shopTpCd            = "";       // 매장유형코드   
+		var shopDescCont        = "";       // 매장설명내용   
+		var dpthNo          	= "";       // 깊이번호     
+		var dispPrioRnk     	= null;     // 전시우선순위   
+		var useYn           	= "";       // 사용여부     
+		var dispYn              = "";       // 전시여부     
+		var tlwtLfYn            = "";       // 최하위리프여부  
+		var prtTpCd             = "";       // 출력유형코드   
+		var lstSortCd           = "";       // 리스트정렬코드  
+		var movFrmeCd           = "";       // 이동프레임코드  
+		var lnkUrlAddr          = "";       // 연결 url주소 
+		var lnkSpdpHhNo         = null;     // 연결 기획전 전시
+		var dispLrgNo           = null;     // 전시대번호    
+		var dispMidNo           = null;     // 전시중번호    
+		var dispSmlNo           = null;     // 전시소번호    
+		var dispThnNo           = null;     // 전시세번호    
+		var menuUseYn           = "";       // 메뉴사용여부   
+		var tmplNo              = null;     // 템플릿번호    
+		var pppSn               = "";       // 팝업일련번호   
+		                
+		
+		
 		
 		if ( id != "treeRoot" ) {
 			$("#form1 #treeId").val(id);
@@ -119,31 +200,56 @@ var displayTreeList = {
 			$.ajax({
 				async : false,
 				type: 'POST',
-				url: CTX_PATH + "/mgnt/article/selectGoodsdispNoInfo.json",
+				url: CTX_PATH + "/mgnt/display/selectDisplayInfo.json",
 				data: param,
 				contentType: 'application/json',
 				dataType:"json",
 				success : function (data) {
-					var info		= data.info;
+					var info			= data.info;
+					var titleImgList	= data.titleImgList;
+					var gnbImgList		= data.gnbImgList;
+					var headerImgList	= data.headerImgList;
+					
+					console.log("info=["+JSON.stringify(info)+"]")
 					
 					if ( info != undefined ) {
-						dispNo 		    = nvl(info.dispNo, "");
-						dispNm 		    = fnRecoveHtml(nvl(info.dispNm, ""));
-						artcFullNm 	    = fnRecoveHtml(nvl(info.artcFullNm, ""));
-						ecdispNo 	    = nvl(info.ecdispNo, "");
-						ecdispNm 	    = fnRecoveHtml(nvl(info.ecdispNm, ""));
-						uprdispNo 	    = nvl(info.uprdispNo, "");
-						uprdispNm 	    = fnRecoveHtml(nvl(info.uprdispNm, ""));
-						artcDpthNo	    = nvl(info.artcDpthNo, "");
-						onlBrchInvRt	= nvl(info.onlBrchInvRt, "");
-						maxLmtQty		= nvl(info.maxLmtQty, "");
-						goodsMrgnRt		= nvl(info.goodsMrgnRt, "");
+						dispNo 		    	= nvl(info.dispNo, null);						// 전시번호      
+						uprDispNo			= nvl(info.uprDispNo, null);                    // 상위전시번호    
+						dpmlNo				= nvl(info.dpmlNo, null);                       // 전시몰번호     
+						dispNm 		    	= fnRecoveHtml(nvl(info.dispNm, ""));           // 전시명       
+						dispGnbNm       	= fnRecoveHtml(nvl(info.dispGnbNm, ""));        // 전시 GNB명   
+						gnbExpMethCd    	= nvl(info.gnbExpMethCd, "");                   // 전시 GNB노출방식
+						dispTitNm       	= fnRecoveHtml(nvl(info.dispTitNm, ""));        // 전시 제목명    
+						dispTitExpMethCd	= nvl(info.dispTitExpMethCd, "");               // 전시제목노출방식  
+						shopTpCd        	= nvl(info.shopTpCd, "");                       // 매장유형코드    
+						shopDescCont        = fnRecoveHtml(nvl(info.shopDescCont, ""));     // 매장설명내용    
+						dpthNo              = nvl(info.dpthNo, "");                         // 깊이번호      
+						dispPrioRnk         = nvl(info.dispPrioRnk, null);                  // 전시우선순위    
+						useYn               = nvl(info.useYn, "");                          // 사용여부      
+						dispYn              = nvl(info.dispYn, "");                         // 전시여부      
+						tlwtLfYn            = nvl(info.tlwtLfYn, "");                       // 최하위리프여부   
+						prtTpCd             = nvl(info.prtTpCd, "");                        // 출력유형코드    
+						lstSortCd           = nvl(info.lstSortCd, "");                      // 리스트정렬코드   
+						movFrmeCd           = nvl(info.movFrmeCd, "");                      // 이동프레임코드   
+						lnkUrlAddr          = nvl(info.lnkUrlAddr, "");                     // 연결 url주소  
+						lnkSpdpHhNo         = nvl(info.lnkSpdpHhNo, null);                  // 연결 기획전 전시번
+						dispLrgNo           = nvl(info.dispLrgNo, null);                    // 전시대번호     
+						dispMidNo           = nvl(info.dispMidNo, null);                    // 전시중번호     
+						dispSmlNo           = nvl(info.dispSmlNo, null);                    // 전시소번호     
+						dispThnNo           = nvl(info.dispThnNo, null);                    // 전시세번호     
+						menuUseYn           = nvl(info.menuUseYn, "");                      // 메뉴사용여부    
+						tmplNo              = nvl(info.tmplNo, "");                         // 템플릿번호     
+						pppSn               = nvl(info.pppSn, "");                          // 팝업일련번호    
+						
 					}
 					
 					$("#form1 #dispNo").val(dispNo);
-					$("#form1 #dispNm").val(dispNm);
-					$("#form1 #artcFullNm").val(artcFullNm);
-					$("#form1 #ecdispNo").val(ecdispNo);
+					$("#form1 #uprDispNo").val(dispNm);
+					$("#form1 #dpmlNo").val(artcFullNm);
+					$("#form1 #dispNm").val(ecdispNo);
+					
+					
+					
 					$("#form1 #ecdispNm").val(ecdispNm);
 					$("#form1 #uprdispNo").val(uprdispNo);
 					$("#form1 #uprdispNm").val(uprdispNm);
@@ -254,7 +360,7 @@ var displayTreeList = {
 		$.ajax({
 			async : false,
 			type: 'POST',
-			url: CTX_PATH + "/mgnt/article/articleSave.json",
+			url: CTX_PATH + "/mgnt/display/displaySave.json",
 			data: param,
 			contentType: 'application/json',
 			dataType:"json",
@@ -283,41 +389,93 @@ var displayTreeList = {
 	    	return false;
 		}
 		
-		data.cmd				= $("#cmd").val();							// 등록/수정 구분
-		data.dispNo				= $.trim($("#dispNo").val());				// 품목코드
-		data.dispNm				= $.trim($("#dispNm").val());				// 품목명
-		data.artcFullNm			= $.trim($("#artcFullNm").val());			// 품목FULL명
-		data.uprdispNo			= $.trim($("#uprdispNo").val());			// 상위 품목코드  
-		data.uprdispNm			= $.trim($("#uprdispNm").val());			// 상위 품목명  
-		
-		data.ecdispNo			= $.trim($("#ecdispNo").val());				// 전자상거래품목코드
-		data.ecdispNm			= $.trim($("#ecdispNm").val());				// 전자상거래품목명
-		data.artcDpthNo			= $.trim($("#artcDpthNo").val());			// 품목깊이번호
-		var onlBrchInvRt		= $.trim($("#onlBrchInvRt").val());			// 재고율
-		var maxLmtQty			= $.trim($("#maxLmtQty").val());			// 최대구매수량
-		var goodsMrgnRt			= $.trim($("#goodsMrgnRt").val());			// 상품마진율
-		
-		if ( onlBrchInvRt != "" ) {
-			data.onlBrchInvRt	= onlBrchInvRt;
+		data.cmd				= $("#form1 #cmd").val();									// 등록/수정 구분
+		data.dpmlNo				= $.trim($("#form1 #dpmlNo").val());						// 전시몰번호
+		data.shopTpCd			= $.trim($("#form1 #shopTpCd").val());						// 매장유형
+		var dispNo				= nvl($.trim($("#form1 #dispNo").val()), "");				// 전시번호
+		if ( dispNo != "" ) {
+			data.dispNo	= dispNo;
 		}
-		if ( maxLmtQty != "" ) {
-			data.maxLmtQty	= maxLmtQty;
-		}
-		if ( goodsMrgnRt != "" ) {
-			data.goodsMrgnRt	= goodsMrgnRt;
+		data.dispNm				= $.trim($("#form1 #dispNm").val());						// 전시카테고리명
+		data.dispTitExpMethCd	= $("input:radio[name=dispTitExpMethCd]:checked").val();	// 매장 타이틀 노출유형
+		data.gnbExpMethCd		= $("input:radio[name=gnbExpMethCd]:checked").val();		// 매장 메뉴 노출유형
+		data.shopDescCont		= $.trim($("#shopDescCont").val());							// 매장 설명 내용
+		data.dpthNo				= nvl($.trim($("#dpthNo").val()), 1);						// 카테고리 깊이
+		data.tlwtLfYn			= $("input:radio[name=tlwtLfYn]:checked").val();			// Leaf 카테고리 여부
+		data.dispPrioRnk		= $.trim($("#dispPrioRnk").val());							// 전시우선순위	
+		data.dispYn				= $("input:radio[name=dispYn]:checked").val();				// 전시여부
+		data.useYn				= $("input:radio[name=useYn]:checked").val();				// 사용여부
+		data.menuUseYn			= $("input:radio[name=menuUseYn]:checked").val();			// 메뉴사용 여부
+		data.prtTpCd			= $("#form1 #prtTpCd option:selected").val();				// 출력유형
+		
+		/*
+		 * 출력유형(prtTpCd) == "01"
+		 */
+		var tmplNo				= $.trim($("#tmplNo").val());								// 전시 템플릿 번호
+		var tmplNm				= $.trim($("#tmplNm").val());								// 전시 템플릿 명
+		/*
+		 * 출력유형(prtTpCd) == "02"
+		 */
+		var lnkUrlAddr			= $.trim($("#lnkUrlAddr").val());							// 대상 URL
+		/*
+		 * 출력유형(prtTpCd) == "04"
+		 */
+		var lnkSpdpHhNo40		= nvl($.trim($("#lnkSpdpHhNo40").val()), "");				// 카테고리매장번호
+		/*
+		 * 출력유형(prtTpCd) > 그 외
+		 */
+		var lnkSpdpHhNo50		= nvl($.trim($("#lnkSpdpHhNo50").val()), null);						// 기획전매장번호
+		
+		if ( data.prtTpCd == "01" ) {
+			data.tmplNo = tmplNo;
+		} else if ( data.prtTpCd == "02" ) {
+			data.lnkUrlAddr = lnkUrlAddr;
+		} else if ( data.prtTpCd == "04" ) {
+			data.lnkSpdpHhNo = lnkSpdpHhNo40;
+		} else {
+			data.lnkSpdpHhNo = lnkSpdpHhNo50;
 		}
 		
-		/*// 첨부파일 정보
-		if ( $('input[name="addFileList"]').length > 0 ) {
+		data.lstSortCd			= $("#form1 #lstSortCd option:selected").val();				// 리스트소팅값
+		
+		var addFileList;
+		
+		// 매장 타이틀 이미지 첨부파일 정보
+		if ( data.dispTitExpMethCd == "01" ) {
+			if ( $('input[name="addFileList0"]').length > 0 ) {
+				addFileList = new Array();
+				$('input[name="addFileList0"]').each(function() {
+					addFileList.push(this.value);
+				});
+				data.addTitleImgList	= addFileList;
+			} else {
+				alert("매장 타이틀 이미지 첨부파일를 선택해주세요.");
+				return false;
+			}
+		}
+		
+		// 매장 메뉴  이미지 첨부파일 정보
+		if ( data.gnbExpMethCd == "01" ) {
+			if ( $('input[name="addFileList1"]').length > 0 ) {
+				addFileList = new Array();
+				$('input[name="addFileList1"]').each(function() {
+					addFileList.push(this.value);
+				});
+				data.addGnbImgList	= addFileList;
+			} else {
+				alert("매장 메뉴 이미지 첨부파일를 선택해주세요.");
+				return false;
+			}
+		}
+		
+		// 매장 부가  이미지 첨부파일 정보
+		if ( $('input[name="addFileList2"]').length > 0 ) {
 			addFileList = new Array();
-			$('input[name="addFileList"]').each(function() {
+			$('input[name="addFileList2"]').each(function() {
 				addFileList.push(this.value);
 			});
-			data.addFileList	= addFileList;
-		} else {
-			alert("배너 이미지 첨부파일를 선택해주세요.");
-			return false;
-		}*/
+			data.addHeaderImgList	= addFileList;
+		}
 		
 		return true;
 	},
