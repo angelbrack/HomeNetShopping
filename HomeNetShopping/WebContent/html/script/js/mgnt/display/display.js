@@ -170,6 +170,17 @@ var displayTreeList = {
 		
 		displayTreeList.fnFormInit();
 		
+		var level = tree.getLevel(id);
+		
+		if ( Number(level) == 1 ) {
+			$("#form1 #treeId").val("");
+			$("#form1 #treeDepth").val("");
+		} else {
+			$("#form1 #treeId").val(id);
+			$("#form1 #treeDepth").val(Number(level)-1);
+		}
+		
+		
 		if(mode <= 0) {
 			// tree를 open한 경우 하위 폼목리스트 조회
 			
@@ -183,6 +194,8 @@ var displayTreeList = {
 		}else{
 			return true;
 		}
+		
+		
 	},
 	// Tree 에서 품목명을 선택했을때
 	fnClickHandler : function(id) {
@@ -344,7 +357,7 @@ var displayTreeList = {
 			
 			dpthNo				= "";
 			
-			$("#form1 #treeId").val(dispNo);
+			$("#form1 #treeId").val(id);
 			$("#form1 #treeDepth").val(dpthNo);
 			
 			$("#form1 #dispNo").val(dispNo);
@@ -444,8 +457,6 @@ var displayTreeList = {
 		prtTpCd				= "01";
 		lstSortCd			= "01";
 		
-		alert(uprDispNo+"#"+dpthNo);
-		
 		$("#form1 #dispNo").val("");
 		$("#form1 #uprDispNo").val(uprDispNo);
 		$("#form1 #dpmlNo").val(dpmlNo);
@@ -494,7 +505,7 @@ var displayTreeList = {
 		var dispNm	= data.dispNm;
 		
 		var treeId	= nvl($("#form1 #treeId").val(), "treeRoot");
-		
+		alert("treeId=["+treeId+"]");
 		var param	= JSON.stringify(data); 
 			
 		if ( !confirm("저장하시겠습니까?") ) return false;
@@ -710,8 +721,6 @@ var displayTreeList = {
 		menuUseYn			= "N";
 		prtTpCd				= "01";
 		lstSortCd			= "01";
-		
-		alert(uprDispNo+"#"+dpthNo);
 		
 		$("#form1 #dispNo").val(dispNo);
 		$("#form1 #uprDispNo").val(uprDispNo);

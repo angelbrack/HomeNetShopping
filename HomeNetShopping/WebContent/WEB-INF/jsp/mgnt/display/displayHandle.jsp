@@ -287,13 +287,6 @@
 											<tr id="searchArticle">
 												<th scope="row"><label for="lstSortCd">품목군</label> </th>
 												<td colspan="3">
-											<c:choose>
-												<c:when test="${not empty info.tlwtLfYn && info.tlwtLfYn == 'Y' && not empty articleList}">
-												 	<c:forEach var="article" items="${articleList}" varStatus="idx">
-												 	
-												 	</c:forEach>
-												</c:when>
-												<c:otherwise>
 													<div id="target1">						
 														<input type="text" id="articleCode1" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />
 														<input type="text" id="articleName1" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />
@@ -303,8 +296,6 @@
 															<a href="javascript:removeNoArticleType(1);" name="removeTargetBtn" style="display: none;" class="btn_minus1">삭제</a>
 														</span>
 													 </div>
-												</c:otherwise>
-											</c:choose> 
 												</td>
 											</tr>
 										</tbody>
@@ -324,7 +315,7 @@
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181030000004"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181031000001"></script>
 <script type="text/javascript">
 <!--
 
@@ -453,6 +444,51 @@ function fnFileEdit(idx, obj, addSavePath, imgYn, sortYn, orienteYn){
 		}
 		
 	}
+}
+
+function addNoArticleType(idx) {
+	
+	$("#searchArticle").find("div:last").after(getAticletHtml());
+	addArticleNoMultiType(idx);
+
+	var divCnt = $("#searchArticle").find("div").length;
+	if($("#searchArticle").find("div").length > 2)
+		$("#searchArticle").find("[name=removeTargetBtn]").show();
+	$("#searchArticle").find("div").eq(divCnt-2).find("[name=addTargetBtn]").hide();
+}
+
+function addArticleNoMultiType(idx) {
+	
+	var nIdx = idx+1;
+	var obj = $("#searchArticle").find("div:last");
+	var divCnt = $("#searchArticle").find("div").length;
+	obj.attr("id", "target"+nIdx);
+	obj.find("[name=articleCode1]").attr("id", "articleCode"+nIdx);
+ 	obj.find("[name=articleName1]").attr("id", "articleName"+nIdx);
+ 	obj.find("[name=articleCode1]").val(null);
+ 	obj.find("[name=articleName1]").val(null);
+	
+	obj.find("[name=popupBtnArticle1]").attr("onClick" , "searchDisplayArticle('displayShopForm',"+nIdx+");"); 
+	obj.find("[name=addTargetBtn]").attr("href", "javascript:addNoArticleType("+nIdx+");");
+	obj.find("[name=removeTargetBtn]").attr("href", "javascript:removeNoArticleType("+nIdx+");");
+}
+
+function getAticletHtml(idx) {
+    var html = "<div id='target"+idx+"'>"+$("#searchArticle td:eq(0)").find("div:last").html()+"</div>";
+    return html;    
+}
+
+function removeNoArticleType(idx) {
+
+	$("#target"+idx).remove();
+	$("#articleCode"+idx).remove();
+	$("#articleName"+idx).remove();
+
+	if($("#searchArticle").find("div").length > 2)
+		$("#searchArticle").find("div:last").find("[name=removeTargetBtn]").show();
+	else if($("#searchArticle").find("div").length  == 2)
+		$("#searchArticle").find("div:last").find("[name=removeTargetBtn]").hide();
+	$("#searchArticle").find("div:last").find("[name=addTargetBtn]").show();
 }
 //-->
 </script>
