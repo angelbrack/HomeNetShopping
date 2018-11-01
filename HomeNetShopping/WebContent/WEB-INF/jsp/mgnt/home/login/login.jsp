@@ -121,7 +121,7 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="actionLogin();return false;">Sign In</button>
+                    <button type="button" class="btn btn-primary btn-block btn-flat" onclick="doLogin();return false;">Sign In</button>
                 </div>
                 <!-- /.col -->
             </div>

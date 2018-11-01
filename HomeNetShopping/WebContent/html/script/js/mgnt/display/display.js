@@ -38,6 +38,10 @@ var displayTreeList = {
 			$("#fileupload1").prop("disabled",true);
 		};
 		
+		if($("input[name*='tlwtLfYn']:checked").val() == 'N'){
+			$("#searchArticle").hide();
+		};
+		
 		// 출력유형 change
 		$("#form1 #prtTpCd").change();
 		
@@ -88,6 +92,14 @@ var displayTreeList = {
 				$("#fileupload2").prop("disabled",false);
 			}else
 				$("#fileupload2").prop("disabled",true);
+		});
+		
+		$("input[name*='tlwtLfYn']").change(function(){
+			if ( this.value == "Y" ) {
+				$("#searchArticle").show();
+			} else if ( this.value == "N" ) {
+				$("#searchArticle").hide();
+			}
 		});
 		
 		// 출력유형 change 시
@@ -314,6 +326,12 @@ var displayTreeList = {
 					$("#form1 #tmplNo").val(tmplNo);
 					$("#form1 #tmplNm").val(tmplNm);
 					$("#form1 #lnkUrlAddr").val(lnkUrlAddr);
+					
+					if ( tlwtLfYn == "Y" ) {
+						$("#searchArticle").show();
+					} else {
+						$("#searchArticle").hide();
+					}
 					
 					if ( prtTpCd == '04' ) {
 						$("#form1 #lnkSpdpHhNo40").val(lnkSpdpHhNo);
@@ -607,7 +625,6 @@ var displayTreeList = {
 		data.dispThnNo			= nvl($.trim($("#form1 #dispThnNo").val()), null);			// 전시세번호
 		
 		var addFileList;
-		
 		// 매장 타이틀 이미지 첨부파일 정보
 		if ( data.dispTitExpMethCd == "01" ) {
 			if ( $('input[name="addFileList1"]').length > 0 ) {
@@ -644,6 +661,23 @@ var displayTreeList = {
 			});
 			data.addHeaderImgList	= addFileList;
 		}
+		
+		
+		var articleList;
+		var articleInfo;
+		if ( $('input[name="articleCode1"]').length > 0 ) {
+			articleList = new Array();
+			$('input[name="articleCode1"]').each(function() {
+				articleInfo = new Object();
+				articleInfo.artcCd = nvl(this.value, "");
+				
+				if ( articleInfo.artcCd != "" ) {
+					articleList.push(articleInfo);
+				}
+			});
+			data.articleList	= articleList;
+		}
+		
 		
 		return true;
 	},

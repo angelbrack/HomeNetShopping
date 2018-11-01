@@ -25,6 +25,8 @@
 		
 		<result property="uprArtcNm" 		 		 	column="UPR_ARTC_NM" 				/> <!-- 상위 품목명    			-->
 		<result property="ecArtcNm" 		 		 	column="EC_ARTC_NM" 				/> <!-- 전자상거래품목명  			-->
+		
+		<result property="totalCount"  					column="TOTAL_COUNT" 			/> <!-- Record Total Count 	-->
 	</resultMap>
 	
 	<!-- 품목군 Tree 정보 List -->
@@ -39,30 +41,66 @@
 	<!-- 품목군 정보 검색조건 -->
 	<sql id="searchGoodsArtcCd">
 		<where>
+			<if test='searchArtcDpthNo != null'>
+				AND A.ARTC_DPTH_NO = #{searchArtcDpthNo }
+			</if>
 			<if test='searchWord != null and searchWord != ""'>
 				<choose>
 					<when test='searchKey == "000"'>
-						AND A.ARTC_NM LIKE '%'||#{searchWord }||'%'
+						AND A.ARTC_CD = UPPER(#{searchWord })
 					</when>
 					<when test='searchKey == "001"'>
-						AND A.ARTC_FULL_NM LIKE '%'||#{searchWord }||'%'
+						AND A.ARTC_NM LIKE '%'||#{searchWord }||'%'
 					</when>
 					<when test='searchKey == "002"'>
+						AND A.ARTC_FULL_NM LIKE '%'||#{searchWord }||'%'
+					</when>
+					<when test='searchKey == "003"'>
 						AND A.ARTC_UP_NM LIKE '%'||#{searchWord }||'%'
 					</when>
 				</choose>
 			</if>
 		</where>
 	</sql>
+	
+	<!-- 품목군 정보 ORDER -->
+	<sql id="orderGoodsArtcCd">
+		<choose>
+			<when test='orderCol == "wrtDttm" '>
+			ORDER BY A.WRT_DTTM
+			</when>
+			<when test='orderCol == "updtDttm" '>
+			ORDER BY A.UPDT_DTTM
+			</when>
+			<otherwise>
+			ORDER BY A.WRT_DTTM
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='orderSort == "desc" '>
+			DESC
+			</when>
+			<when test='orderSort == "asc" '>
+			ASC
+			</when>
+			<otherwise>
+			DESC
+			</otherwise>
+		</choose> 
+	</sql>
 
 	<select id="selectGoodsArtcCdList" parameterType="goodsArtcCdVO" resultMap="goodsArtcCdList">
 		/* homenet.shop.article.service.GoodsArticleService.selectGoodsArtcCdList 품목군 정보 조회*/
 		SELECT 
 			    Z.*
+			  <if test='searchConnectByDeniedYn == null or searchConnectByDeniedYn == "" or searchConnectByDeniedYn == "N" '>
 			  , LEVEL
+			  </if>
 		FROM (
 			SELECT
-				A.*
+				  ROWNUM RNUM
+				, A.*
+				, COUNT(0) OVER () AS TOTAL_COUNT 
 			FROM (
 				SELECT
 					  A.ARTC_CD
@@ -76,17 +114,26 @@
 					, A.GOODS_MRGN_RT
 					, A.SIZE_LKTB_FILE_NM
 					, A.SIZE_LKTB_PATH_NM
-					--, (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS EC_ARTC_NM
-					, '전자상거래품목명'  AS EC_ARTC_NM
+					, FN_COMM_NM('EC_ARTC_CD', EC_ARTC_CD) AS EC_ARTC_NM
 					, (SELECT ARTC_NM FROM TB_GOODS_ARTC_CD WHERE ARTC_CD = A.UPR_ARTC_CD) AS UPR_ARTC_NM
 					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 				FROM TB_GOODS_ARTC_CD A
 			) A
-			<include refid="searchGoodsArtcCd" />		
+			<include refid="searchGoodsArtcCd" />
+			<if test='searchConnectByDeniedYn != null and searchConnectByDeniedYn != "" and searchConnectByDeniedYn == "Y" '>
+				<include refid="orderGoodsArtcCd" />
+			</if>	
 	   	) Z
+	   	<if test='searchConnectByDeniedYn == null or searchConnectByDeniedYn == "" or searchConnectByDeniedYn == "N" '>
 	   	START WITH Z.UPR_ARTC_CD IS NULL
         CONNECT BY PRIOR Z.ARTC_CD = Z.UPR_ARTC_CD
         ORDER SIBLINGS BY Z.ARTC_CD ASC
+        </if>
+        <if test='recordCountPerPage != null and recordCountPerPage != 0'>
+	   	<![CDATA[	   	
+	   	WHERE Z.RNUM BETWEEN #{firstIndex} + 1 AND #{firstIndex} + #{recordCountPerPage}
+		]]>
+		</if>
 	</select>
 	
 	<select id="selectGoodsArtcCdTreeList" parameterType="goodsArtcCdVO" resultMap="goodsArtcCdTreeList">
@@ -106,7 +153,7 @@
 				, A.GOODS_MRGN_RT
 				, A.SIZE_LKTB_FILE_NM
 				, A.SIZE_LKTB_PATH_NM
-				--, (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS EC_ARTC_NM
+				, FN_COMM_NM('EC_ARTC_CD', EC_ARTC_CD) AS EC_ARTC_NM
 				, (SELECT COUNT(0) AS CHILD_COUNT FROM TB_GOODS_ARTC_CD WHERE UPR_ARTC_CD = A.ARTC_CD) AS CHILD_COUNT
 				<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 			FROM TB_GOODS_ARTC_CD A
@@ -139,7 +186,7 @@
 			, A.GOODS_MRGN_RT
 			, A.SIZE_LKTB_FILE_NM
 			, A.SIZE_LKTB_PATH_NM
-			--, (SELECT CD_NM FROM ST_STD_CD WHERE CD = ARTC.EC_ARTC_CD AND GRP_CD = 'PD048' ) AS EC_ARTC_NM
+			, FN_COMM_NM('EC_ARTC_CD', EC_ARTC_CD) AS EC_ARTC_NM
 			, (SELECT ARTC_NM FROM TB_GOODS_ARTC_CD WHERE ARTC_CD = A.UPR_ARTC_CD) AS UPR_ARTC_NM
 			<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
 		FROM TB_GOODS_ARTC_CD A

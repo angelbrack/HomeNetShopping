@@ -2,7 +2,7 @@ package homenet.shop.display.service;
 
 import java.util.List;
 
-import homenet.shop.brand.service.BrndBaseVO;
+import homenet.shop.article.service.GoodsArtcCdVO;
 
 /**
  * <p>전시 관리 Service</p>
@@ -125,4 +125,19 @@ public interface DisplayService {
 	 */
 	Integer deleteDisplayImgInfo(DispShopBaseVO paramVO) throws Exception;
 
+	/*
+	 * 전시매장 품목코드매핑 등록
+	 * @param  : goodsArtcCdVO 등록 정보
+	 * 
+	 * @return : Integer 전시매장 품목코드매핑 등록 결과
+	 */
+	Integer insertDisplayArticle(GoodsArtcCdVO paramVO) throws Exception;
+	
+	/*
+	 * 전시매장 품목코드매핑 삭제
+	 * @param  : DispShopBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 전시매장 품목코드매핑 삭제 결과
+	 */
+	Integer deleteDisplayArticle(DispShopBaseVO paramVO) throws Exception;
 }

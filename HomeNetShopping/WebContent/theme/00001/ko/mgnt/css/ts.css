@@ -270,6 +270,10 @@ a.btn_move1 { display:inline-block; padding:0 10px 0 10px; height:28px; font-siz
 a.btn_view1 { display:inline-block; padding:0 8px 0 8px; height:21px; background:#606060; color:#fffeff !important; font-size:11px; font-weight:normal !important; text-align:center; line-height:21px; }
 a.btn_prev_01 { display:inline-block; padding:0 20px 0 20px; height:30px; color:#ffffff; font-size:12px; font-weight:normal; text-align:center; line-height:30px; background:#555555; }
 
+a.btn_search4 { display:inline-block; padding:0 8px 0 8px; height:20px; background:#606060; color:#fffeff !important; font-size:13px; font-weight:bold; text-align:center; line-height:18px; }
+a.btn_plus2 { display:inline-block; padding:0 8px 0 8px; height:20px; background:#606060; color:#fffeff !important; font-size:13px; font-weight:bold; text-align:center; line-height:18px; }
+a.btn_minus2 { display:inline-block; padding:0 8px 0 8px; height:20px; background:#606060; color:#fffeff !important; font-size:13px; font-weight:bold; text-align:center; line-height:18px; }
+
 a.skyblue1 { display:inline-block; padding:3px 15px 0 15px; height:22px; font-size:13px; font-weight:600; background:#26a2b6; color:#ffffff !important; text-align:center; border:1px solid #26a2b6; }
 a.orange1 { display:inline-block; padding:3px 15px 0 15px; height:22px; font-size:13px; font-weight:600; background:#ff5c00; color:#ffffff !important; text-align:center; border:1px solid #F30; }
 a.green1 { display:inline-block; padding:3px 15px 0 15px; height:22px; font-size:13px; font-weight:600; background:#46a546; color:#ffffff !important; text-align:center; border:1px solid #46a546; }

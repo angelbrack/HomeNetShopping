@@ -1344,7 +1344,7 @@ function fnSendMailPop($form) {
 }
 
 /*
- * 메일 발송 팝업 
+ * SMS 발송 팝업 
  */
 function fnSendSmsPop($form) {
 	var VIEW_SMS = window.open('', 'VIEW_SMS' , 'width=800, height=600, resizable=yes, scrollbars=yes, left=200, top=100');
@@ -1370,15 +1370,15 @@ function fnSendSpclManagePop($form) {
 }
 
 /*
- * 
+ * 품목군 리스트 팝업 
  */
-function fnCompanyPop($form) {
-	var VIEW_COMP = window.open('', 'VIEW_COMP' , 'width=800, height=600, resizable=yes, scrollbars=yes, left=200, top=100');
-	VIEW_COMP.focus();   
+function fnArticlePop($form) {
+	var VIEW_ARTICLE = window.open('', 'VIEW_ARTICLE' , 'width=800, height=600, resizable=yes, scrollbars=yes, left=200, top=100');
+	VIEW_ARTICLE.focus();   
 	
-	$form.attr("action", CTX_PATH+"/mgnt/mbr/comp/companyListPop.do");
+	$form.attr("action", CTX_PATH+"/mgnt/article/articleListPop.do");
     $form.attr("method", "POST");
-    $form.attr("target", "VIEW_COMP");
+    $form.attr("target", "VIEW_ARTICLE");
     $form.submit();
 }
 

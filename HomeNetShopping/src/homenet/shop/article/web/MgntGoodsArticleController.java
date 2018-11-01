@@ -27,9 +27,6 @@ import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import homenet.shop.article.service.GoodsArtcCdVO;
 import homenet.shop.article.service.GoodsArticleService;
-import homenet.shop.brand.service.BrndBaseVO;
-import homenet.shop.brand.service.BrndImgInfoVO;
-import prjframework.common.util.Casting;
 import prjframework.common.util.SessionUtil;
 import prjframework.common.util.WebUtil;
 import sample.HTTPS_Example;
@@ -313,4 +310,47 @@ public class MgntGoodsArticleController {
 		return new ModelAndView("jsonView", resultMap);
 	}
 
+	/*
+	 * 품목군 리스트 화면
+	 * 
+	 * @param  : GoodsArtcCdVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/article/articleListPop.do")
+	public String articleListPop(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+
+		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
+		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
+		paginationInfo.setPageSize(paramVO.getPageSize());
+		
+		paramVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		paramVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		paramVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		// 검색 품목깊이번호
+		paramVO.setSearchArtcDpthNo(3);
+		// 검색 Connect By 거부 여부
+		paramVO.setSearchConnectByDeniedYn("Y");
+		
+		int totalCount	= 0;
+		List<GoodsArtcCdVO> list = goodsArticleService.selectGoodsArtcCdList(paramVO);
+		
+		if ( list != null && list.size() > 0 ) {
+			totalCount = list.get(0).getTotalCount();
+		}
+		
+		paginationInfo.setTotalRecordCount(totalCount);
+		
+		model.addAttribute("resultList", 		list);
+		model.addAttribute("resultCnt", 		totalCount);
+        model.addAttribute("paginationInfo", 	paginationInfo);
+		
+		return "mgnt/article/articleListPop";
+	}
 }

@@ -291,9 +291,9 @@
 														<input type="text" id="articleCode1" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />
 														<input type="text" id="articleName1" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />
 														<span class="hahahoho">
-															<button type="button" class="lt_cnt2" name="popupBtnArticle1" id="popupBtnArticle1"  onClick="searchDisplayArticle('displayShopForm',1);return false;">검색</button>
-									 						<a href="javascript:addNoArticleType(1);" name="addTargetBtn" class="btn_plus1">추가</a>
-															<a href="javascript:removeNoArticleType(1);" name="removeTargetBtn" style="display: none;" class="btn_minus1">삭제</a>
+															<a href="javascript:searchDisplayArticle('displayShopForm',1);" name="popupBtnArticle1" id="popupBtnArticle1" class="btn_search4">검색</a>
+									 						<a href="javascript:addNoArticleType(1);" name="addTargetBtn" class="btn_plus2">추가</a>
+															<a href="javascript:removeNoArticleType(1);" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>
 														</span>
 													 </div>
 												</td>
@@ -468,7 +468,8 @@ function addArticleNoMultiType(idx) {
  	obj.find("[name=articleCode1]").val(null);
  	obj.find("[name=articleName1]").val(null);
 	
-	obj.find("[name=popupBtnArticle1]").attr("onClick" , "searchDisplayArticle('displayShopForm',"+nIdx+");"); 
+	//obj.find("[name=popupBtnArticle1]").attr("onClick" , "searchDisplayArticle('displayShopForm',"+nIdx+");"); 
+	obj.find("[name=popupBtnArticle1]").attr("href" , "javascript:searchDisplayArticle('displayShopForm',"+nIdx+");"); 
 	obj.find("[name=addTargetBtn]").attr("href", "javascript:addNoArticleType("+nIdx+");");
 	obj.find("[name=removeTargetBtn]").attr("href", "javascript:removeNoArticleType("+nIdx+");");
 }
@@ -489,6 +490,50 @@ function removeNoArticleType(idx) {
 	else if($("#searchArticle").find("div").length  == 2)
 		$("#searchArticle").find("div:last").find("[name=removeTargetBtn]").hide();
 	$("#searchArticle").find("div:last").find("[name=addTargetBtn]").show();
+}
+
+/**
+ * 품목군 조회 팝업 호출
+ */
+function searchDisplayArticle(form, num) {
+	
+	/* var param = null;
+	var displaySearchPopup = new displayPopup();
+	displaySearchPopup.open("displayArticleSearchPopup",
+							"/display/display.article.search.popup.lecs",
+							param, 
+							{
+								isMultiSelect:true,
+								width:1000,
+								height:550, 
+								callbackF:function(data) {	
+									
+									document.getElementById('articleCode'+num).value = data[0].articleCode;
+									document.getElementById('articleName'+num).value = data[0].articleName;
+							} 
+	});
+	 */
+	
+	// 품목군 조회 팝업 폼 생성
+	var $form = fnAddForm('formArticle');
+	$form.empty();
+	
+	fnAddInput($form, "num", "num", num);
+	
+	fnArticlePop($form);
+}
+
+/**
+ * 품목군 조회 팝업에서 선택된 값 callback
+ */
+function selArticleCallback(articleInfo) {
+	var num = $("#formArticle #num").val();
+	
+	var artcCd = articleInfo.artcCd;
+	var artcNm = articleInfo.artcNm;
+	
+	$("#articleCode"+num).val(artcCd);
+	$("#articleName"+num).val(artcNm);
 }
 //-->
 </script>

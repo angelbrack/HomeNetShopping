@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import homenet.shop.article.service.GoodsArtcCdVO;
 import homenet.shop.brand.service.BrandService;
 import homenet.shop.brand.service.BrndImgInfoVO;
 import homenet.shop.brand.service.impl.BrandServiceImpl;
@@ -18,6 +19,8 @@ import homenet.shop.display.service.DispShopBaseVO;
 import homenet.shop.display.service.DisplayService;
 import homenet.shop.display.service.DpmlBaseVO;
 import prjframework.common.dataaccess.dao.MybatisDataAccessDAO;
+import prjframework.common.util.SessionUtil;
+import prjframework.common.util.WebUtil;
 
 /**
  * <p>전시 관리 Service 구현</p>
@@ -122,7 +125,27 @@ public class DisplayServiceImpl implements DisplayService {
 			result += updateDisplayBase(paramVO);
 		}
 		
+		// 전시 이미지 저장
 		result += saveDisplayImgInfo(paramVO);
+		
+		// 전시매장 품목코드매핑 삭제
+		result += deleteDisplayArticle(paramVO);
+		
+		if ( paramVO.getTlwtLfYn() != null && "Y".equals(paramVO.getTlwtLfYn()) ) {
+			List<GoodsArtcCdVO> articleList = paramVO.getArticleList();
+			for ( GoodsArtcCdVO goodsArtcCdVO : articleList ) {
+				if ( goodsArtcCdVO.getArtcCd() != null && !"".equals(goodsArtcCdVO.getArtcCd()) ) {
+					goodsArtcCdVO.setDispNo(paramVO.getDispNo());
+					goodsArtcCdVO.setWrtPnNo(paramVO.getWrtPnNo());
+					goodsArtcCdVO.setUpdtPnNo(paramVO.getUpdtPnNo());
+					goodsArtcCdVO.setWrtPnIp(paramVO.getWrtPnIp());
+					goodsArtcCdVO.setUpdtPnIp(paramVO.getUpdtPnIp());
+					
+					// 전시매장 품목코드매핑 등록
+					result += insertDisplayArticle(goodsArtcCdVO);
+				}
+			}
+		}
 		
 		return result;
 	}
@@ -375,4 +398,25 @@ public class DisplayServiceImpl implements DisplayService {
 		return mybatisDataAccessDAO.delete("homenet.shop.display.service.DisplayService.deleteDisplayImgInfo", paramVO);
 	}
 
+	/*
+	 * 전시매장 품목코드매핑 등록
+	 * @param  : goodsArtcCdVO 등록 정보
+	 * 
+	 * @return : Integer 전시매장 품목코드매핑 등록 결과
+	 */
+	@Override
+	public Integer insertDisplayArticle(GoodsArtcCdVO paramVO) throws Exception {
+		return (Integer) mybatisDataAccessDAO.insert("homenet.shop.display.service.DisplayService.insertDisplayArticle", paramVO);
+	}
+	
+	/*
+	 * 전시매장 품목코드매핑 삭제
+	 * @param  : DispShopBaseVO 삭제 정보
+	 * 
+	 * @return : Integer 전시매장 품목코드매핑 삭제 결과
+	 */
+	@Override
+	public Integer deleteDisplayArticle(DispShopBaseVO paramVO) throws Exception {
+		return mybatisDataAccessDAO.delete("homenet.shop.display.service.DisplayService.deleteDisplayArticle", paramVO);
+	}
 }

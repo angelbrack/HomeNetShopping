@@ -2,6 +2,7 @@ package homenet.shop.display.service;
 
 import java.util.List;
 
+import homenet.shop.article.service.GoodsArtcCdVO;
 import prjframework.common.util.PagerVO;
 
 /**
@@ -56,7 +57,8 @@ public class DispShopBaseVO  extends PagerVO {
 	private String[] addGnbImgList			; // 매장 메뉴 이미지
 	private String[] addHeaderImgList		; // 매장 부가 이미지
 	
-	private List<DispImgInfoVO> dispImgInfoList;	// 전시  이미지정보 리스트
+	private List<DispImgInfoVO> dispImgInfoList		; // 전시  이미지정보 리스트
+	private List<GoodsArtcCdVO> articleList			; // 품목군 리스트
 
 	public String getSearchDpmlNo() {
 		return searchDpmlNo;
@@ -360,6 +362,14 @@ public class DispShopBaseVO  extends PagerVO {
 
 	public void setDispImgInfoList(List<DispImgInfoVO> dispImgInfoList) {
 		this.dispImgInfoList = dispImgInfoList;
+	}
+
+	public List<GoodsArtcCdVO> getArticleList() {
+		return articleList;
+	}
+
+	public void setArticleList(List<GoodsArtcCdVO> articleList) {
+		this.articleList = articleList;
 	}
 	
 	

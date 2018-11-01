@@ -6,22 +6,39 @@ public class GoodsArtcCdVO extends PagerVO {
 	
 	private static final long serialVersionUID = -8274004534207618049L;
 	
-	private String  artcCd			; // 품목코드
-	private String  ecArtcCd 		; // 전자상거래품목코드
-	private String  uprArtcCd 	    ; // 상위 품목코드
-	private Integer artcDpthNo 	    ; // 품목깊이번호
-	private String  artcNm    		; // 품목명
-	private String  artcFullNm    	; // 품목FULL명
-	private Integer onlBrchInvRt	; // 재고율
-	private Integer maxLmtQty		; // 최대구매수량
-	private Integer goodsMrgnRt		; // 상품마진율
-	private String  sizeLktbFileNm	; // 사이즈조견표 파일명
-	private String  sizeLktbPathNm	; // 사이즈조견표 파일패스
+	private Integer searchArtcDpthNo 	    	; // 검색 품목깊이번호
+	private String  searchConnectByDeniedYn		; // 검색 Connect By 거부 여부
 	
-	private String  ecArtcNm 		; // 전자상거래품목명
-	private String  uprArtcNm		; // 상위 품목명
-	private Integer childCount		; // 허위 품목 Count 
+	private String  artcCd			            ; // 품목코드
+	private String  ecArtcCd 		            ; // 전자상거래품목코드
+	private String  uprArtcCd 	                ; // 상위 품목코드
+	private Integer artcDpthNo 	                ; // 품목깊이번호
+	private String  artcNm    		            ; // 품목명
+	private String  artcFullNm    	            ; // 품목FULL명
+	private Integer onlBrchInvRt	            ; // 재고율
+	private Integer maxLmtQty		            ; // 최대구매수량
+	private Integer goodsMrgnRt		            ; // 상품마진율
+	private String  sizeLktbFileNm	            ; // 사이즈조견표 파일명
+	private String  sizeLktbPathNm	            ; // 사이즈조견표 파일패스
+	                                            
+	private String  ecArtcNm 		            ; // 전자상거래품목명
+	private String  uprArtcNm		            ; // 상위 품목명
+	private Integer childCount		            ; // 허위 품목 Count
 	
+	private Integer dispNo						; // 전시번호
+	
+	public Integer getSearchArtcDpthNo() {
+		return searchArtcDpthNo;
+	}
+	public void setSearchArtcDpthNo(Integer searchArtcDpthNo) {
+		this.searchArtcDpthNo = searchArtcDpthNo;
+	}
+	public String getSearchConnectByDeniedYn() {
+		return searchConnectByDeniedYn;
+	}
+	public void setSearchConnectByDeniedYn(String searchConnectByDeniedYn) {
+		this.searchConnectByDeniedYn = searchConnectByDeniedYn;
+	}
 	public String getArtcCd() {
 		return artcCd;
 	}
@@ -100,11 +117,17 @@ public class GoodsArtcCdVO extends PagerVO {
 	public void setUprArtcNm(String uprArtcNm) {
 		this.uprArtcNm = uprArtcNm;
 	}
-	public Integer getchildCount() {
+	public Integer getChildCount() {
 		return childCount;
 	}
-	public void setchildCount(Integer childCount) {
+	public void setChildCount(Integer childCount) {
 		this.childCount = childCount;
+	}
+	public Integer getDispNo() {
+		return dispNo;
+	}
+	public void setDispNo(Integer dispNo) {
+		this.dispNo = dispNo;
 	}
 	
 }

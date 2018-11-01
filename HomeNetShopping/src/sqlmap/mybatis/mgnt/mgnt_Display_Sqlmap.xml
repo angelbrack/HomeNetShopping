@@ -442,9 +442,27 @@
 	</insert>
 	
 	<delete id="deleteDisplayImgInfo" parameterType="dispShopBaseVO" >
-		/* homenet.shop.display.service.DisplayService.deleteDisplayImgInfo, 전시 이미지 정보 수정 */
+		/* homenet.shop.display.service.DisplayService.deleteDisplayImgInfo, 전시 이미지 정보 삭제 */
 		DELETE FROM TB_DISP_IMG_INFO
 		WHERE DISP_NO = #{dispNo				}
 	</delete>
 	
+	<insert id="insertDisplayArticle" parameterType="goodsArtcCdVO" >
+		/* homenet.shop.display.service.DisplayService.insertDisplayArticle, 전시매장 품목코드매핑 정보 등록 */
+		INSERT INTO TB_CAT_ARTC_REL_INFO (
+			  DISP_NO
+			, ARTC_CD
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonCol" />
+		) VALUES (
+			  #{dispNo				}
+			, #{artcCd       		}
+			<include refid="homenet.shop.comm.common.service.CommonService.insertCommonVal" />
+		)
+	</insert>
+	
+	<delete id="deleteDisplayArticle" parameterType="dispShopBaseVO" >
+		/* homenet.shop.display.service.DisplayService.deleteDisplayArticle, 전시매장 품목코드매핑 정보 삭제 */
+		DELETE FROM TB_CAT_ARTC_REL_INFO
+		WHERE DISP_NO = #{dispNo				}
+	</delete>
 </mapper>
