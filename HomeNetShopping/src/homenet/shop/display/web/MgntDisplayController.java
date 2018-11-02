@@ -121,7 +121,7 @@ public class MgntDisplayController {
 	}
 	
 	/**
-	  * 목적 		: 전시매장 등록/수정 화면 - 팝업
+	  * 목적 		: 전시매장 상세정보
 	  * @param 	: DispShopBaseVO paramVO
 	  * @param 	: ModelMap model
 	  * @param  : HttpServletRequest request
@@ -149,14 +149,14 @@ public class MgntDisplayController {
 		dispImgInfoVO.setDispImgTpCd("03");
 		List<DispImgInfoVO> headerImgList = displayService.selectDisplayImgInfoList(dispImgInfoVO);
 		
-		/*if ( dispImgInfoList != null ) {
-			model.addAttribute("fileList", 			Casting.listToJSonString(dispImgInfoList));
-		}*/
+		// 전시매장 품목코드매핑 정보  조회
+		List<GoodsArtcCdVO> displayArticleList = displayService.selectDisplayArticleList(paramVO);
 
 		model.addAttribute("info", info);
-		model.addAttribute("titleImgList", 	titleImgList);
-		model.addAttribute("gnbImgList", 	gnbImgList);
-		model.addAttribute("headerImgList", headerImgList);
+		model.addAttribute("titleImgList", 			titleImgList);
+		model.addAttribute("gnbImgList", 			gnbImgList);
+		model.addAttribute("headerImgList", 		headerImgList);
+		model.addAttribute("displayArticleList", 	displayArticleList);
 		
 		return new ModelAndView("jsonView", model);
 	}

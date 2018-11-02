@@ -117,6 +117,14 @@ public interface DisplayService {
 	 */
 	Integer insertDisplayImgInfo(DispImgInfoVO paramVO) throws Exception;
 	
+	/**
+	 * 목적 : 전시매장 품목코드매핑 정보  조회
+	 * 매개변수 : DispShopBaseVO paramVO 조회조건
+	 * 반환값 : List<GoodsArtcCdVO> 전시매장 품목코드매핑 정보 리스트
+	 * 개정이력 : 없음
+	 */
+	List<GoodsArtcCdVO> selectDisplayArticleList(DispShopBaseVO paramVO) throws Exception;
+	
 	/*
 	 * 전시 이미지 삭제
 	 * @param  : DispShopBaseVO 삭제 정보

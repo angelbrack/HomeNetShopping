@@ -398,6 +398,17 @@ public class DisplayServiceImpl implements DisplayService {
 		return mybatisDataAccessDAO.delete("homenet.shop.display.service.DisplayService.deleteDisplayImgInfo", paramVO);
 	}
 
+	/**
+	 * 목적 : 전시매장 품목코드매핑 정보  조회
+	 * 매개변수 : DispShopBaseVO paramVO 조회조건
+	 * 반환값 : List<GoodsArtcCdVO> 전시매장 품목코드매핑 정보 리스트
+	 * 개정이력 : 없음
+	 */
+	@Override
+	public List<GoodsArtcCdVO> selectDisplayArticleList(DispShopBaseVO paramVO) throws Exception {
+		return (List<GoodsArtcCdVO>) mybatisDataAccessDAO.list("homenet.shop.display.service.DisplayService.selectDisplayArticleList", paramVO);
+	}
+	
 	/*
 	 * 전시매장 품목코드매핑 등록
 	 * @param  : goodsArtcCdVO 등록 정보

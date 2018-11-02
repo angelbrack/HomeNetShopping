@@ -57,7 +57,7 @@
 		
 	</resultMap>
 	
-	<!-- 품목군 Tree 정보 List -->
+	<!-- 전시매장 Tree 정보 List -->
 	<resultMap id="displayTreeList" type="dispShopBaseVO" extends="displayList">
 		<result property="childCount" 		 		 	column="CHILD_COUNT" 				/> <!-- 하위 전시 갯수    			-->
 	</resultMap>
@@ -66,16 +66,15 @@
 	<resultMap id="displayInfo" type="dispShopBaseVO" extends="displayList">
 	</resultMap>
 	
-	
+	<!-- 전시 이미지 정보 List -->
 	<resultMap id="displayImgInfoList" type="dispImgInfoVO">
-		
 		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
 		<result property="dispImgTpCd" 		 		 	column="DISP_IMG_TP_CD" 			/> <!-- 전시이미지유형코드			-->
-		<result property="imgSn" 		 		 		column="IMG_SN" 					/> <!-- 이미지일련번호				-->
+		<result property="imgSn" 		 		 		column="IMG_SN" 					/> <!-- 이미지일련번호			-->
 		<result property="dispShopSctCd" 		 		column="DISP_SHOP_SCT_CD" 			/> <!-- 전시매장구분코드			-->
 		<result property="bnrImgPathNm" 		 		column="BNR_IMG_PATH_NM" 			/> <!-- 새 컬럼2				-->
 		<result property="bnrImgFileNm" 		 		column="BNR_IMG_FILE_NM" 			/> <!-- 배너이미지파일명			-->
-		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 URL주소				-->
+		<result property="lnkUrlAddr" 		 		 	column="LNK_URL_ADDR" 				/> <!-- 연결 URL주소			-->
 		
 		<result property="wrtPnNo"  					column="WRT_PN_NO" 					/> <!-- 작성자번호 				-->
 		<result property="wrtPnIp"  					column="WRT_PN_IP" 					/> <!-- 작성자IP 				-->
@@ -83,6 +82,13 @@
 		<result property="updtPnNo"  					column="UPDT_PN_NO" 				/> <!-- 수정자번호 				--> 
 		<result property="updtPnIp"  					column="UPDT_PN_IP" 				/> <!-- 수정자IP 				-->   
 		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
+	</resultMap>
+	
+	<!-- 전시매장 품목코드매핑 정보 List -->
+	<resultMap id="displayArticleList" type="goodsArtcCdVO">
+		<result property="dispNo" 		 		 		column="DISP_NO" 					/> <!-- 전시번호				-->
+		<result property="artcCd" 		 		 		column="ARTC_CD" 					/> <!-- 품목코드       			-->	
+		<result property="artcNm" 		 		 		column="ARTC_NM" 					/> <!-- 품목명        				-->
 	</resultMap>
 	
 	<!-- 전시매장 정보 검색조건 -->
@@ -446,6 +452,20 @@
 		DELETE FROM TB_DISP_IMG_INFO
 		WHERE DISP_NO = #{dispNo				}
 	</delete>
+	
+	<select id="selectDisplayArticleList" parameterType="dispShopBaseVO" resultMap="displayArticleList">
+		/* homenet.shop.display.service.DisplayService.selectDisplayArticleList 전시매장 품목코드매핑 정보 조회*/
+		SELECT
+			  A.DISP_NO
+			, A.ARTC_CD
+			, B.ARTC_NM
+		FROM TB_CAT_ARTC_REL_INFO A
+			INNER JOIN TB_GOODS_ARTC_CD B ON A.ARTC_CD = B.ARTC_CD
+		<where>
+			AND A.DISP_NO = #{dispNo	}
+		</where>	
+		
+	</select>
 	
 	<insert id="insertDisplayArticle" parameterType="goodsArtcCdVO" >
 		/* homenet.shop.display.service.DisplayService.insertDisplayArticle, 전시매장 품목코드매핑 정보 등록 */

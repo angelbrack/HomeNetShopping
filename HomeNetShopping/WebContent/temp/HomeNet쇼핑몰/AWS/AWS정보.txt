@@ -6,7 +6,10 @@ AWS계정이름 : angelbrack
 #. window서버
 암호 : aDF!6P@aMUU?a*6n)q)-8?X5(7W!LJkh
 퍼블릭 DNS: ec2-54-250-247-38.ap-northeast-1.compute.amazonaws.com
+IPv4 퍼블릭 IP : 54.250.247.38
 
+프라이빗 DNS : ip-172-31-37-206.ap-northeast-1.compute.internal
+프라이빗 IP : 172.31.37.206
 
 #. oracle
 엔드포인트 : oracle11gr2.cbq7jkvjidzs.ap-northeast-2.rds.amazonaws.com
