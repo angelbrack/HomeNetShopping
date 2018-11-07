@@ -1650,3 +1650,110 @@ function fnRecoveHtml(sourceVal) {
 	
 	return changeVal
 }
+
+//카테고리 팝업
+function openDisplaySearchPopup(obj){
+	
+	clickObj = obj;
+	
+	var param = "&selectMallYn=Y&displayMallNo=EC1&selectLeafYn=Y";
+	var displaySearchPopup = new openPopup();
+	displaySearchPopup.open("displaySearchPopup",
+			"/display/display.search.popup.lecs",
+			param, 
+			{	isMultiSelect:true,
+				width:370,
+				height:600, 
+				callbackF:function(data) {	
+					setDisplayShopNo(data);
+			} 
+		});
+}
+
+function openPopup(){
+	var popObj = this;
+	this.defaultOption = {
+		menubar : "no",
+		scrollbars : "yes",
+		resizable : "no",
+		status : "yes",
+		width : 1000,
+		height : 600,
+		top : (screen.width)/2 - 500,
+		left : (screen.height)/2 - 250,
+		isMultiSelect : false,
+		callbackF : null
+	},
+	
+	this.popupWindow = null,
+	
+	this.data = null,
+	
+	this.open = function (id, url, param, o) {
+		if (o != undefined && o != null) {	// 옵션 셋팅
+			if (o.isMultiSelect != undefined && o.isMultiSelect != null) {
+				this.defaultOption.isMultiSelect = o.isMultiSelect;
+			}
+			if (o.width != undefined && o.width != null) {
+				this.defaultOption.width = o.width;
+			}
+			if (o.height != undefined && o.height != null) {
+				this.defaultOption.height = o.height;
+			}
+			if (o.scrollbars != undefined && o.scrollbars != null) {
+				this.defaultOption.scrollbars = o.scrollbars;
+			}
+			if (o.callbackF != undefined && o.callbackF != null) {
+				this.defaultOption.callbackF = o.callbackF;
+			}
+		}
+		
+		this.popupWindow = window.open(
+				url + "?isMultiSelect=" + this.defaultOption.isMultiSelect + param,
+				id,
+				"menubar=" + this.defaultOption.menubar + ",scrollbars=" + this.defaultOption.scrollbars 
+				+ ",resizable=" + this.defaultOption.resizable + ",status=" + this.defaultOption.status 
+				+ ",width=" + this.defaultOption.width + ",height=" + this.defaultOption.height 
+				+ ",top=" + this.defaultOption.top + ",left=" + this.defaultOption.left
+		);
+		
+		if (this.popupWindow != undefined && this.popupWindow!= null) {
+			this.popupWindow.focus();
+		}
+    	this.popupWindow.onload = new function(){
+    		setTimeout(function() { 
+    			if(popObj.popupWindow.closed == false) {
+    				popObj.popupWindow.RunCallbackFunction = popObj.selected;
+    			}
+    		}, 
+    		1000);
+			
+    		//화면이 늦게 로딩되는걸 대비해서 5초 후도 세팅
+    		setTimeout(function() {
+    			if(popObj.popupWindow.closed == false) {
+    				popObj.popupWindow.RunCallbackFunction = popObj.selected;
+    			} 
+    		}, 
+    		5000);
+    		setTimeout(function() {
+    			if(popObj.popupWindow.closed == false) {
+    				popObj.popupWindow.RunCallbackFunction = popObj.selected;
+    			} 
+    		}, 
+    		10000);
+		};
+    
+	},
+	
+	/**
+	 * 선택 후 실행되어야 할 function 실행
+	 */
+	this.selected = function(data) {
+		if (popObj.defaultOption.callbackF != undefined && popObj.defaultOption.callbackF != null) {
+			popObj.defaultOption.callbackF(data);
+		}
+		if (popObj.popupWindow != undefined && popObj.popupWindow != null) {
+			popObj.popupWindow.close();
+		}
+	};
+}

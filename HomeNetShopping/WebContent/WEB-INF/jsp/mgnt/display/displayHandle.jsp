@@ -287,7 +287,7 @@
 											<tr id="searchArticle">
 												<th scope="row"><label for="lstSortCd">품목군</label> </th>
 												<td colspan="3">
-													<div id="target1">						
+													<!-- <div id="target1">						
 														<input type="text" id="articleCode1" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />
 														<input type="text" id="articleName1" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />
 														<span class="hahahoho">
@@ -295,7 +295,7 @@
 									 						<a href="javascript:addNoArticleType(1);" name="addTargetBtn" class="btn_plus2">추가</a>
 															<a href="javascript:removeNoArticleType(1);" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>
 														</span>
-													 </div>
+													 </div> -->
 												</td>
 											</tr>
 										</tbody>
@@ -315,7 +315,7 @@
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181031000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181105000001"></script>
 <script type="text/javascript">
 <!--
 
@@ -452,9 +452,27 @@ function addNoArticleType(idx) {
 	addArticleNoMultiType(idx);
 
 	var divCnt = $("#searchArticle").find("div").length;
-	if($("#searchArticle").find("div").length > 2)
+	var cnt = divCnt-1;
+	for ( var i=divCnt; i>0; i-- ) {
+		if ( i == divCnt ) {
+			$("[name=addTargetBtn]").eq(cnt).show();
+		} else {
+			$("[name=addTargetBtn]").eq(cnt).hide();
+		}
+		
+		
+		if ( i == divCnt ) {
+			$("[name=removeTargetBtn]").eq(cnt).hide();
+		} else {
+			$("[name=removeTargetBtn]").eq(cnt).show();
+		}
+		
+		cnt--;
+	}
+	
+	/* if($("#searchArticle").find("div").length > 2)
 		$("#searchArticle").find("[name=removeTargetBtn]").show();
-	$("#searchArticle").find("div").eq(divCnt-2).find("[name=addTargetBtn]").hide();
+	$("#searchArticle").find("div").eq(divCnt-2).find("[name=addTargetBtn]").hide(); */
 }
 
 function addArticleNoMultiType(idx) {
@@ -485,11 +503,31 @@ function removeNoArticleType(idx) {
 	$("#articleCode"+idx).remove();
 	$("#articleName"+idx).remove();
 
-	if($("#searchArticle").find("div").length > 2)
+	
+	var divCnt = $("#searchArticle").find("div").length;
+	var cnt = divCnt-1;
+	for ( var i=divCnt; i>0; i-- ) {
+		if ( i == divCnt ) {
+			$("[name=addTargetBtn]").eq(cnt).show();
+		} else {
+			$("[name=addTargetBtn]").eq(cnt).hide();
+		}
+		
+		
+		if ( i == divCnt ) {
+			$("[name=removeTargetBtn]").eq(cnt).hide();
+		} else {
+			$("[name=removeTargetBtn]").eq(cnt).show();
+		}
+		
+		cnt--;
+	}
+	
+	/* if($("#searchArticle").find("div").length > 2)
 		$("#searchArticle").find("div:last").find("[name=removeTargetBtn]").show();
 	else if($("#searchArticle").find("div").length  == 2)
 		$("#searchArticle").find("div:last").find("[name=removeTargetBtn]").hide();
-	$("#searchArticle").find("div:last").find("[name=addTargetBtn]").show();
+	$("#searchArticle").find("div:last").find("[name=addTargetBtn]").show(); */
 }
 
 /**

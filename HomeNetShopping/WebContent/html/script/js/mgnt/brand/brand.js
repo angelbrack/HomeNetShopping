@@ -1,4 +1,3 @@
-//var oEditors = [];
 var option = {};
 option = {
 		"validList" : [
@@ -28,7 +27,7 @@ var brandList = {
 	},
 	// 검색
 	fnSearch : function() {
-		recuRecruitList.fnListPage(1);
+		brandList.fnListPage(1);
 	},
 	// 페이징에서 호출
 	fnListPage : function(pageNo) {

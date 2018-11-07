@@ -89,6 +89,10 @@ public class PagerVO implements Serializable {
 	
 	private Integer totalCount	= null;
 
+	private String  searchStartDate					; // 검색 기간 시작일자
+	private String  searchEndDate					; // 검색 기간 종료일자
+	private String  searchCheckOptDate				; // 검색 기간 체크 옵션
+	
 	/**
 	 * pageIndex attribute 를 리턴한다.
 	 * @return the int
@@ -401,6 +405,30 @@ public class PagerVO implements Serializable {
 
 	public void setCurrentSubPage(int currentSubPage) {
 		this.currentSubPage = currentSubPage;
+	}
+
+	public String getSearchStartDate() {
+		return searchStartDate;
+	}
+
+	public void setSearchStartDate(String searchStartDate) {
+		this.searchStartDate = searchStartDate;
+	}
+
+	public String getSearchEndDate() {
+		return searchEndDate;
+	}
+
+	public void setSearchEndDate(String searchEndDate) {
+		this.searchEndDate = searchEndDate;
+	}
+
+	public String getSearchCheckOptDate() {
+		return searchCheckOptDate;
+	}
+
+	public void setSearchCheckOptDate(String searchCheckOptDate) {
+		this.searchCheckOptDate = searchCheckOptDate;
 	}
 	
 	

@@ -56,7 +56,8 @@ function checkDelete()
 // 노드 생성 후 호출된다.
 function createItem(data, rdata)
 {
-	var result = eval('('+rdata+')');
+	//var result = eval('('+rdata+')');
+	var result = rdata;
 	$(data.rslt.obj).click(function ()
 	{
 		callbackCreateItem(result);
@@ -169,13 +170,14 @@ UtilTree.prototype.initDnd = function() {
 						},
 						
 						function (rdata) {
-							var r = eval('('+rdata+')');
+							//var r = eval('('+rdata+')');
+							var r = rdata;
+							
 							if(r.completeYn == "Y") {
 								$(data.rslt.obj).attr("id", "treeItem" + r.id);
 								createItem(data, rdata);
 							//	callbackDndCreate(data, rdata);
-							}
-							else {
+							} else {
 								$.jstree.rollback(data.rlbk);
 								alert("create ERROR");
 							}

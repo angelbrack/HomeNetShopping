@@ -38,7 +38,7 @@ public class MenuServiceImpl extends AbstractServiceImpl implements MenuService 
 		String newMenuNo = null;
 		mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu",menuVO);
 		
-		newMenuNo = menuVO.getMenuNo();
+		newMenuNo = menuVO.getSeqMenuNo();
 		
 		return newMenuNo; 
 	}
@@ -48,7 +48,8 @@ public class MenuServiceImpl extends AbstractServiceImpl implements MenuService 
 		String newMenuNo = null;
 		mybatisDataAccessDAO.insert("site.menu.service.MenuService.createMenu2",menuVO);
 		
-		newMenuNo = menuVO.getMenuNo();
+		//newMenuNo = menuVO.getMenuNo();
+		newMenuNo = menuVO.getSeqMenuNo();
 		
 		return newMenuNo; 
 	}

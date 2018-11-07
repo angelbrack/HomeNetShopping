@@ -256,14 +256,16 @@ var displayTreeList = {
 				contentType: 'application/json',
 				dataType:"json",
 				success : function (data) {
-					var info			= data.info;
-					var titleImgList	= data.titleImgList;
-					var gnbImgList		= data.gnbImgList;
-					var headerImgList	= data.headerImgList;
+					var info				= data.info;
+					var titleImgList		= data.titleImgList;
+					var gnbImgList			= data.gnbImgList;
+					var headerImgList		= data.headerImgList;
+					var displayArticleList 	= data.displayArticleList;
 					
 					/*console.log("info=["+JSON.stringify(info)+"]")
 					console.log("titleImgList=["+JSON.stringify(titleImgList)+"]")
-					console.log("gnbImgList=["+JSON.stringify(gnbImgList)+"]")*/
+					console.log("gnbImgList=["+JSON.stringify(gnbImgList)+"]")
+					console.log("displayArticleList=["+JSON.stringify(displayArticleList)+"]")*/
 					
 					$("#apndImgUl1").html("");
 					$("#apndImgUl2").html("");
@@ -354,6 +356,76 @@ var displayTreeList = {
 						fnFileEdit(3, JSON.stringify(headerImgList), "", "Y");
 					}
 					
+					// 전시매장 품목코드매핑 정보
+					var artcCd		= "";
+					var artcNm		= "";
+					var targetHtml	= "";
+					var idx			= 1;
+					
+					if ( tlwtLfYn == "Y" && displayArticleList != undefined ) {
+						
+						if ( displayArticleList.length > 0 ) {
+							for ( var i=0; i<displayArticleList.length; i++ ) {
+								artcCd = nvl(displayArticleList[i].artcCd, "");
+								artcNm = nvl(displayArticleList[i].artcNm, "");
+								
+								targetHtml += '<div id="target'+idx+'">';						
+								targetHtml += '	<input type="text" id="articleCode'+idx+'" name="articleCode1" value="'+artcCd+'" class="txtbox1"  style="width:80px;height:18px;" readOnly />';
+								targetHtml += '	<input type="text" id="articleName'+idx+'" name="articleName1" value="'+artcNm+'" class="txtbox1"  style="width:250px;height:18px;" readOnly />';
+								targetHtml += '	<span class="hahahoho">';
+								targetHtml += '		<a href="javascript:searchDisplayArticle(\'displayShopForm\', '+idx+');" name="popupBtnArticle1" id="popupBtnArticle'+idx+'" class="btn_search4">검색</a>';
+								targetHtml += '		<a href="javascript:addNoArticleType('+idx+');" id="addTargetBtn'+idx+'" name="addTargetBtn" class="btn_plus2">추가</a>';
+								targetHtml += '		<a href="javascript:removeNoArticleType('+idx+');" id="removeTargetBtn'+idx+'" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>';
+								targetHtml += '	</span>';
+								targetHtml += '</div>';
+							 
+							 	idx++;
+							}
+						} else {
+							targetHtml += '<div id="target'+idx+'">';						
+							targetHtml += '	<input type="text" id="articleCode'+idx+'" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />';
+							targetHtml += '	<input type="text" id="articleName'+idx+'" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />';
+							targetHtml += '	<span class="hahahoho">';
+							targetHtml += '		<a href="javascript:searchDisplayArticle(\'displayShopForm\', '+idx+');" name="popupBtnArticle1" id="popupBtnArticle1" class="btn_search4">검색</a>';
+							targetHtml += '		<a href="javascript:addNoArticleType('+idx+');" id="addTargetBtn1" name="addTargetBtn" class="btn_plus2">추가</a>';
+							targetHtml += '		<a href="javascript:removeNoArticleType('+idx+');" id="removeTargetBtn1" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>';
+							targetHtml += '	</span>';
+							targetHtml += '</div>';
+						}
+					} else {
+						targetHtml += '<div id="target'+idx+'">';						
+						targetHtml += '	<input type="text" id="articleCode'+idx+'" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />';
+						targetHtml += '	<input type="text" id="articleName'+idx+'" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />';
+						targetHtml += '	<span class="hahahoho">';
+						targetHtml += '		<a href="javascript:searchDisplayArticle(\'displayShopForm\', '+idx+');" name="popupBtnArticle1" id="popupBtnArticle1" class="btn_search4">검색</a>';
+						targetHtml += '		<a href="javascript:addNoArticleType('+idx+');" id="addTargetBtn1" name="addTargetBtn" class="btn_plus2">추가</a>';
+						targetHtml += '		<a href="javascript:removeNoArticleType('+idx+');" id="removeTargetBtn1" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>';
+						targetHtml += '	</span>';
+						targetHtml += '</div>';
+					}
+					
+					$("#searchArticle").children().next().html(targetHtml);
+					
+					var divCnt = $("#searchArticle").find("div").length;
+					var cnt = divCnt-1;
+					for ( var i=divCnt; i>0; i-- ) {
+						if ( i == divCnt ) {
+							$("[name=addTargetBtn]").eq(cnt).show();
+						} else {
+							$("[name=addTargetBtn]").eq(cnt).hide();
+						}
+						
+						
+						if ( i == divCnt ) {
+							$("[name=removeTargetBtn]").eq(cnt).hide();
+						} else {
+							$("[name=removeTargetBtn]").eq(cnt).show();
+						}
+						
+						cnt--;
+					}
+					
+					
 					$("#form1 #cmd").val("U");	// 수정
 				}, 
 				error: function(data, textStatus, errorThrown) {
@@ -411,6 +483,42 @@ var displayTreeList = {
 			
 			// 출력유형 change
 			$("#form1 #prtTpCd").change();
+			
+			// 품목군
+			var targetHtml	= "";
+			var idx			= 1;
+			
+			targetHtml += '<div id="target'+idx+'">';						
+			targetHtml += '	<input type="text" id="articleCode'+idx+'" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />';
+			targetHtml += '	<input type="text" id="articleName'+idx+'" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />';
+			targetHtml += '	<span class="hahahoho">';
+			targetHtml += '		<a href="javascript:searchDisplayArticle(\'displayShopForm\', '+idx+');" name="popupBtnArticle1" id="popupBtnArticle1" class="btn_search4">검색</a>';
+			targetHtml += '		<a href="javascript:addNoArticleType('+idx+');" id="addTargetBtn1" name="addTargetBtn" class="btn_plus2">추가</a>';
+			targetHtml += '		<a href="javascript:removeNoArticleType('+idx+');" id="removeTargetBtn1" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>';
+			targetHtml += '	</span>';
+			targetHtml += '</div>';
+			
+			$("#searchArticle").children().next().html(targetHtml);
+			
+			var divCnt = $("#searchArticle").find("div").length;
+			var cnt = divCnt-1;
+			for ( var i=divCnt; i>0; i-- ) {
+				if ( i == divCnt ) {
+					$("[name=addTargetBtn]").eq(cnt).show();
+				} else {
+					$("[name=addTargetBtn]").eq(cnt).hide();
+				}
+				
+				
+				if ( i == divCnt ) {
+					$("[name=removeTargetBtn]").eq(cnt).hide();
+				} else {
+					$("[name=removeTargetBtn]").eq(cnt).show();
+				}
+				
+				cnt--;
+			}
+			$("#searchArticle").hide();
 			
 			$("#form1 #cmd").val("I");	// 등록
 		}
@@ -509,6 +617,42 @@ var displayTreeList = {
 		// 출력유형 change
 		$("#form1 #prtTpCd").change();
 		
+		// 품목군
+		var targetHtml	= "";
+		var idx			= 1;
+		
+		targetHtml += '<div id="target'+idx+'">';						
+		targetHtml += '	<input type="text" id="articleCode'+idx+'" name="articleCode1" value="" class="txtbox1"  style="width:80px;height:18px;" readOnly />';
+		targetHtml += '	<input type="text" id="articleName'+idx+'" name="articleName1" value="" class="txtbox1"  style="width:250px;height:18px;" readOnly />';
+		targetHtml += '	<span class="hahahoho">';
+		targetHtml += '		<a href="javascript:searchDisplayArticle(\'displayShopForm\', '+idx+');" name="popupBtnArticle1" id="popupBtnArticle1" class="btn_search4">검색</a>';
+		targetHtml += '		<a href="javascript:addNoArticleType('+idx+');" id="addTargetBtn1" name="addTargetBtn" class="btn_plus2">추가</a>';
+		targetHtml += '		<a href="javascript:removeNoArticleType('+idx+');" id="removeTargetBtn1" name="removeTargetBtn" style="display: none;" class="btn_minus2">삭제</a>';
+		targetHtml += '	</span>';
+		targetHtml += '</div>';
+		
+		$("#searchArticle").children().next().html(targetHtml);
+		
+		var divCnt = $("#searchArticle").find("div").length;
+		var cnt = divCnt-1;
+		for ( var i=divCnt; i>0; i-- ) {
+			if ( i == divCnt ) {
+				$("[name=addTargetBtn]").eq(cnt).show();
+			} else {
+				$("[name=addTargetBtn]").eq(cnt).hide();
+			}
+			
+			
+			if ( i == divCnt ) {
+				$("[name=removeTargetBtn]").eq(cnt).hide();
+			} else {
+				$("[name=removeTargetBtn]").eq(cnt).show();
+			}
+			
+			cnt--;
+		}
+		$("#searchArticle").hide();
+		
 		$("#form1 #cmd").val("I");
 	},
 	// 저장 버튼 click
@@ -523,7 +667,7 @@ var displayTreeList = {
 		var dispNm	= data.dispNm;
 		
 		var treeId	= nvl($("#form1 #treeId").val(), "treeRoot");
-		alert("treeId=["+treeId+"]");
+		//alert("treeId=["+treeId+"]");
 		var param	= JSON.stringify(data); 
 			
 		if ( !confirm("저장하시겠습니까?") ) return false;
@@ -957,7 +1101,7 @@ var displayHandle = {
 		}
 		
 		var param	= JSON.stringify(data); 
-		console.log(param);
+		//console.log(param);
    		
    		if ( !confirm("삭제하시겠습니까?") ) return false; 
    		

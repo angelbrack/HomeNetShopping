@@ -148,7 +148,8 @@ public class MgntSystemMenuController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/mgnt/system/MenuCreateAction.do")
-	public ResponseEntity<String> createMenu(HttpServletRequest request, ModelMap model, @ModelAttribute("menuVO") MenuVO menuVO) throws Exception {
+	//public ResponseEntity<String> createMenu(HttpServletRequest request, ModelMap model, @ModelAttribute("menuVO") MenuVO menuVO) throws Exception {
+	public ModelAndView createMenu(HttpServletRequest request, ModelMap model, @ModelAttribute("menuVO") MenuVO menuVO) throws Exception {
 		
 		String userNo = "";
 		/** 관리자 로그인 체크 start */
@@ -189,13 +190,20 @@ public class MgntSystemMenuController {
 			completeYn = "Y";
 		}
 		
-		JSONObject obj = new JSONObject();
+		/*JSONObject obj = new JSONObject();
 		obj.put("completeYn", completeYn);
 		obj.put("menuInfo", menuInfo);
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=UTF-8");
-		return new ResponseEntity<String>(obj.toJSONString(), responseHeaders, HttpStatus.CREATED);
+		return new ResponseEntity<String>(obj.toJSONString(), responseHeaders, HttpStatus.CREATED);*/
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		resultMap.put("completeYn", 	completeYn);
+		resultMap.put("menuInfo", 		menuInfo);
+		
+		return new ModelAndView("jsonView", resultMap);
 	}
 	
 }
