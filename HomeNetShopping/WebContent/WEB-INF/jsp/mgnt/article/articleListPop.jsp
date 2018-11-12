@@ -52,7 +52,7 @@
 			<div class="con_list">
 				<table>
 					<caption>
-						기업정보에 대한 목록
+						품목군 정보에 대한 목록
 					</caption>
 					<colgroup>
 						<col width="4%" />

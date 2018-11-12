@@ -1656,14 +1656,15 @@ function openDisplaySearchPopup(obj){
 	
 	clickObj = obj;
 	
-	var param = "&selectMallYn=Y&displayMallNo=EC1&selectLeafYn=Y";
+	//var param = "&selectMallYn=Y&searchDpmlNo=EC1&searchShopTpCd=01&searchTlwtLfYn=Y";
+	var param = "&selectMallYn=Y&searchDpmlNo=EC1&searchShopTpCd=01";
 	var displaySearchPopup = new openPopup();
 	displaySearchPopup.open("displaySearchPopup",
-			"/display/display.search.popup.lecs",
+			"/mgnt/display/displayListPop.do",
 			param, 
 			{	isMultiSelect:true,
-				width:370,
-				height:600, 
+				width:1000,
+				height:700, 
 				callbackF:function(data) {	
 					setDisplayShopNo(data);
 			} 
@@ -1671,7 +1672,12 @@ function openDisplaySearchPopup(obj){
 }
 
 function openPopup(){
+	
 	var popObj = this;
+	
+	var top		= (screen.height)/2 - 250;
+	var left	= (screen.width)/2 - 500;
+	
 	this.defaultOption = {
 		menubar : "no",
 		scrollbars : "yes",
@@ -1679,8 +1685,8 @@ function openPopup(){
 		status : "yes",
 		width : 1000,
 		height : 600,
-		top : (screen.width)/2 - 500,
-		left : (screen.height)/2 - 250,
+		top : top,
+		left : left,
 		isMultiSelect : false,
 		callbackF : null
 	},

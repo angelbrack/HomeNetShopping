@@ -64,7 +64,7 @@ public class MgntDisplayController {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		DpmlBaseVO dpmlBaseVO = new DpmlBaseVO();
-		dpmlBaseVO.setDpmlNm(paramVO.getDpmlNo());
+		dpmlBaseVO.setDpmlNo(paramVO.getDpmlNo());
 		
 		// 전시몰 조회
 		List<DpmlBaseVO> mallList = displayService.selectDisplayMallList(dpmlBaseVO);
@@ -246,6 +246,53 @@ public class MgntDisplayController {
 		resultMap.put("completeYn", completeYn);
 		
 		return new ModelAndView("jsonView", resultMap);
+	}
+	
+	/*
+	 * 전시매장 리스트
+	 * 
+	 * @param  : DispShopBaseVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/display/displayListPop.do")
+	public String displayListPop(@ModelAttribute("searchVO") DispShopBaseVO paramVO, ModelMap model, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+
+		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
+		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
+		paginationInfo.setPageSize(paramVO.getPageSize());
+		
+		paramVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		paramVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		paramVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		int totalCount = 0;
+		List<DispShopBaseVO> list = displayService.selectDisplayList(paramVO);
+		
+		if ( list != null && list.size() > 0 ) {
+			totalCount = list.get(0).getTotalCount();
+		}
+		
+		paginationInfo.setTotalRecordCount(totalCount);
+		
+		model.addAttribute("resultList", 		list);
+		model.addAttribute("totalCount", 		totalCount);
+        model.addAttribute("paginationInfo", 	paginationInfo);
+		
+
+		DpmlBaseVO dpmlBaseVO = new DpmlBaseVO();
+		dpmlBaseVO.setDpmlNo(paramVO.getDpmlNo());
+		
+		// 전시몰 조회
+		List<DpmlBaseVO> mallList = displayService.selectDisplayMallList(dpmlBaseVO);
+		model.addAttribute("mallList", 			mallList);
+		
+        return "mgnt/display/displayListPop";
 	}
 
 }

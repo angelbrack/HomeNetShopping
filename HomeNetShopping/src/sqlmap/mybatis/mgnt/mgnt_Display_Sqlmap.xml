@@ -53,6 +53,12 @@
 		<result property="updtPnIp"  					column="UPDT_PN_IP" 				/> <!-- 수정자IP 				-->   
 		<result property="updtDttm"  					column="UPDT_DTTM" 					/> <!-- 수정일시 				-->
 		
+		<result property="dpmlNm" 		 		 		column="DPML_NM" 					/> <!-- 전시몰_명				-->
+		<result property="shopTpNm" 		 		 	column="SHOP_TP_NM" 				/> <!-- 매장유형코드_명			-->
+		<result property="dispLrgNm" 		 		 	column="DISP_LRG_NM" 				/> <!-- 전시대_명				-->
+		<result property="dispMidNm" 		 		 	column="DISP_MID_NM" 				/> <!-- 전시중_명				-->
+		<result property="dispSmlNm" 		 		 	column="DISP_SML_NM" 				/> <!-- 전시소_명				-->
+		<result property="dispThnNm" 		 		 	column="DISP_THN_NM" 				/> <!-- 전시세_명				-->
 		<result property="totalCount"  					column="TOTAL_COUNT" 				/> <!-- Record Total Count 	-->
 		
 	</resultMap>
@@ -94,8 +100,14 @@
 	<!-- 전시매장 정보 검색조건 -->
 	<sql id="searchDisplay">
 		<where>
+			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchDpmlNo)">
+      			AND A.DPML_NO = #{searchDpmlNo}
+    		</if>
 			<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchShopTpCd)">
       			AND A.SHOP_TP_CD = #{searchShopTpCd}
+    		</if>
+    		<if test="@homenet.shop.common.mybatis.Expression@isNotEmpty(searchTlwtLfYn)">
+      			AND A.TLWT_LF_YN = #{searchTlwtLfYn}
     		</if>
     
 			<if test='searchWord != null and searchWord != ""'>
@@ -154,6 +166,27 @@
 		/* homenet.shop.display.service.DisplayService.selectDisplayList 전시매장 정보 조회*/
 		SELECT 
 			  Z.*
+			, FN_COMM_NM('SHOP_TP_CD', Z.SHOP_TP_CD) AS SHOP_TP_NM
+			, (
+				SELECT
+					DPML_NM
+				FROM TB_DPML_BASE 
+				WHERE DPML_NO = Z.DPML_NO
+			  ) AS DPML_NM
+		<choose>
+			<when test='searchMenuUseYn != null and searchMenuUseYn != "Y"'>
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_LRG_NO AND A.MENU_USE_YN = #{searchMenuUseYn } ) AS DISP_LRG_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_MID_NO AND A.MENU_USE_YN = #{searchMenuUseYn } ) AS DISP_MID_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_THN_NO AND A.MENU_USE_YN = #{searchMenuUseYn } ) AS DISP_THN_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_THN_NO AND A.MENU_USE_YN = #{searchMenuUseYn } ) AS DISP_THN_NM
+			</when>
+			<when test='searchMenuUseYn == null or searchMenuUseYn == ""'>
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_LRG_NO ) AS DISP_LRG_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_MID_NO ) AS DISP_MID_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_THN_NO ) AS DISP_THN_NM
+			, ( SELECT A.DISP_NM FROM TB_DISP_SHOP_BASE A WHERE A.DISP_NO = Z.DISP_THN_NO ) AS DISP_THN_NM		
+			</when>
+		</choose>
 		FROM (
 			SELECT 
 				  ROWNUM RNUM
@@ -161,36 +194,44 @@
 				, COUNT(0) OVER () AS TOTAL_COUNT   
 			FROM (
 				SELECT
-					  A.DISP_NO
-					, A.UPR_DISP_NO
-					, A.DPML_NO
-					, A.DISP_NM
-					, A.DISP_GNB_NM
-					, A.GNB_EXP_METH_CD
-					, A.DISP_TIT_NM
-					, A.DISP_TIT_EXP_METH_CD
-					, A.SHOP_TP_CD
-					, A.SHOP_DESC_CONT
-					, A.DPTH_NO
-					, A.DISP_PRIO_RNK
-					, A.USE_YN
-					, A.DISP_YN
-					, A.TLWT_LF_YN
-					, A.PRT_TP_CD
-					, A.LST_SORT_CD
-					, A.MOV_FRME_CD
-					, A.LNK_URL_ADDR
-					, A.LNK_SPDP_HH_NO
-					, A.DISP_LRG_NO
-					, A.DISP_MID_NO
-					, A.DISP_SML_NO
-					, A.DISP_THN_NO
-					, A.MENU_USE_YN
-					, A.TMPL_NO
-					, A.PPP_SN
-					<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
-				FROM TB_DISP_SHOP_BASE A
-				<include refid="searchDisplay" />		
+					A.*
+				FROM (
+					SELECT
+						  A.DISP_NO
+						, A.UPR_DISP_NO
+						, A.DPML_NO
+						, A.DISP_NM
+						, A.DISP_GNB_NM
+						, A.GNB_EXP_METH_CD
+						, A.DISP_TIT_NM
+						, A.DISP_TIT_EXP_METH_CD
+						, A.SHOP_TP_CD
+						, A.SHOP_DESC_CONT
+						, A.DPTH_NO
+						, A.DISP_PRIO_RNK
+						, A.USE_YN
+						, A.DISP_YN
+						, A.TLWT_LF_YN
+						, A.PRT_TP_CD
+						, A.LST_SORT_CD
+						, A.MOV_FRME_CD
+						, A.LNK_URL_ADDR
+						, A.LNK_SPDP_HH_NO
+						, A.DISP_LRG_NO
+						, A.DISP_MID_NO
+						, A.DISP_SML_NO
+						, A.DISP_THN_NO
+						, A.MENU_USE_YN
+						, A.TMPL_NO
+						, A.PPP_SN
+						<include refid="homenet.shop.comm.common.service.CommonService.selectCommonCol" />  
+					FROM TB_DISP_SHOP_BASE A
+					<include refid="searchDisplay" />	
+				) A, TB_DISP_SHOP_BASE B
+				WHERE A.DISP_NO = B.DISP_NO
+				START WITH A.UPR_DISP_NO IS NULL
+  				CONNECT BY  A.UPR_DISP_NO = PRIOR A.DISP_NO  
+                ORDER SIBLINGS BY A.DISP_PRIO_RNK, A.DISP_NM DESC	
 	   		) X
 	   	)Z	
 	   	<if test='recordCountPerPage != null and recordCountPerPage != 0'>
