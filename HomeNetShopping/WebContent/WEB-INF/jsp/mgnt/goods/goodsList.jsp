@@ -158,24 +158,29 @@ function setDisplayShopNo(data) {
 	var cataName;
 	
 	$(data).each(function() {
-	
-		if(this.displayLargeName != null) {
-			cataName = this.displayLargeName;
+		console.log("this.dispLrgNm="+this.dispLrgNm);
+		console.log("this.dispMidNm="+this.dispMidNm);
+		console.log("this.dispSmlNm="+this.dispSmlNm);
+		console.log("this.dispThnNm="+this.dispThnNm);
+		if(this.dispLrgNm != null && this.dispLrgNm != "") {
+			cataName = this.dispLrgNm;
 		} 
-		if(this.displayMiddleName != null) {
-			cataName = cataName + ">" +this.displayMiddleName;
+		if(this.dispMidNm != null && this.dispMidNm != "") {
+			cataName = cataName + " > " +this.dispMidNm;
 		}
-		if(this.displaySmallName != null) {
-			cataName = cataName + ">" +this.displaySmallName;
+		if(this.dispSmlNm != null && this.dispSmlNm != "") {
+			cataName = cataName + " > " +this.dispSmlNm;
 		}
-		if(this.displayXSmallName != null) {
-			cataName = cataName + ">" +this.displayXSmallName;
+		if(this.dispThnNm != null && this.dispThnNm != "") {
+			cataName = cataName + " > " +this.dispThnNm;
 		}
 		
-		if(this.dispNm != null) {
+		console.log("cataName="+cataName);
+		
+		if(cataName == null || cataName == "") {
 			cataName = this.dispNm;
 		}
-			
+		
 		$('#searchDispNo').val(this.dispNo);
 		$('#searchDispNm').val(cataName);
 	

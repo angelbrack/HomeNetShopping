@@ -55,10 +55,10 @@ public class DispShopBaseVO  extends PagerVO {
 	private String  shopTpNm              	; // 매장유형코드_명
 	private String  dpmlNm                 	; // 전시몰_명
 	
-	private Integer dispLrgNm             	; // 전시대_명
-	private Integer dispMidNm             	; // 전시중_명
-	private Integer dispSmlNm             	; // 전시소_명
-	private Integer dispThnNm             	; // 전시세_명
+	private String  dispLrgNm             	; // 전시대_명
+	private String  dispMidNm             	; // 전시중_명
+	private String  dispSmlNm             	; // 전시소_명
+	private String  dispThnNm             	; // 전시세_명
 	
 	private Integer childCount				; // 하위 전시 갯수
 	
@@ -283,6 +283,30 @@ public class DispShopBaseVO  extends PagerVO {
 	}
 	public void setDpmlNm(String dpmlNm) {
 		this.dpmlNm = dpmlNm;
+	}
+	public String getDispLrgNm() {
+		return dispLrgNm;
+	}
+	public void setDispLrgNm(String dispLrgNm) {
+		this.dispLrgNm = dispLrgNm;
+	}
+	public String getDispMidNm() {
+		return dispMidNm;
+	}
+	public void setDispMidNm(String dispMidNm) {
+		this.dispMidNm = dispMidNm;
+	}
+	public String getDispSmlNm() {
+		return dispSmlNm;
+	}
+	public void setDispSmlNm(String dispSmlNm) {
+		this.dispSmlNm = dispSmlNm;
+	}
+	public String getDispThnNm() {
+		return dispThnNm;
+	}
+	public void setDispThnNm(String dispThnNm) {
+		this.dispThnNm = dispThnNm;
 	}
 	public Integer getChildCount() {
 		return childCount;

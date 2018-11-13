@@ -125,14 +125,32 @@
 						<c:forEach items="${resultList}" var="item" varStatus="status">
 						<tr>
 							<td>
-								<input type="radio"  id="selRdo_<c:out value="${status.count }"/>" name="selRdo" title="선택" /> 
+								<input type="radio"  id="selRdo_<c:out value="${status.count }"/>" 		name="selRdo" title="선택" /> 
 								<input type="hidden" id="dispNo_<c:out value="${status.count }"/>" 		name="selDispNo" 		value="<c:out value="${item.dispNo 		}"						/>" 	/>
 								<input type="hidden" id="dispNm_<c:out value="${status.count }"/>" 		name="selDispNm" 		value="<c:out value="${item.dispNm 		}"	escapeXml="false" 	/>" 	/>
+								<input type="hidden" id="dispLrgNm_<c:out value="${status.count }"/>" 	name="selDispLrgNm" 	value="<c:out value="${item.dispLrgNm 	}"	escapeXml="false" 	/>" 	/>
+								<input type="hidden" id="dispMidNm_<c:out value="${status.count }"/>" 	name="selDispMidNm" 	value="<c:out value="${item.dispMidNm 	}"	escapeXml="false" 	/>" 	/>
+								<input type="hidden" id="dispSmlNm_<c:out value="${status.count }"/>" 	name="selDispSmlNm" 	value="<c:out value="${item.dispSmlNm 	}"	escapeXml="false" 	/>" 	/>
+								<input type="hidden" id="dispThnNm_<c:out value="${status.count }"/>" 	name="selDispThnNm" 	value="<c:out value="${item.dispThnNm 	}"	escapeXml="false" 	/>" 	/>
 							</td>
 							<td><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.currentPage-1) * searchVO.recordCountPerPage + status.count)}"/></td>
 							<td><c:out value="${item.dpmlNm }" escapeXml="false" /></td>
 							<td><c:out value="${item.dispNo }" escapeXml="false" /></td>
-							<td class="al pl20 ellip"><c:out value="${item.dispNm }" escapeXml="false" /></td>
+							<td class="al pl20 ellip">
+								<c:if test="${not empty item.dispLrgNm }">
+									<c:out value="${item.dispLrgNm }" escapeXml="false" />
+								</c:if>
+								<c:if test="${not empty item.dispMidNm }">
+									> <c:out value="${item.dispMidNm }" escapeXml="false" />
+								</c:if>
+								<c:if test="${not empty item.dispSmlNm }">
+									> <c:out value="${item.dispSmlNm }" escapeXml="false" />
+								</c:if>
+								<c:if test="${not empty item.dispThnNm }">
+									> <c:out value="${item.dispThnNm }" escapeXml="false" />
+								</c:if>
+							
+							</td>
 							<td><c:out value="${item.shopTpNm }" escapeXml="false" /></td>
 							<td><c:out value="${item.dpthNo }" escapeXml="false" /></td>
 							<td><c:out value="${item.dispPrioRnk }" escapeXml="false" /></td>
@@ -218,11 +236,17 @@ function fnSelDisplay() {
 	
 	var dispNo 			= $("input[name=selDispNo]").eq(checkedIdx).val();
 	var dispNm 			= $("input[name=selDispNm]").eq(checkedIdx).val();
+	var dispLrgNm 		= $("input[name=selDispLrgNm]").eq(checkedIdx).val();
+	var dispMidNm 		= $("input[name=selDispMidNm]").eq(checkedIdx).val();
+	var dispSmlNm 		= $("input[name=selDispSmlNm]").eq(checkedIdx).val();
+	var dispThnNm 		= $("input[name=selDispThnNm]").eq(checkedIdx).val();
 	
-	displayInfo.dispNo 		= dispNo 		;
-	displayInfo.dispNm 		= dispNm 		;
-	
-	//opener.selArticleCallback(articleInfo);
+	displayInfo.dispNo 			= dispNo 		;
+	displayInfo.dispNm 			= dispNm 		;
+	displayInfo.dispLrgNm 		= dispLrgNm 	;
+	displayInfo.dispMidNm 		= dispMidNm 	;
+	displayInfo.dispSmlNm 		= dispSmlNm 	;
+	displayInfo.dispThnNm 		= dispThnNm 	;
 	
 	RunCallbackFunction(displayInfo);
 }

@@ -315,7 +315,7 @@
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxcommon.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree.js"></script>
 <script src="<ctag:conf key="JS.PATH" />dhtmlxtree/dhtmlxtree_start.js"></script>
-<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181105000001"></script>
+<script type="text/javascript" src="<ctag:conf key="JS.PATH" />/mgnt/display/display.js?20181113000001"></script>
 <script type="text/javascript">
 <!--
 
