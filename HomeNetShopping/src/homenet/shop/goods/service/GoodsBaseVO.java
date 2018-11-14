@@ -27,6 +27,7 @@ public class GoodsBaseVO extends PagerVO {
 	private Integer searchDispNo					; // 검색 전시번호
 	private Integer searchDispNm					; // 검색 전시명
 	private String  searchArtcCd                    ; // 검색 품목코드
+	private String  searchArtcNm                    ; // 검색 품목명
 	private Integer searchSupCorpNo                 ; // 검색 공급사코드
 	private List<Integer> searchGoodsNoList	        ; // 검색 상품번호 리스트
 	private List<Integer> searchBrndNoList	        ; // 검색 브랜드번호 리스트
@@ -141,6 +142,12 @@ public class GoodsBaseVO extends PagerVO {
 	}
 	public void setSearchArtcCd(String searchArtcCd) {
 		this.searchArtcCd = searchArtcCd;
+	}
+	public String getSearchArtcNm() {
+		return searchArtcNm;
+	}
+	public void setSearchArtcNm(String searchArtcNm) {
+		this.searchArtcNm = searchArtcNm;
 	}
 	public Integer getSearchSupCorpNo() {
 		return searchSupCorpNo;

@@ -353,4 +353,6 @@ public class MgntGoodsArticleController {
 		
 		return "mgnt/article/articleListPop";
 	}
+	
+	
 }

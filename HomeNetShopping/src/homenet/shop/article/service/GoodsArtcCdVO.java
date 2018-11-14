@@ -1,5 +1,7 @@
 package homenet.shop.article.service;
 
+import java.util.List;
+
 import prjframework.common.util.PagerVO;
 
 public class GoodsArtcCdVO extends PagerVO {
@@ -8,8 +10,15 @@ public class GoodsArtcCdVO extends PagerVO {
 	
 	private Integer searchArtcDpthNo 	    	; // 검색 품목깊이번호
 	private String  searchConnectByDeniedYn		; // 검색 Connect By 거부 여부
+	private String  searchArtcUpCd 	            ; // 검색 품목군코드(품목깊이번호 2인 품목코드)
+	private String  searchArtcCd 	            ; // 검색 품목코드
+	private String  searchArtcCdOption 	        ; // 검색 품목코드 옵션(artcCd : 품목코드)
+	private List<?> searchArtcCdList 	        ; // 검색 품목코드 리스트
+	private String  searchEcArtcCd 		        ; // 검색 전자상거래품목코드
 	
 	private String  artcCd			            ; // 품목코드
+	private String  artcUpCd			        ; // 품목군코드(품목코드 앞 2자리)
+	private String  artcUpNm			        ; // 품목군명(품목코드 앞 2자리)
 	private String  ecArtcCd 		            ; // 전자상거래품목코드
 	private String  uprArtcCd 	                ; // 상위 품목코드
 	private Integer artcDpthNo 	                ; // 품목깊이번호
@@ -39,11 +48,53 @@ public class GoodsArtcCdVO extends PagerVO {
 	public void setSearchConnectByDeniedYn(String searchConnectByDeniedYn) {
 		this.searchConnectByDeniedYn = searchConnectByDeniedYn;
 	}
+	public String getSearchArtcUpCd() {
+		return searchArtcUpCd;
+	}
+	public void setSearchArtcUpCd(String searchArtcUpCd) {
+		this.searchArtcUpCd = searchArtcUpCd;
+	}
+	public String getSearchArtcCd() {
+		return searchArtcCd;
+	}
+	public void setSearchArtcCd(String searchArtcCd) {
+		this.searchArtcCd = searchArtcCd;
+	}
+	public String getSearchArtcCdOption() {
+		return searchArtcCdOption;
+	}
+	public void setSearchArtcCdOption(String searchArtcCdOption) {
+		this.searchArtcCdOption = searchArtcCdOption;
+	}
+	public List<?> getSearchArtcCdList() {
+		return searchArtcCdList;
+	}
+	public void setSearchArtcCdList(List<?> searchArtcCdList) {
+		this.searchArtcCdList = searchArtcCdList;
+	}
+	public String getSearchEcArtcCd() {
+		return searchEcArtcCd;
+	}
+	public void setSearchEcArtcCd(String searchEcArtcCd) {
+		this.searchEcArtcCd = searchEcArtcCd;
+	}
 	public String getArtcCd() {
 		return artcCd;
 	}
 	public void setArtcCd(String artcCd) {
 		this.artcCd = artcCd;
+	}
+	public String getArtcUpCd() {
+		return artcUpCd;
+	}
+	public void setArtcUpCd(String artcUpCd) {
+		this.artcUpCd = artcUpCd;
+	}
+	public String getArtcUpNm() {
+		return artcUpNm;
+	}
+	public void setArtcUpNm(String artcUpNm) {
+		this.artcUpNm = artcUpNm;
 	}
 	public String getEcArtcCd() {
 		return ecArtcCd;

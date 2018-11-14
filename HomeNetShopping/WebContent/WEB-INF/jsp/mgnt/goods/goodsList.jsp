@@ -69,11 +69,18 @@
                             <td class="tit"><label for="searchDispNo">전시카테고리</label></td>
                             <td colspan="2">
                             	<input type="text" name="searchDispNo" id="searchDispNo" title='전시번호' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNo }" />" readOnly />
-                            	<input type="text" name="searchDispNm" id="searchDispNm" title='전시명' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNm }" />" readOnly />
+                            	<input type="text" name="searchDispNm" id="searchDispNm" title='전시명' maxlength="20" style="width:300px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNm }" />" readOnly />
                             	<a href="#none" onclick="openDisplaySearchPopup();" class="btn_search3 ml2 mr2" id="btnSearchDisp">검색</a>
                             </td>
                         </tr>
-                        
+                        <tr>
+                            <td class="tit"><label for="searchArtcCd">품목코드</label></td>
+                            <td colspan="2">
+                            	<input type="text" name="searchArtcCd" id="searchArtcCd" title='품목코드' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNo }" />" readOnly />
+                            	<input type="text" name="searchArtcNm" id="searchArtcNm" title='품목명' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNm }" />" readOnly />
+                            	<a href="#none" onclick="openGoodsArticleSearchPopup();" class="btn_search3 ml2 mr2" id="btnSearchGoodsArticle">검색</a>
+                            </td>
+                        </tr>
 						<tr>
                             <td class="tit"><label for="searchWord">검색어</label></td>
                             <td>
@@ -153,8 +160,8 @@ $(document).ready(function() {
 	goodsList.init();
 });
 
-//전시카테고리 팝업 callback 함수
-function setDisplayShopNo(data) {
+// 전시카테고리 팝업 callback 함수
+function setDisplayShop(data) {
 	var cataName;
 	
 	$(data).each(function() {
@@ -186,6 +193,14 @@ function setDisplayShopNo(data) {
 	
 	});
 
+}
+
+//품목군 팝업 callback 함수
+function setGoodsArticle(data) {
+	$(data).each(function() {
+		$('#searchArtcCd').val(this.artcCd);
+		$('#searchArtcNm').val(this.artcNm);
+	});
 }
 //-->
 </script>

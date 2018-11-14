@@ -1651,7 +1651,7 @@ function fnRecoveHtml(sourceVal) {
 	return changeVal
 }
 
-//카테고리 팝업
+// 전시카테고리 팝업
 function openDisplaySearchPopup(obj){
 	
 	clickObj = obj;
@@ -1666,7 +1666,27 @@ function openDisplaySearchPopup(obj){
 				width:1000,
 				height:700, 
 				callbackF:function(data) {	
-					setDisplayShopNo(data);
+					setDisplayShop(data);
+			} 
+		});
+}
+
+// 품목군 팝업
+function openGoodsArticleSearchPopup(obj){
+	
+	clickObj = obj;
+	
+	//var param = "&selectMallYn=Y&searchDpmlNo=EC1&searchShopTpCd=01&searchTlwtLfYn=Y";
+	var param = "&selectMallYn=Y&searchDpmlNo=EC1&searchShopTpCd=01";
+	var goodsArticleSearchPopup = new openPopup();
+	goodsArticleSearchPopup.open("goodsArticleSearchPopup",
+			"/mgnt/article/articleListPop.do",
+			param, 
+			{	isMultiSelect:true,
+				width:1000,
+				height:700, 
+				callbackF:function(data) {	
+					setGoodsArticle(data);
 			} 
 		});
 }

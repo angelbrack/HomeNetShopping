@@ -249,7 +249,7 @@ public class MgntDisplayController {
 	}
 	
 	/*
-	 * 전시매장 리스트
+	 * 전시매장 리스트 - 팝업
 	 * 
 	 * @param  : DispShopBaseVO paramVO
 	 * @param  : ModelMap model

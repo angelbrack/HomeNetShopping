@@ -21,22 +21,55 @@
 			<div class="con_search">
 				<table style="border:10px">
 					<colgroup>
-						<col width="15%" />
-						<col width="*" />
-						<col width="15%" />
+						<col style="width: 4%;">
+						<col style="width: 21%;">
+						<col style="width: 6%;">
+						<col style="width: 25%;">
+						<col style="width: 13%;">	
 					</colgroup>
 					<tbody>
 						<tr>
-							<td colspan="3" class="blank"></td>
+							<td colspan="5" class="blank"></td>
 						</tr>
 						<tr>
-							<td class="tit">품목군 검색</td>
-							<td colspan="2">
+							<td class="tit">품목군 </td>
+							<td>
+								<select id="searchArtcUpCd" name="searchArtcUpCd">
+									<option value="">전체</option>
+									<c:forEach var="item" items="${searchArtcUpCdList}">
+									<option value="${item.artcCd}">${item.artcNm}</option>
+									</c:forEach>
+								</select>
+							</td>
+							<td class="tit">품목 </td>
+							<td>
+								<select id="searchArtcCd" name="searchArtcCd">
+									<option value="">-전체-</option>
+								</select>
+							</td>
+							<td>
+								<select id="searchArtcCdOption" name="searchArtcCdOption">
+									<option value="">선택</option>
+									<option value="artcCd">품목코드</option>
+								</select>
+								<textarea id="searchArtcCdList"  name="searchArtcCdList" style="width:80%;height:100px;"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td class="tit">공정위 품목군 </td>
+							<td>
+								<ctag:code name="searchEcArtcCd" type="S" key="EC_ARTC_CD" selected=""  css="form" />
+							</td>
+						</tr>
+						<tr>
+							<td class="tit">구분</td>
+							<td colspan="4">
 								<label for="searchKey" class="hidden">검색구분</label>
 								<select name="searchKey" id="searchKey" style="height:22px;" >
 				                    <option value="" 	<c:if test="${empty searchVO.searchKey}">selected</c:if>>-전체-</option>
-				                    <option value="000" <c:if test="${searchVO.searchKey eq '001'}">selected</c:if>>품목코드</option>
-				                    <option value="001" <c:if test="${searchVO.searchKey eq '002'}">selected</c:if>>품목명</option>
+				                    <option value="001" <c:if test="${searchVO.searchKey eq '001'}">selected</c:if>>품목군명</option>
+				                    <option value="002" <c:if test="${searchVO.searchKey eq '002'}">selected</c:if>>품목군 코드(2자리)</option>
+				                    <option value="003" <c:if test="${searchVO.searchKey eq '003'}">selected</c:if>>품목명</option>
 				                </select>
 								<label for="searchWord" class="hidden">검색어</label>
 								<input type="text" name="searchWord" id="searchWord" value="<c:out value="${searchVO.searchWord}" />" style="width:250px;height:18px;" class="txtbox1" title="검색어" onkeypress="if(event.keyCode==13) {fnSearch();}" />
@@ -117,6 +150,9 @@
 </div>
 <script type="text/javascript">
 <!--
+
+var RunCallbackFunction = function() { };
+
 // 검색
 function fnSearch() {
 	fnListPage(1);
@@ -170,9 +206,7 @@ function fnSelArticle() {
 	articleInfo.artcCd 		= artcCd 		;
 	articleInfo.artcNm 		= artcNm 		;
 	
-	opener.selArticleCallback(articleInfo);
-	
-	self.close();
+	RunCallbackFunction(displayInfo);
 }
 //-->
 </script>

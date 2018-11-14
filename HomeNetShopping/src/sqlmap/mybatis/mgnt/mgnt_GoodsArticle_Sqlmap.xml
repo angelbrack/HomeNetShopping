@@ -4,7 +4,8 @@
 
 	<!-- 품목군 정보 List -->
 	<resultMap id="goodsArtcCdList" type="goodsArtcCdVO">
-		<result property="artcCd" 		 		 		column="ARTC_CD" 					/> <!-- 품목코드       			-->	
+		<result property="artcCd" 		 		 		column="ARTC_CD" 					/> <!-- 품목코드       			-->
+		<result property="artcUpCd" 		 		 	column="ARTC_UP_CD" 				/> <!-- 품목군코드(품목코드 앞 2자리)  -->	
 		<result property="uprArtcCd" 		 		 	column="UPR_ARTC_CD" 				/> <!-- 상위 품목코드    			-->
 		<result property="ecArtcCd" 		 		 	column="EC_ARTC_CD" 				/> <!-- 전자상거래품목코드  			-->
 		<result property="artcDpthNo" 		 		 	column="ARTC_DPTH_NO" 				/> <!-- 품목깊이번호     			-->
@@ -25,6 +26,7 @@
 		
 		<result property="uprArtcNm" 		 		 	column="UPR_ARTC_NM" 				/> <!-- 상위 품목명    			-->
 		<result property="ecArtcNm" 		 		 	column="EC_ARTC_NM" 				/> <!-- 전자상거래품목명  			-->
+		<result property="artcUpNm" 		 		 	column="ARTC_UP_NM" 				/> <!-- 품목군명(품목코드 앞 2자리)   -->
 		
 		<result property="totalCount"  					column="TOTAL_COUNT" 			/> <!-- Record Total Count 	-->
 	</resultMap>
@@ -41,23 +43,40 @@
 	<!-- 품목군 정보 검색조건 -->
 	<sql id="searchGoodsArtcCd">
 		<where>
+			<if test='searchArtcUpCd != null and searchArtcUpCd != ""'>
+				AND SUBSTR(A.ARTC_CD,0,2) = #{searchArtcUpCd}
+			</if>
+			<if test='searchArtcCd != null and searchArtcCd != ""'>
+				AND A.ARTC_CD = #{searchArtcCd}
+			</if>
+			<if test='searchArtcCdOption == "artcCd"'>
+				<if test='not empty searchArtcCdList'>
+					AND A.ARTC_CD IN 
+			        	<foreach collection="searchArtcCdList" item="item" separator="," open="(" close=")">
+			            	UPPER(TRIM(#{item}))
+			  			</foreach>
+				</if>
+			</if>
+			<if test='searchEcArtcCd != null and searchEcArtcCd != ""'>
+				AND A.EC_ARTC_CD = #{searchEcArtcCd}
+			</if>
 			<if test='searchArtcDpthNo != null'>
 				AND A.ARTC_DPTH_NO = #{searchArtcDpthNo }
 			</if>
 			<if test='searchWord != null and searchWord != ""'>
 				<choose>
-					<when test='searchKey == "000"'>
-						AND A.ARTC_CD = UPPER(#{searchWord })
-					</when>
 					<when test='searchKey == "001"'>
-						AND A.ARTC_NM LIKE '%'||#{searchWord }||'%'
+						AND A.ARTC_DPTH_NO = '2'
+						AND A.ARTC_NM LIKE '%'|| #{searchWord} || '%'
 					</when>
 					<when test='searchKey == "002"'>
-						AND A.ARTC_FULL_NM LIKE '%'||#{searchWord }||'%'
+						AND A.ARTC_DPTH_NO = '2'
+						AND A.ARTC_CD LIKE '%'|| #{searchWord} || '%'
 					</when>
 					<when test='searchKey == "003"'>
-						AND A.ARTC_UP_NM LIKE '%'||#{searchWord }||'%'
+						AND A.ARTC_NM LIKE '%'||#{searchWord }||'%'
 					</when>
+					
 				</choose>
 			</if>
 		</where>
@@ -93,6 +112,7 @@
 		/* homenet.shop.article.service.GoodsArticleService.selectGoodsArtcCdList 품목군 정보 조회*/
 		SELECT 
 			    Z.*
+			  , (SELECT ARTC_NM FROM TB_GOODS_ARTC_CD WHERE ARTC_CD = SUBSTR(Z.ARTC_CD,0,2) ) AS ARTC_UP_NM
 			  <if test='searchConnectByDeniedYn == null or searchConnectByDeniedYn == "" or searchConnectByDeniedYn == "N" '>
 			  , LEVEL
 			  </if>
@@ -104,6 +124,7 @@
 			FROM (
 				SELECT
 					  A.ARTC_CD
+					, SUBSTR(A.ARTC_CD,0,2) AS ARTC_UP_CD
 					, A.EC_ARTC_CD
 					, A.UPR_ARTC_CD
 					, A.ARTC_DPTH_NO
