@@ -309,7 +309,7 @@ public class MgntGoodsArticleController {
 		
 		return new ModelAndView("jsonView", resultMap);
 	}
-
+	
 	/*
 	 * 품목군 리스트 화면
 	 * 
@@ -321,6 +321,35 @@ public class MgntGoodsArticleController {
 	 */
 	@RequestMapping(value="/mgnt/article/articleListPop.do")
 	public String articleListPop(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		paramVO.setFirstIndex(0);
+		paramVO.setLastIndex(0);
+		paramVO.setRecordCountPerPage(0);
+		
+		// 검색 품목깊이번호
+		paramVO.setSearchArtcDpthNo(2);
+		// 검색 Connect By 거부 여부
+		paramVO.setSearchConnectByDeniedYn("Y");
+		
+		List<GoodsArtcCdVO> searchArtcUpCdList = goodsArticleService.selectGoodsArtcCdList(paramVO);
+		
+		model.addAttribute("searchArtcUpCdList", 		searchArtcUpCdList);
+		
+		return "mgnt/article/articleListPop";
+	}
+
+	/*
+	 * 품목군 리스트 화면 - BACKUP
+	 * 
+	 * @param  : GoodsArtcCdVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/article/articleListPopBackup.do")
+	public String articleListPopBackup(@ModelAttribute("searchVO") GoodsArtcCdVO paramVO, ModelMap model, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		PaginationInfo paginationInfo = new PaginationInfo();
@@ -354,5 +383,74 @@ public class MgntGoodsArticleController {
 		return "mgnt/article/articleListPop";
 	}
 	
+	/**
+	  * 목적 		: 품목군코드 검색코드항목을 조회한다.
+	  * @param 	: GoodsArtcCdVO paramVO
+	  * @param 	: ModelMap model
+	  * @param  : HttpServletRequest request
+	  * @param  : HttpServletResponse response
+	  * @return : ModelAndView
+	  * 개정이력 	: 없음
+	  */
+	@RequestMapping(value = "/mgnt/article/selectArticleCodeList.json", headers="Accept=application/json" )
+	public ModelAndView selectArticleCodeList(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+		
+		paramVO.setFirstIndex(0);
+		paramVO.setLastIndex(0);
+		paramVO.setRecordCountPerPage(0);
+		
+		if ( paramVO.getSearchArtcDpthNo() == null ) {
+			// 검색 품목깊이번호
+			paramVO.setSearchArtcDpthNo(5);
+		}
+		// 검색 Connect By 거부 여부
+		paramVO.setSearchConnectByDeniedYn("Y");
+		
+		List<GoodsArtcCdVO> artcCdList = goodsArticleService.selectGoodsArtcCdList(paramVO);
+		
+		model.addAttribute("artcCdList", 		artcCdList);
+		
+		return new ModelAndView("jsonView", model);
+	}
 	
+	/*
+	 * 품목군 리스트
+	 * 
+	 * @param  : GoodsArtcCdVO paramVO
+	 * @param  : ModelMap model
+	 * @param  : HttpServletRequest request
+	 * @param  : HttpServletResponse response
+	 * @return : String 
+	 */
+	@RequestMapping(value="/mgnt/article/selectArticleList.json", headers="Accept=application/json" )
+	public ModelAndView selectArticleList(ModelMap model, @RequestBody GoodsArtcCdVO paramVO, HttpServletRequest request) throws Exception {
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+
+		paginationInfo.setCurrentPageNo(paramVO.getCurrentPage());
+		paginationInfo.setRecordCountPerPage(paramVO.getRecordCountPerPage());
+		paginationInfo.setPageSize(paramVO.getPageSize());
+		
+		paramVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		paramVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		paramVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		// 검색 Connect By 거부 여부
+		paramVO.setSearchConnectByDeniedYn("Y");
+		
+		int totalCount	= 0;
+		List<GoodsArtcCdVO> list = goodsArticleService.selectGoodsArtcCdList(paramVO);
+		
+		if ( list != null && list.size() > 0 ) {
+			totalCount = list.get(0).getTotalCount();
+		}
+		
+		paginationInfo.setTotalRecordCount(totalCount);
+		
+		model.addAttribute("list", 				list);
+		model.addAttribute("totalCount", 		totalCount);
+        model.addAttribute("paginationInfo", 	paginationInfo);
+		
+        return new ModelAndView("jsonView", model);
+	}
 }

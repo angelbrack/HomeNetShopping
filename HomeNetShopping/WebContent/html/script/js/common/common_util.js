@@ -1783,3 +1783,20 @@ function openPopup(){
 		}
 	};
 }
+
+/*
+ * selectbox option 초기화
+ * 
+ * @param obj : selectbox 객체
+ * @param options : selectbox option 객체
+ * @return
+ */
+function initSelectBoxOption(obj, options) {
+	$('option', obj).remove();  
+
+	var lastIndex = 0;
+	if(options.length) {
+		lastIndex = options.length;
+	}
+	options[lastIndex] = new Option("- 선택 -", "all");
+}

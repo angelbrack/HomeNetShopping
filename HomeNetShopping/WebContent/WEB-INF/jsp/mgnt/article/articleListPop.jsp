@@ -21,11 +21,11 @@
 			<div class="con_search">
 				<table style="border:10px">
 					<colgroup>
-						<col style="width: 4%;">
-						<col style="width: 21%;">
-						<col style="width: 6%;">
-						<col style="width: 25%;">
-						<col style="width: 13%;">	
+						<col style="width: 13%;">
+						<col style="width: 15%;">
+						<col style="width: 10%;">
+						<col style="width: 10%;">
+						<col style="width: *;">	
 					</colgroup>
 					<tbody>
 						<tr>
@@ -35,38 +35,38 @@
 							<td class="tit">품목군 </td>
 							<td>
 								<select id="searchArtcUpCd" name="searchArtcUpCd">
-									<option value="">전체</option>
+									<option value="">- 선택 -</option>
 									<c:forEach var="item" items="${searchArtcUpCdList}">
-									<option value="${item.artcCd}">${item.artcNm}</option>
+										<option value="${item.artcCd}">${item.artcNm}</option>
 									</c:forEach>
 								</select>
 							</td>
 							<td class="tit">품목 </td>
 							<td>
 								<select id="searchArtcCd" name="searchArtcCd">
-									<option value="">-전체-</option>
+									<option value="">- 선택 -</option>
 								</select>
 							</td>
 							<td>
 								<select id="searchArtcCdOption" name="searchArtcCdOption">
-									<option value="">선택</option>
+									<option value="">- 선택 -</option>
 									<option value="artcCd">품목코드</option>
 								</select>
 								<textarea id="searchArtcCdList"  name="searchArtcCdList" style="width:80%;height:100px;"></textarea>
 							</td>
 						</tr>
 						<tr>
-							<td class="tit">공정위 품목군 </td>
-							<td>
-								<ctag:code name="searchEcArtcCd" type="S" key="EC_ARTC_CD" selected=""  css="form" />
+							<td class="tit">공정위 품목군</td>
+							<td colspan="4">
+								<ctag:code name="searchEcArtcCd" type="S" key="EC_ARTC_CD" selected="" optdef="- 선택 -" css="form" />
 							</td>
 						</tr>
 						<tr>
 							<td class="tit">구분</td>
-							<td colspan="4">
+							<td colspan="3">
 								<label for="searchKey" class="hidden">검색구분</label>
 								<select name="searchKey" id="searchKey" style="height:22px;" >
-				                    <option value="" 	<c:if test="${empty searchVO.searchKey}">selected</c:if>>-전체-</option>
+				                    <option value="" 	<c:if test="${empty searchVO.searchKey}">selected</c:if>>- 선택 -</option>
 				                    <option value="001" <c:if test="${searchVO.searchKey eq '001'}">selected</c:if>>품목군명</option>
 				                    <option value="002" <c:if test="${searchVO.searchKey eq '002'}">selected</c:if>>품목군 코드(2자리)</option>
 				                    <option value="003" <c:if test="${searchVO.searchKey eq '003'}">selected</c:if>>품목명</option>
@@ -105,36 +105,14 @@
 							<th scope="col">전자상거래품목명</th>
 						</tr>
 					</thead>
-					<tbody>
-				<c:choose>
-					<c:when test="${fn:length(resultList) > 0}">
-						<c:forEach items="${resultList}" var="item" varStatus="status">
-						<tr>
-							<td>
-								<input type="radio"  id="selRdo_<c:out value="${status.count }"/>" name="selRdo" title="선택" /> 
-								<input type="hidden" id="artcCd_<c:out value="${status.count }"/>" 		name="selArtcCd" 		value="<c:out value="${item.artcCd 		}"						/>" 	/>
-								<input type="hidden" id="artcNm_<c:out value="${status.count }"/>" 		name="selArtcNm" 		value="<c:out value="${item.artcNm 		}"	escapeXml="false" 	/>" 	/>
-							</td>
-							<td><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.currentPage-1) * searchVO.recordCountPerPage + status.count)}"/></td>
-							<td><c:out value="${item.artcCd }" escapeXml="false" /></td>
-							<td><c:out value="${item.artcNm }" escapeXml="false" /></td>
-							<td><c:out value="${item.uprArtcNm }" escapeXml="false" /></td>
-							<td><c:out value="${item.ecArtcNm }" escapeXml="false" /></td>
-						</tr>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<td colspan="8">
-	                    	검색된 데이터가 없습니다.
-						</td>
-					</c:otherwise>
-				</c:choose>	
+					<tbody id="itemsList">
 					</tbody>
 				</table>
 			</div>
 			
 			<div class="con_paging mt30">
-				<ctag:paging paginationInfo="${paginationInfo}" type="portal" jsFunction="fnListPage" rowControl="true" jsRowFunction="fnListPerLine" />
+				<div class="pagination" id="pager">
+                </div>
 		   	</div>
 			
 			<div class="con_btn mt30">
@@ -148,10 +126,78 @@
 	
 </form>
 </div>
+<!-- Templates -->
+<p style="display:none"><label for="listTmp"></label><textarea id="listTmp" rows="0" cols="0"><!--
+	{#foreach $T.list as list}
+	<tr>
+		<td>
+			<input type="radio"  id="selRdo_{$T.list$index}" 		name="selRdo" 			title="선택" /> 
+			<input type="hidden" id="artcCd_{$T.list$index}" 		name="selArtcCd" 		value="{$T.list.artcCd}" 	/>
+			<input type="hidden" id="artcNm_{$T.list$index}" 		name="selArtcNm" 		value="{$T.list.artcNm}" 	/>
+		</td>
+		<td>{$T.paginationInfo.totalRecordCount - (($T.paginationInfo.currentPageNo-1) * $T.paginationInfo.pageSize + $T.list$index)}</td>
+		<td>{$T.list.artcCd}</td>
+		<td>{$T.list.artcNm}</td>
+		<td>{$T.list.uprArtcNm}</td>
+		<td>{$T.list.ecArtcNm}</td>
+	</tr>
+	{#/for}
+--></textarea></p>
 <script type="text/javascript">
 <!--
 
 var RunCallbackFunction = function() { };
+
+$(document).ready(function() {
+	// 품목군 change
+	$("#searchArtcUpCd").change(function() {
+		var data = {};
+		var searchArtcUpCd = $("select[name=searchArtcUpCd] option:selected").val();
+		data.searchArtcUpCd = searchArtcUpCd;
+		data.searchArtcDpthNo = 5;
+		
+		var param	= JSON.stringify(data);
+		
+		var obj = $("#searchArtcCd");
+		var options = obj.prop('options');
+		
+		if ( searchArtcUpCd == '' ) {
+			// selectbox option 초기화
+			initSelectBoxOption(obj, options)
+		}
+		
+		$.ajax({
+			async : false,
+			type: 'POST',
+			url: CTX_PATH + "/mgnt/article/selectArticleCodeList.json",
+			data: param,
+			contentType: 'application/json',
+			dataType:"json",
+			success : function (data) {
+				var artcCdList		= data.artcCdList;
+				
+				// selectbox option 초기화
+				initSelectBoxOption(obj, options)
+				
+				$(artcCdList).each(function(){
+					lastIndex = options.length;
+					options[lastIndex] = new Option(this.artcNm, this.artcCd);  
+				});
+				
+			}, 
+			error: function(data, textStatus, errorThrown) {
+				fnAjaxError(data);
+			}
+		});	
+	});
+	
+	// 
+	$("#searchArtcCdOption").change(function(){
+		$("#searchArtcCdList").text("");
+	});
+	
+	fnSearch();
+});
 
 // 검색
 function fnSearch() {
@@ -160,15 +206,47 @@ function fnSearch() {
 
 //페이징에서 호출
 function fnListPage(pageNo) {
-	var frm	= document.form1;
-	
 	$("#form1 #currentPage").val(pageNo);
 	
-	frm.method = "post";
-	frm.target = "_self";
-	frm.action = CTX_PATH + "/mgnt/article/articleListPop.do";
+	var data	= {};
+
+	var searchArtcUpCd 			= $("select[name=searchArtcUpCd] option:selected").val();		// 검색 품목군
+	var searchArtcCd			= $("select[name=searchArtcCd] option:selected").val();			// 검색 품목
+	var searchArtcCdOption		= $("select[name=searchArtcCdOption] option:selected").val();
+	var searchArtcCdList		= $("#searchArtcCdList").val();
+	var searchEcArtcCd			= $("select[name=searchEcArtcCd] option:selected").val();		// 검색 공정위품목군
+	var searchKey				= $("select[name=searchKey] option:selected").val();			// 검색구분
+	var searchWord				= $("#searchWord").val();										// 검색어
 	
-	frm.submit();
+	
+	data.currentPage 			= $("#form1 #currentPage").val();								// 현재 페이지번호
+	data.recordCountPerPage		= $("#form1 #recordCountPerPage").val();						// 페이지당 레코드 갯수
+	data.searchArtcUpCd			= searchArtcUpCd;												// 검색 품목군  
+	data.searchArtcCd			= searchArtcCd;                                                 // 검색 품목   
+	data.searchArtcCdOption		= searchArtcCdOption;
+	data.searchEcArtcCd			= searchEcArtcCd;                                               // 검색 공정위품목군   
+	data.searchKey				= searchKey;                                                    // 검색구분        
+	data.searchWord				= searchWord;                                                   // 검색어         
+	
+	var param	= JSON.stringify(data);
+	
+	$.ajax({
+		async : false,
+		type: 'POST',
+		url: CTX_PATH + "/mgnt/article/selectArticleList.json",
+		data: param,
+		contentType: 'application/json',
+		dataType:"json",
+		success : function (data) {
+			//list목록
+			$("#itemsList").setTemplateElement("listTmp", [], {filter_data: false}).processTemplate(data);
+			//페이징
+			PageUtil("pager", data.paginationInfo, "fnListPage");
+		}, 
+		error: function(data, textStatus, errorThrown) {
+			fnAjaxError(data);
+		}
+	});
 }
 
 // 페이지당 레코드 갯수로 호출
@@ -205,8 +283,8 @@ function fnSelArticle() {
 	
 	articleInfo.artcCd 		= artcCd 		;
 	articleInfo.artcNm 		= artcNm 		;
-	
-	RunCallbackFunction(displayInfo);
+	console.log("articleInfo : ", JSON.stringify(articleInfo));
+	RunCallbackFunction(articleInfo);
 }
 //-->
 </script>

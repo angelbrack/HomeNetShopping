@@ -66,18 +66,26 @@
 			<if test='searchWord != null and searchWord != ""'>
 				<choose>
 					<when test='searchKey == "001"'>
+						<!-- 품목군명 -->
 						AND A.ARTC_DPTH_NO = '2'
 						AND A.ARTC_NM LIKE '%'|| #{searchWord} || '%'
 					</when>
 					<when test='searchKey == "002"'>
+						<!-- 품목군 코드(2자리) -->
 						AND A.ARTC_DPTH_NO = '2'
 						AND A.ARTC_CD LIKE '%'|| #{searchWord} || '%'
 					</when>
 					<when test='searchKey == "003"'>
+						<!-- 품목명 -->
 						AND A.ARTC_NM LIKE '%'||#{searchWord }||'%'
 					</when>
 					
 				</choose>
+			</if>
+			<if test='searchWord != null and searchWord != ""'>
+				<if test='searchArtcCdList != null and searchArtcCdList != ""'>
+					AND A.ARTC_DPTH_NO = '5'
+				</if>
 			</if>
 		</where>
 	</sql>

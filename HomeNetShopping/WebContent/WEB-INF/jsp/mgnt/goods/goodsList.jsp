@@ -197,6 +197,7 @@ function setDisplayShop(data) {
 
 //품목군 팝업 callback 함수
 function setGoodsArticle(data) {
+	console.log("setGoodsArticle -> data : ", JSON.stringify(data));
 	$(data).each(function() {
 		$('#searchArtcCd').val(this.artcCd);
 		$('#searchArtcNm').val(this.artcNm);
