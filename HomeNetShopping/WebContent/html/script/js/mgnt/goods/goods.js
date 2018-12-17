@@ -72,12 +72,12 @@ var goodsList = {
 		frm.submit();
 	},
 	// 등록/수정 페이지로 이동
-	fnEdit : function(cmd, brndNo) {
+	fnEdit : function(cmd, goodsNo) {
 		
 		var frm = document.form1
 		
 		$("#form1 #cmd").val(cmd);
-		$("#form1 #brndNo").val(brndNo);
+		$("#form1 #goodsNo").val(goodsNo);
 		
 		frm.method = "post";
 		frm.target = "_self";

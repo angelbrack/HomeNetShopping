@@ -71,14 +71,16 @@
                             	<input type="text" name="searchDispNo" id="searchDispNo" title='전시번호' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNo }" />" readOnly />
                             	<input type="text" name="searchDispNm" id="searchDispNm" title='전시명' maxlength="20" style="width:300px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNm }" />" readOnly />
                             	<a href="#none" onclick="openDisplaySearchPopup();" class="btn_search3 ml2 mr2" id="btnSearchDisp">검색</a>
+                            	<a href="#none" onclick="initGoodsDisplay();" class="btn_search3 ml2 mr2" id="btnInitGoodsDisplay">초기화</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="tit"><label for="searchArtcCd">품목코드</label></td>
                             <td colspan="2">
-                            	<input type="text" name="searchArtcCd" id="searchArtcCd" title='품목코드' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNo }" />" readOnly />
-                            	<input type="text" name="searchArtcNm" id="searchArtcNm" title='품목명' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchDispNm }" />" readOnly />
+                            	<input type="text" name="searchArtcCd" id="searchArtcCd" title='품목코드' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchArtcCd }" />" readOnly />
+                            	<input type="text" name="searchArtcNm" id="searchArtcNm" title='품목명' maxlength="20" style="width:100px;height:18px;" class="txtbox1" value="<c:out value="${searchVO.searchArtcNm }" />" readOnly />
                             	<a href="#none" onclick="openGoodsArticleSearchPopup();" class="btn_search3 ml2 mr2" id="btnSearchGoodsArticle">검색</a>
+                            	<a href="#none" onclick="initGoodsArticle();" class="btn_search3 ml2 mr2" id="btnInitGoodsArticle">초기화</a>
                             </td>
                         </tr>
 						<tr>
@@ -145,7 +147,7 @@
 		   	</div>
 			
 			<div class="con_btn mt30">
-				<a href="#none" onclick="brandList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
+				<a href="#none" onclick="goodsList.fnEdit('I'); return false;" class="btn_write1" >신규</a>
 			</div>
 			</form>
 		</div>
@@ -163,12 +165,8 @@ $(document).ready(function() {
 // 전시카테고리 팝업 callback 함수
 function setDisplayShop(data) {
 	var cataName;
-	
+	console.log('data : ', JSON.stringify(data))
 	$(data).each(function() {
-		console.log("this.dispLrgNm="+this.dispLrgNm);
-		console.log("this.dispMidNm="+this.dispMidNm);
-		console.log("this.dispSmlNm="+this.dispSmlNm);
-		console.log("this.dispThnNm="+this.dispThnNm);
 		if(this.dispLrgNm != null && this.dispLrgNm != "") {
 			cataName = this.dispLrgNm;
 		} 
@@ -182,8 +180,6 @@ function setDisplayShop(data) {
 			cataName = cataName + " > " +this.dispThnNm;
 		}
 		
-		console.log("cataName="+cataName);
-		
 		if(cataName == null || cataName == "") {
 			cataName = this.dispNm;
 		}
@@ -192,16 +188,26 @@ function setDisplayShop(data) {
 		$('#searchDispNm').val(cataName);
 	
 	});
-
 }
 
-//품목군 팝업 callback 함수
+// 전시카테고리 초기화
+function initGoodsDisplay() {
+	$('#searchDispNo').val('');
+	$('#searchDispNm').val('');
+}
+
+// 품목군 팝업 callback 함수
 function setGoodsArticle(data) {
-	console.log("setGoodsArticle -> data : ", JSON.stringify(data));
 	$(data).each(function() {
 		$('#searchArtcCd').val(this.artcCd);
 		$('#searchArtcNm').val(this.artcNm);
 	});
+}
+
+// 품목군 초기화
+function initGoodsArticle() {
+	$('#searchArtcCd').val('');
+	$('#searchArtcNm').val('');
 }
 //-->
 </script>

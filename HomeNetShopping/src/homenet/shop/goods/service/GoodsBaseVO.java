@@ -83,6 +83,11 @@ public class GoodsBaseVO extends PagerVO {
 	private String  dlvStrtFcstDt                   ; // 상품 배송시작일 
 	private String  genGoodsDlvYn                   ; // 일반상품배송여부
 	private Integer adjPurPrc                       ; // 정산매입가(사입가)
+	
+	private String  artcNm                          ; // 품목명
+	private Integer dispNo							; // 전시번호
+	private String  dispNm							; // 전시명
+	
 	public String getSearchTermOption() {
 		return searchTermOption;
 	}
@@ -473,7 +478,23 @@ public class GoodsBaseVO extends PagerVO {
 	public void setAdjPurPrc(Integer adjPurPrc) {
 		this.adjPurPrc = adjPurPrc;
 	}
+	public String getArtcNm() {
+		return artcNm;
+	}
+	public void setArtcNm(String artcNm) {
+		this.artcNm = artcNm;
+	}
+	public Integer getDispNo() {
+		return dispNo;
+	}
+	public void setDispNo(Integer dispNo) {
+		this.dispNo = dispNo;
+	}
+	public String getDispNm() {
+		return dispNm;
+	}
+	public void setDispNm(String dispNm) {
+		this.dispNm = dispNm;
+	}
 	
-	
-
 }

@@ -72,8 +72,8 @@ public class HTMLTagFilterRequestWrapper extends HttpServletRequestWrapper {
 		}
 		return values;
 	}
-
-	@SuppressWarnings("unchecked")
+	/* java1.6 */
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> getParameterMap() {
 		Map<String, Object> paramMap = super.getParameterMap();
@@ -92,8 +92,28 @@ public class HTMLTagFilterRequestWrapper extends HttpServletRequestWrapper {
 		}
 
 		return newFilteredParamMap;
-	}
+	}*/
+	/* java1.7 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, String[]> getParameterMap() {
+		Map<String, String[]> paramMap = super.getParameterMap();
+		Map<String, String[]> newFilteredParamMap = new HashMap<String, String[]>();
 
+		Set<Map.Entry<String, String[]>> entries = paramMap.entrySet();
+		for (Map.Entry<String, String[]> entry : entries) {
+			String paramName = entry.getKey();
+			Object[] valueObj = (Object[])entry.getValue();
+			String[] filteredValue = new String[valueObj.length];
+			for (int index = 0; index < valueObj.length; index++) {
+				filteredValue[index] = doFilter(paramName, String.valueOf(valueObj[index]));
+			}
+			
+			newFilteredParamMap.put(entry.getKey(), filteredValue);
+		}
+
+		return newFilteredParamMap;
+	}
 	/**
 	 * @param paramName String
 	 * @param value String
